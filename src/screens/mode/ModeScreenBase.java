@@ -29,8 +29,7 @@ public  class ModeScreenBase extends AnchorPane {
         imageView.setFitWidth(1280.0);
         imageView.setPickOnBounds(true);
         imageView.setPreserveRatio(true);
-        imageView.setImage(new Image(getClass().getResource("../../assets/cover.png").toExternalForm()));
-
+        imageView.setImage(new Image(getClass().getResource("/assets/cover.png").toExternalForm()));
         button.setLayoutX(323.0);
         button.setLayoutY(207.0);
         button.setMnemonicParsing(false);
@@ -43,7 +42,7 @@ public  class ModeScreenBase extends AnchorPane {
         imageView0.setFitWidth(224.0);
         imageView0.setPickOnBounds(true);
         imageView0.setPreserveRatio(true);
-        imageView0.setImage(new Image(getClass().getResource("../../assets/pve.png").toExternalForm()));
+        imageView0.setImage(new Image(getClass().getResource("/assets/pve.png").toExternalForm()));
         button.setGraphic(imageView0);
 
         button0.setLayoutX(693.0);
@@ -58,7 +57,7 @@ public  class ModeScreenBase extends AnchorPane {
         imageView1.setFitWidth(209.0);
         imageView1.setPickOnBounds(true);
         imageView1.setPreserveRatio(true);
-        imageView1.setImage(new Image(getClass().getResource("../../assets/pvp.png").toExternalForm()));
+       imageView1.setImage(new Image(getClass().getResource("/assets/pvp.png").toExternalForm()));
         button0.setGraphic(imageView1);
 
         getChildren().add(imageView);
