@@ -1,13 +1,15 @@
 package screens.mode;
 
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import screens.Board.BoardFXMLBase;
 
-public  class ModeScreenBase extends AnchorPane {
+public class ModeScreenBase extends AnchorPane {
 
     protected final ImageView imageView;
     protected final Button btnSingle;
@@ -40,7 +42,18 @@ public  class ModeScreenBase extends AnchorPane {
         btnSingle.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         btnSingle.setFont(new Font("Comic Sans MS Bold", 45.0));
         btnSingle.setOnAction((event) -> {
-           
+
+            BoardFXMLBase boardScreen = new BoardFXMLBase();
+
+            Scene boardScene = new Scene(boardScreen);
+
+            stage.setScene(boardScene);
+
+            stage.setMaximized(true);
+          //  stage.setFullScreen(true);
+            //  stage.sizeToScene();
+
+            stage.show();
         });
 
         btnMulti.setLayoutX(1026.0);
@@ -54,8 +67,7 @@ public  class ModeScreenBase extends AnchorPane {
         btnMulti.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         btnMulti.setFont(new Font("Comic Sans MS Bold", 39.0));
         btnMulti.setOnAction((event) -> {
-           
-            
+
         });
 
         getChildren().add(imageView);
