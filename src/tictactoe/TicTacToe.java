@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import login_screen.LoginScreenBase;
 import screens.LocalPlayers.LocalPlayersBase;
 import screens.LocalOnlinescreen.LocalonscreenBase;
 import screens.mode.ModeScreenBase;
@@ -22,12 +23,14 @@ public class TicTacToe extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+
+        Parent root = new LoginScreenBase();
+
       //  Parent root = new LocalPlayersBase();
 
       //  Parent root = new LocalonscreenBase(stage);
-
         
-        Scene scene = new Scene(root);
+       Scene scene = new Scene(root);
         
         stage.setScene(scene);
         stage.setFullScreen(true);
