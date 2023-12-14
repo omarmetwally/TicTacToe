@@ -1,7 +1,9 @@
 package screens.LocalPlayers;
 
 import javafx.geometry.Insets;
+
 import javafx.scene.Scene;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -14,6 +16,7 @@ import javafx.stage.Stage;
 import screens.Board.BoardFXMLBase;
 import tictactoe.TicTacToe;
 
+
 public class LocalPlayersBase extends AnchorPane {
 
     protected final ImageView imgCover;
@@ -24,9 +27,11 @@ public class LocalPlayersBase extends AnchorPane {
     protected final Rectangle rectangle0;
     protected final TextField tfPlayerTwo;
     protected final Button btnStart;
+
     protected final Button btnBack;
 
     public LocalPlayersBase(Stage stage) {
+
 
         imgCover = new ImageView();
         tPlayerOne = new Text();
@@ -36,15 +41,20 @@ public class LocalPlayersBase extends AnchorPane {
         rectangle0 = new Rectangle();
         tfPlayerTwo = new TextField();
         btnStart = new Button();
+
         btnBack=new Button();
+
 
         setId("AnchorPane");
         setPrefHeight(1000.0);
         setPrefWidth(2000.0);
 
+
         imgCover.setFitHeight(1174.0);
         imgCover.setFitWidth(2043.0);
         
+
+
         imgCover.setPickOnBounds(true);
         imgCover.setImage(new Image(getClass().getResource("/assets/cover.png").toExternalForm()));
 
@@ -108,6 +118,7 @@ public class LocalPlayersBase extends AnchorPane {
         btnStart.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         btnStart.setTextFill(javafx.scene.paint.Color.valueOf("#facc16"));
         btnStart.setFont(new Font("Comic Sans MS Bold", 50.0));
+
         btnStart.setOnAction((event) -> {
        
 
@@ -127,6 +138,7 @@ public class LocalPlayersBase extends AnchorPane {
         btnBack.setOnAction(event -> TicTacToe.goBack());
         
 
+
         getChildren().add(imgCover);
         getChildren().add(tPlayerOne);
         getChildren().add(tPlayerTwo);
@@ -135,7 +147,9 @@ public class LocalPlayersBase extends AnchorPane {
         getChildren().add(rectangle0);
         getChildren().add(tfPlayerTwo);
         getChildren().add(btnStart);
+
         getChildren().add(btnBack);
+
 
     }
 }

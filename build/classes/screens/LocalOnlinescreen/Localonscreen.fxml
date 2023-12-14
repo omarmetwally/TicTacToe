@@ -4,15 +4,24 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<<<<<<< HEAD
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="824.0" prefWidth="1416.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tictactoe.FXMLDocumentController">
     <children>
       <ImageView fitHeight="1174.0" fitWidth="2043.0" pickOnBounds="true" preserveRatio="true">
+=======
+
+
+<AnchorPane id="AnchorPane" fx:id="anchor" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171">
+   <children>
+      <ImageView fx:id="imgView" fitHeight="422.0" fitWidth="775.0" layoutX="-23.0" pickOnBounds="true" preserveRatio="true">
+>>>>>>> origin/dev
          <image>
             <Image url="@../../assets/cover.png" />
          </image>
       </ImageView>
+<<<<<<< HEAD
        <Button fx:id="localbtn" layoutX="610.0" layoutY="416.0" mnemonicParsing="false" prefHeight="141.0" prefWidth="258.0" style="-fx-background-radius: 25; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-font-style: Roboto; -fx-background-color: FFFF;" text="Local" textAlignment="CENTER" textFill="#fcd015">
          <font>
             <Font name="Comic Sans MS Bold" size="45.0" />
@@ -23,5 +32,9 @@
             <Font name="Comic Sans MS Bold" size="39.0" />
          </font>
       </Button>
+=======
+      <Button fx:id="localbtn" layoutX="239.0" layoutY="194.0" mnemonicParsing="false" text="Local" />
+      <Button layoutX="407.0" layoutY="187.0" mnemonicParsing="false" text="Online" />
+>>>>>>> origin/dev
    </children>
 </AnchorPane>

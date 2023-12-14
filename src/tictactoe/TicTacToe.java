@@ -10,6 +10,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import login_screen.LoginScreenBase;
+import screens.LocalPlayers.LocalPlayersBase;
+import screens.LocalOnlinescreen.LocalonscreenBase;
 import screens.mode.ModeScreenBase;
 
 /**
@@ -22,6 +25,7 @@ public class TicTacToe extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+
         this.primaryStage = stage;
         Parent root = new ModeScreenBase(stage);
         // push awl Screen "Scene"
@@ -30,6 +34,7 @@ public class TicTacToe extends Application {
         primaryStage.setScene(initialScene);
         primaryStage.setMaximized(true);
         primaryStage.show();
+
     }
 
     public static void changeScene(Scene newScene) {
