@@ -11,7 +11,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import screens.mode.ModeScreenBase;
-import screens.register_screen.RegisterScreenBase;
 
 /**
  *
@@ -21,8 +20,7 @@ public class TicTacToe extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        stage.setMaximized(true);
-        Parent root = new RegisterScreenBase();
+        Parent root = new ModeScreenBase();
          
         Scene scene = new Scene(root);
        
