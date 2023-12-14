@@ -1,6 +1,9 @@
 package screens.LocalPlayers;
 
 import javafx.geometry.Insets;
+
+import javafx.scene.Scene;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -9,6 +12,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import screens.Board.BoardFXMLBase;
+import tictactoe.TicTacToe;
+
 
 public class LocalPlayersBase extends AnchorPane {
 
@@ -21,7 +28,10 @@ public class LocalPlayersBase extends AnchorPane {
     protected final TextField tfPlayerTwo;
     protected final Button btnStart;
 
-    public LocalPlayersBase() {
+    protected final Button btnBack;
+
+    public LocalPlayersBase(Stage stage) {
+
 
         imgCover = new ImageView();
         tPlayerOne = new Text();
@@ -32,12 +42,19 @@ public class LocalPlayersBase extends AnchorPane {
         tfPlayerTwo = new TextField();
         btnStart = new Button();
 
+        btnBack=new Button();
+
+
         setId("AnchorPane");
         setPrefHeight(1000.0);
         setPrefWidth(2000.0);
 
-        imgCover.setFitHeight(1000.0);
-        imgCover.setFitWidth(2000.0);
+
+        imgCover.setFitHeight(1174.0);
+        imgCover.setFitWidth(2043.0);
+        
+
+
         imgCover.setPickOnBounds(true);
         imgCover.setImage(new Image(getClass().getResource("/assets/cover.png").toExternalForm()));
 
@@ -102,6 +119,26 @@ public class LocalPlayersBase extends AnchorPane {
         btnStart.setTextFill(javafx.scene.paint.Color.valueOf("#facc16"));
         btnStart.setFont(new Font("Comic Sans MS Bold", 50.0));
 
+        btnStart.setOnAction((event) -> {
+       
+
+            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,tfPlayerOne.getText(),tfPlayerTwo.getText());
+            Scene boardScene = new Scene(boardScreen);
+            TicTacToe.changeScene(boardScene);
+        });
+        
+        
+        btnBack.setLayoutX(31.0);
+        btnBack.setLayoutY(20.0);
+        btnBack.setMnemonicParsing(false);
+        btnBack.setStyle("-fx-background-radius: 25; -fx-background-color: FFFF; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5);");
+        btnBack.setText("Back");
+        btnBack.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
+        btnBack.setFont(new Font("Comic Sans MS Bold", 25.0));
+        btnBack.setOnAction(event -> TicTacToe.goBack());
+        
+
+
         getChildren().add(imgCover);
         getChildren().add(tPlayerOne);
         getChildren().add(tPlayerTwo);
@@ -110,6 +147,9 @@ public class LocalPlayersBase extends AnchorPane {
         getChildren().add(rectangle0);
         getChildren().add(tfPlayerTwo);
         getChildren().add(btnStart);
+
+        getChildren().add(btnBack);
+
 
     }
 }
