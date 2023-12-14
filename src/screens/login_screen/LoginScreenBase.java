@@ -1,5 +1,6 @@
 package screens.login_screen;
 
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -8,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import screens.register_screen.RegisterScreenBase;
 import tictactoe.TicTacToe;
 
 public  class LoginScreenBase extends AnchorPane {
@@ -119,7 +121,10 @@ public  class LoginScreenBase extends AnchorPane {
         registerNowButton.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         registerNowButton.setFont(new Font("Comic Sans MS Bold", 30.0));
         registerNowButton.setOnMouseClicked((event) -> {
-            System.out.println("Register Now clicked");
+            RegisterScreenBase registerScreen = new RegisterScreenBase(stage);
+            Scene registerScene = new Scene(registerScreen);
+            TicTacToe.changeScene(registerScene);
+            
         });
         
         
