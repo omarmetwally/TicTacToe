@@ -1,5 +1,7 @@
 package screens.login_screen;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -9,6 +11,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import tictactoe.TicTacToe;
+import javafx.scene.Scene;
+import screens.Plist.PllistBase;
 
 public  class LoginScreenBase extends AnchorPane {
 
@@ -101,9 +105,13 @@ public  class LoginScreenBase extends AnchorPane {
                 + "-fx-background-radius: 10; "
                 + "-fx-border-radius: 10;"
         );
-        loginButton.setOnAction((event) -> {
-            userNameTextField.getText();
-            passwordTextField.getText();
+        loginButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                PllistBase listScreen = new PllistBase(stage);
+                Scene bscene = new Scene(listScreen);
+                TicTacToe.changeScene(bscene);
+            }
         });
 
         dontHaveAnAccountLabel.setLayoutX(764.0);

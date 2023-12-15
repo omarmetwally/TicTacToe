@@ -1,6 +1,7 @@
 package login_screen;
 
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -12,6 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
+import tictactoe.TicTacToe;
 
 public class LoginScreenBase extends AnchorPane {
 
@@ -24,7 +27,7 @@ public class LoginScreenBase extends AnchorPane {
     protected final Label dontHaveAnAccountLabel;
     protected final Label registerNowButton;
 
-    public LoginScreenBase() {
+    public LoginScreenBase(Stage stage) {
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
         backgroundIImage = new ImageView();
@@ -107,6 +110,14 @@ public class LoginScreenBase extends AnchorPane {
             userNameTextField.getText();
             passwordTextField.getText();
         });
+        
+       /* loginButton.setOnAction((event) -> {
+             ListplayBase listscreen = new ListplayBase(stage);
+             Scene boardScene = new Scene(listscreen);
+              TicTacToe.changeScene(boardScene);
+             
+        });*/
+        
         dontHaveAnAccountLabel.setLayoutX(606.0);
         dontHaveAnAccountLabel.setLayoutY(689.0);
         dontHaveAnAccountLabel.setText("Don't have an account?");

@@ -49,7 +49,7 @@ public class LocalonscreenBase extends AnchorPane {
         localbtn.setPrefWidth(258.0);
 
 
-        localbtn.setStyle("-fx-background-radius: 25; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-font-style: Roboto; -fx-background-color: FFFF;");
+        localbtn.setStyle("-fx-background-radius: 25; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
         localbtn.setText("Local");
         localbtn.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         localbtn.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
