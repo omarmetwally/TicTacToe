@@ -1,17 +1,25 @@
 package screens.Plist;
 
+import java.io.IOException;
 import java.lang.*;
 import java.util.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import tictactoe.TicTacToe;
 
 public class PllistBase extends AnchorPane {
@@ -61,7 +69,7 @@ public class PllistBase extends AnchorPane {
     protected final Image  img4;
     protected final Image  img5;
     protected final Image  img6;
-    
+  
 
 
 
@@ -105,12 +113,12 @@ public class PllistBase extends AnchorPane {
         ayanum111111 = new Label();
         invbtn1111111 = new Button();
         Backbtn = new Button();
-         img1 = new Image("/assets/a65832155622ac173337874f02b218fb.jpg");
-         img2 = new Image("/assets/images.png");   
-         img3 = new Image("/assets/download.png");
-         img4 = new Image("/assets/im.png");
-         img5 = new Image("/assets/images.jpg");
-         img6 = new Image("/assets/flat-business-woman-user-profile-avatar-icon-vector-4334111.jpg");
+        img1 = new Image("/assets/a65832155622ac173337874f02b218fb.jpg");
+        img2 = new Image("/assets/images.png");   
+        img3 = new Image("/assets/download.png");
+        img4 = new Image("/assets/im.png");
+        img5 = new Image("/assets/images.jpg");
+        img6 = new Image("/assets/flat-business-woman-user-profile-avatar-icon-vector-4334111.jpg");
          
          
         setId("AnchorPane");
@@ -199,6 +207,10 @@ public class PllistBase extends AnchorPane {
         invbtn1.setText("Invite");
         invbtn1.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         invbtn1.setFont(new Font("Bookman Old Style Bold", 20.0));
+        invbtn1.setOnAction(e -> {
+             invitePlayer();
+        });
+
         
         
         flow2.setPrefHeight(56.0);
@@ -233,7 +245,11 @@ public class PllistBase extends AnchorPane {
         invbtn2.setText("Invite");
         invbtn2.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         invbtn2.setFont(new Font("Bookman Old Style Bold", 20.0));
-
+        invbtn2.setOnAction(e -> {
+             invitePlayer();
+        });
+        
+        
         flow3.setPrefHeight(56.0);
         flow3.setPrefWidth(773.0);
 
@@ -266,6 +282,9 @@ public class PllistBase extends AnchorPane {
         invbtn3.setText("Invite");
         invbtn3.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         invbtn3.setFont(new Font("Bookman Old Style Bold", 20.0));
+        invbtn3.setOnAction(e -> {
+             invitePlayer();
+        });
         
         
         flow4.setPrefHeight(56.0);
@@ -300,7 +319,9 @@ public class PllistBase extends AnchorPane {
         invbtn4.setText("Invite");
         invbtn4.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         invbtn4.setFont(new Font("Bookman Old Style Bold", 20.0));
-        
+        invbtn4.setOnAction(e -> {
+             invitePlayer();
+        });
         
         
         flow5.setPrefHeight(56.0);
@@ -335,7 +356,9 @@ public class PllistBase extends AnchorPane {
         invbtn5.setText("Invite");
         invbtn5.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         invbtn5.setFont(new Font("Bookman Old Style Bold", 20.0));
-        
+        invbtn5.setOnAction(e -> {
+             invitePlayer();
+        });
 
         flow7.setLayoutX(10.0);
         flow7.setLayoutY(310.0);
@@ -370,7 +393,9 @@ public class PllistBase extends AnchorPane {
         invbtn1111111.setText("Invite");
         invbtn1111111.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         invbtn1111111.setFont(new Font("Bookman Old Style Bold", 20.0));
-        
+        invbtn1111111.setOnAction(e -> {
+             invitePlayer();
+        });
         
         Backbtn.setLayoutX(31.0);
         Backbtn.setLayoutY(20.0);
@@ -423,4 +448,41 @@ public class PllistBase extends AnchorPane {
         getChildren().add(Backbtn);
 
     }
+     private void invitePlayer() {
+            try {
+                // Load the second FXML file for the invitation dialog
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("alert.fxml"));
+                Parent root = loader.load();
+                //Scene scene = new Scene(root);
+
+                // Create the dialog
+               // Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                
+               // alert.getDialogPane().setContent(root);
+                //Text waittext = (Text) loader.getNamespace().get("headerTextView");
+                Button cancel = (Button) loader.getNamespace().get("cnacelbtn");
+                cancel.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: #2AAAFD;");
+                cancel.setTextFill(javafx.scene.paint.Color.valueOf("#ffff"));
+                cancel.setFont(new Font("System Bold Italic", 25.0));
+                cancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        Stage stage = (Stage) cancel.getScene().getWindow();
+                        stage.close();
+                    }
+                });
+        
+
+                Stage popupStage = new Stage();
+                popupStage.initModality(Modality.APPLICATION_MODAL);
+                popupStage.initStyle(StageStyle.UNDECORATED);
+                popupStage.setScene(new Scene(root, Color.TRANSPARENT));
+                popupStage.showAndWait(); 
+          
+                
+        
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 }
