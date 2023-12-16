@@ -1,5 +1,7 @@
 package screens.login_screen;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -8,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import ticDatabase.DataBaseManger;
 import tictactoe.TicTacToe;
 
 public  class LoginScreenBase extends AnchorPane {
@@ -15,8 +18,8 @@ public  class LoginScreenBase extends AnchorPane {
     protected final ImageView backgroundIImage;
     protected final Label userNameLabel;
     protected final Label passwordLabel;
-    protected final TextField userNameTextField;
-    protected final TextField passwordTextField;
+    public final TextField userNameTextField;
+    public final TextField passwordTextField;
     protected final Button loginButton;
     protected final Label dontHaveAnAccountLabel;
     protected final Label registerNowButton;
@@ -143,6 +146,32 @@ public  class LoginScreenBase extends AnchorPane {
         getChildren().add(dontHaveAnAccountLabel);
         getChildren().add(registerNowButton);
         getChildren().add(btnBack);
+        
+        
+        loginButton.setOnAction(new EventHandler<ActionEvent>(){
+            
+            DataBaseManger dbMng = new DataBaseManger();
+                    
+            @Override
+            public void handle(ActionEvent event) {
+                
+                
+            }
+        
+            
+        
+        });
 
     }
+    
+    
+    private void clearScreen() {
+        userNameTextField.clear();
+        passwordTextField.clear();
+    }
+    
+    
+    
 }
+
+
