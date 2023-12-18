@@ -14,6 +14,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import screens.Board.BoardFXMLBase;
+import screens.Board.GameMode;
 import tictactoe.TicTacToe;
 
 
@@ -122,7 +123,7 @@ public class LocalPlayersBase extends AnchorPane {
         btnStart.setOnAction((event) -> {
        
 
-            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,tfPlayerOne.getText(),tfPlayerTwo.getText());
+            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,tfPlayerOne.getText(),tfPlayerTwo.getText(),GameMode.TwoPlayers);
             Scene boardScene = new Scene(boardScreen);
             TicTacToe.changeScene(boardScene);
         });

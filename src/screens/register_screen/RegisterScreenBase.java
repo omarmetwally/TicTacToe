@@ -56,6 +56,7 @@ public class RegisterScreenBase extends AnchorPane {
         backgroundIImage.setPreserveRatio(true);
         backgroundIImage.setImage(new Image(getClass().getResource("/assets/cover.png").toExternalForm()));
 
+        
         text.setLayoutX(450.0);
         text.setLayoutY(115.0);
         text.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);

@@ -11,8 +11,9 @@ package screens.Board;
  */
 
     
- public enum GameMode {
-       Twoplayer , Multiplayer , Ai
- }
+public enum GameMode {
+    TwoPlayers, MULTI, AI
+}
+
     
 

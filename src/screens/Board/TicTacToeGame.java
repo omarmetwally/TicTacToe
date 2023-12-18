@@ -13,22 +13,22 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class TicTacToeGame {
+
     private String player1Name;
     private String player2Name;
     private char[][] board;
     private char currentPlayerMark;
-    private GameMode gamemode;
+    private GameMode modeOfGame; // "Multi" or "Single"
     private boolean gameOver;
     private int player1Score = 0;
     private int player2Score = 0;
-    
 
-    public TicTacToeGame(String player1Name, String player2Name, GameMode gamemode) {
+    public TicTacToeGame(String player1Name, String player2Name, GameMode modeOfGame) {
         this.player1Name = player1Name;
         this.player2Name = player2Name;
-        this.gamemode = gamemode;
+        this.modeOfGame = modeOfGame;
         this.board = new char[3][3];
-        this.currentPlayerMark = 'X'; 
+        this.currentPlayerMark = 'X';
         this.gameOver = false;
         initializeBoard();
     }
@@ -47,26 +47,38 @@ public class TicTacToeGame {
         return currentPlayerMark;
     }
 
+//    public boolean placeMark(int row, int col) {
+//        if (row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == ' ') {
+//            board[row][col] = currentPlayerMark;
+//            gameOver = checkForWin() || isBoardFull();
+//            currentPlayerMark = (currentPlayerMark == 'X') ? 'O' : 'X';
+//            return true;
+//        }
+//        return false;
+//    }
     public boolean placeMark(int row, int col) {
         if (row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == ' ') {
             board[row][col] = currentPlayerMark;
             gameOver = checkForWin() || isBoardFull();
-            currentPlayerMark = (currentPlayerMark == 'X') ? 'O' : 'X';
+            // Only switch player if it's a two-player game
+            if (modeOfGame == GameMode.TwoPlayers) {
+                currentPlayerMark = (currentPlayerMark == 'X') ? 'O' : 'X';
+            }
             return true;
         }
         return false;
     }
 
     private boolean checkForWin() {
-       
+
         for (int i = 0; i < 3; i++) {
-            if (checkRowCol(board[i][0], board[i][1], board[i][2]) ||
-                checkRowCol(board[0][i], board[1][i], board[2][i])) {
+            if (checkRowCol(board[i][0], board[i][1], board[i][2])
+                    || checkRowCol(board[0][i], board[1][i], board[2][i])) {
                 return true;
             }
         }
-        return checkRowCol(board[0][0], board[1][1], board[2][2]) ||
-               checkRowCol(board[0][2], board[1][1], board[2][0]);
+        return checkRowCol(board[0][0], board[1][1], board[2][2])
+                || checkRowCol(board[0][2], board[1][1], board[2][0]);
     }
 
     private boolean checkRowCol(char c1, char c2, char c3) {
@@ -84,19 +96,75 @@ public class TicTacToeGame {
         return true;
     }
 
-   public boolean isDraw() {
+    public boolean isDraw() {
         return isBoardFull() && !checkForWin();
     }
 
     public String getWinner() {
+        // Check if the game has been won
         if (checkForWin()) {
-            return (currentPlayerMark == 'X') ? player2Name : player1Name;
+            // Determine the winning mark based on the board state
+            char winningMark = checkWinningMark();
+
+            // Return the corresponding player's name
+            return (winningMark == 'X') ? player1Name : player2Name;
         }
         return null;
     }
-    
+
+    private char checkWinningMark() {
+        // Iterate through the board to find the winning combination
+        for (int i = 0; i < 3; i++) {
+            // Check rows and columns
+            if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != ' ') {
+                return board[i][0];
+            }
+            if (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[0][i] != ' ') {
+                return board[0][i];
+            }
+        }
+
+        // Check diagonals
+        if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != ' ') {
+            return board[0][0];
+        }
+        if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] != ' ') {
+            return board[0][2];
+        }
+
+        // Default return value
+        return ' ';
+    }
+
+    public void resetGame() {
+        initializeBoard();
+        currentPlayerMark = 'X';
+        gameOver = false;
+    }
+
+    public void incrementPlayerScore() {
+        char winningMark = checkWinningMark();
+        if (winningMark == 'X') {
+            player1Score++; // Increment score for Player 1 if 'X' wins
+        } else if (winningMark == 'O') {
+            player2Score++; // Increment score for Player 2 (or AI) if 'O' wins
+        }
+    }
+
+    public int getPlayer1Score() {
+        return player1Score;
+    }
+
+    public int getPlayer2Score() {
+        return player2Score;
+    }
+
+    public char[][] getBoard() {
+        return board;
+    }
+
     public void aiMove() {
-        if (gamemode == GameMode.Ai) {
+        if (modeOfGame == GameMode.AI) {
             Random rand = new Random();
             while (!gameOver) {
                 int row = rand.nextInt(3);
@@ -110,26 +178,4 @@ public class TicTacToeGame {
             }
         }
     }
-
-    public void resetGame() {
-        initializeBoard();
-        currentPlayerMark = 'X';
-        gameOver = false;
-    }
-    public void incrementPlayerScore() {
-        if (currentPlayerMark == 'X') {
-            player2Score++; 
-        } else {
-            player1Score++;
-        }
-    }
-
-    public int getPlayer1Score() {
-        return player1Score;
-    }
-
-    public int getPlayer2Score() {
-        return player2Score;
-    }
-
 }

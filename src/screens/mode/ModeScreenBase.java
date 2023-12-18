@@ -8,6 +8,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import screens.Board.BoardFXMLBase;
+import screens.Board.GameMode;
 import screens.LocalOnlinescreen.LocalonscreenBase;
 import tictactoe.TicTacToe;
 
@@ -38,12 +39,15 @@ public class ModeScreenBase extends AnchorPane {
         btnSingle.setMnemonicParsing(false);
         btnSingle.setPrefHeight(141.0);
         btnSingle.setPrefWidth(258.0);
-        btnSingle.setStyle("-fx-background-radius: 25; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
+        btnSingle.setStyle("-fx-background-radius: 25; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-font-style: Roboto; -fx-background-color: FFFF;");
         btnSingle.setText("Single");
         btnSingle.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         btnSingle.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         btnSingle.setFont(new Font("Comic Sans MS Bold", 45.0));
         btnSingle.setOnAction((event) -> {
+            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,"Omar","  Ai",GameMode.AI);
+            Scene boardScene = new Scene(boardScreen);
+            TicTacToe.changeScene(boardScene);
 
         });
 
