@@ -10,21 +10,23 @@ package screens.Board;
  * @author Omar
  */
 import java.util.Arrays;
+import java.util.Random;
 
 public class TicTacToeGame {
     private String player1Name;
     private String player2Name;
     private char[][] board;
     private char currentPlayerMark;
-    private String modeOfGame; // "Multi" or "Single"
+    private GameMode gamemode;
     private boolean gameOver;
     private int player1Score = 0;
     private int player2Score = 0;
+    
 
-    public TicTacToeGame(String player1Name, String player2Name, String modeOfGame) {
+    public TicTacToeGame(String player1Name, String player2Name, GameMode gamemode) {
         this.player1Name = player1Name;
         this.player2Name = player2Name;
-        this.modeOfGame = modeOfGame;
+        this.gamemode = gamemode;
         this.board = new char[3][3];
         this.currentPlayerMark = 'X'; 
         this.gameOver = false;
@@ -91,6 +93,22 @@ public class TicTacToeGame {
             return (currentPlayerMark == 'X') ? player2Name : player1Name;
         }
         return null;
+    }
+    
+    public void aiMove() {
+        if (gamemode == GameMode.Ai) {
+            Random rand = new Random();
+            while (!gameOver) {
+                int row = rand.nextInt(3);
+                int col = rand.nextInt(3);
+                if (board[row][col] == ' ') {
+                    currentPlayerMark = 'O'; // AI uses 'O'
+                    placeMark(row, col);
+                    currentPlayerMark = 'X'; // 3lshan a-Switch back to player 1
+                    break;
+                }
+            }
+        }
     }
 
     public void resetGame() {
