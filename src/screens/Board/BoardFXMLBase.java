@@ -1,5 +1,6 @@
 package screens.Board;
 
+import java.util.List;
 import java.util.Optional;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -76,6 +77,7 @@ public class BoardFXMLBase extends AnchorPane {
     protected final Button btnRecord;
     protected final Button btnBack;
     protected final GameMode modeOfGame; // "Multi" or "Single"
+    protected ImageView btnImage;
 
     private TicTacToeGame game;
 
@@ -131,6 +133,7 @@ public class BoardFXMLBase extends AnchorPane {
         scorePlayer2 = new Button();
         btnRecord = new Button();
         btnBack = new Button();
+        btnImage = new ImageView();
 
         setId("AnchorPane");
         setPrefHeight(824.0);
@@ -487,7 +490,12 @@ public class BoardFXMLBase extends AnchorPane {
             case TwoPlayers:
                 if (!game.isGameOver() && game.placeMark(row, col)) {
                     String mark = String.valueOf(game.getCurrentPlayerMark());
-                    button.setGraphic(new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm())));
+                    btnImage = new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm()));
+                    button.setGraphic(btnImage);
+                    btnImage.setFitHeight(118.0);
+                    btnImage.setFitWidth(96.0);
+                    btnImage.setPickOnBounds(true);
+                    btnImage.setPreserveRatio(true);
                     button.setDisable(true);
 
                     if (game.isGameOver()) {
@@ -495,6 +503,7 @@ public class BoardFXMLBase extends AnchorPane {
                             game.incrementPlayerScore();
                             updateScoreDisplay();
                         }
+                        highlightWinningCombination();
                         endOfGameAlert();
                     }
                 }
@@ -503,7 +512,12 @@ public class BoardFXMLBase extends AnchorPane {
 
                 if (!game.isGameOver() && game.placeMark(row, col)) {
                     String mark = String.valueOf(game.getCurrentPlayerMark());
-                    button.setGraphic(new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm())));
+                    btnImage = new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm()));
+                    button.setGraphic(btnImage);
+                    btnImage.setFitHeight(118.0);
+                    btnImage.setFitWidth(96.0);
+                    btnImage.setPickOnBounds(true);
+                    btnImage.setPreserveRatio(true);
                     button.setDisable(true);
 
                     if (game.isGameOver()) {
@@ -598,6 +612,8 @@ public class BoardFXMLBase extends AnchorPane {
             if (node instanceof Button) {
                 Button button = (Button) node;
                 button.setGraphic(null);
+                button.setStyle("-fx-border-radius: 60;");
+                button.getStyleClass().add("game-button");
                 button.setDisable(false);
             }
         }
@@ -629,9 +645,21 @@ public class BoardFXMLBase extends AnchorPane {
                 char cell = boardState[row][col];
                 Button button = buttons[row][col];
                 if (cell == 'X') {
-                    button.setGraphic(new ImageView(new Image(getClass().getResource("/assets/X.png").toExternalForm())));
+                    btnImage = new ImageView(new Image(getClass().getResource("/assets/X.png").toExternalForm()));
+                    btnImage.setFitHeight(118.0);
+                    btnImage.setFitWidth(96.0);
+                    btnImage.setPickOnBounds(true);
+                    btnImage.setPreserveRatio(true);
+                    button.setDisable(true);
+                    button.setGraphic(btnImage);
                 } else if (cell == 'O') {
-                    button.setGraphic(new ImageView(new Image(getClass().getResource("/assets/O.png").toExternalForm())));
+                    btnImage = new ImageView(new Image(getClass().getResource("/assets/O.png").toExternalForm()));
+                    btnImage.setFitHeight(118.0);
+                    btnImage.setFitWidth(96.0);
+                    btnImage.setPickOnBounds(true);
+                    btnImage.setPreserveRatio(true);
+                    button.setDisable(true);
+                    button.setGraphic(btnImage);
                 } else {
                     button.setGraphic(null);
                 }
@@ -644,7 +672,17 @@ public class BoardFXMLBase extends AnchorPane {
             game.incrementPlayerScore();
             updateScoreDisplay();
         }
+        highlightWinningCombination();
         endOfGameAlert();
+
+    }
+
+    private void highlightWinningCombination() {
+        List<int[]> winningCombination = game.getWinningCombination();
+        for (int[] coordinate : winningCombination) {
+            Button button = (Button) gridPane.getChildren().get(coordinate[0] * 3 + coordinate[1]);
+            button.setStyle("-fx-background-color: #FF0000;");
+        }
     }
 
 }
