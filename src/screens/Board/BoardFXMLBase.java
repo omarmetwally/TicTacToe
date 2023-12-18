@@ -76,7 +76,7 @@ public  class BoardFXMLBase extends AnchorPane {
 
     public BoardFXMLBase(Stage stage,String Player1,String Player2) {
 
-        game = new TicTacToeGame(Player1, Player2, "Multi");
+        game = new TicTacToeGame(Player1, Player2,GameMode.Twoplayer);
         imageView = new ImageView();
         imageView0 = new ImageView();
         gridPane = new GridPane();
