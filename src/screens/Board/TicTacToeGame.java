@@ -9,7 +9,9 @@ package screens.Board;
  *
  * @author Omar
  */
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class TicTacToeGame {
@@ -178,4 +180,44 @@ public class TicTacToeGame {
             }
         }
     }
+
+    public List<int[]> getWinningCombination() {
+        List<int[]> winningCombinations = new ArrayList<>();
+
+        //  rows
+        for (int i = 0; i < 3; i++) {
+            if (checkRowCol(board[i][0], board[i][1], board[i][2])) {
+                winningCombinations.add(new int[]{i, 0});
+                winningCombinations.add(new int[]{i, 1});
+                winningCombinations.add(new int[]{i, 2});
+                return winningCombinations;
+            }
+        }
+        //  columns
+        for (int i = 0; i < 3; i++) {
+            if (checkRowCol(board[0][i], board[1][i], board[2][i])) {
+                winningCombinations.add(new int[]{0, i});
+                winningCombinations.add(new int[]{1, i});
+                winningCombinations.add(new int[]{2, i});
+                return winningCombinations;
+            }
+        }
+        //  diagonal
+        if (checkRowCol(board[0][0], board[1][1], board[2][2])) {
+            winningCombinations.add(new int[]{0, 0});
+            winningCombinations.add(new int[]{1, 1});
+            winningCombinations.add(new int[]{2, 2});
+            return winningCombinations;
+        }
+        //  reverse diagonal
+        if (checkRowCol(board[0][2], board[1][1], board[2][0])) {
+            winningCombinations.add(new int[]{0, 2});
+            winningCombinations.add(new int[]{1, 1});
+            winningCombinations.add(new int[]{2, 0});
+            return winningCombinations;
+        }
+
+        return winningCombinations; 
+    }
+
 }
