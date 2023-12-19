@@ -453,13 +453,7 @@ public class PllistBase extends AnchorPane {
                 // Load the second FXML file for the invitation dialog
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("alert.fxml"));
                 Parent root = loader.load();
-                //Scene scene = new Scene(root);
-
-                // Create the dialog
-               // Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 
-               // alert.getDialogPane().setContent(root);
-                //Text waittext = (Text) loader.getNamespace().get("headerTextView");
                 Button cancel = (Button) loader.getNamespace().get("cnacelbtn");
                 cancel.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: #2AAAFD;");
                 cancel.setTextFill(javafx.scene.paint.Color.valueOf("#ffff"));

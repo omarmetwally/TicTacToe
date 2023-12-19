@@ -31,6 +31,7 @@ public class TicTacToeGame {
         this.player2Name = player2Name;
         this.modeOfGame = modeOfGame;
         this.board = new char[3][3];
+         this.currentPlayerMark = 'X';
         if(xo == 'X'){
         this.currentPlayerMark = 'X';
         }else if(xo == 'O'){
@@ -150,7 +151,7 @@ public class TicTacToeGame {
         gameOver = false;
     }
 
-    public void incrementPlayerScore() {
+    public void incrementPlayerScoreAI() {
         char winningMark = checkWinningMark();
       if(xo=='X'){  
         if (winningMark == 'X') {
@@ -166,6 +167,18 @@ public class TicTacToeGame {
         }
       }
     }
+    
+    public void incrementPlayerScore() {
+        char winningMark = checkWinningMark();
+        
+        if (winningMark == 'X') {
+            player1Score++; // Increment score for Player 1 if 'X' wins
+        } else if (winningMark == 'O') {
+            player2Score++; // Increment score for Player 2 (or AI) if 'O' wins
+        }
+    }
+    
+    
 
     public int getPlayer1Score() {
         return player1Score;

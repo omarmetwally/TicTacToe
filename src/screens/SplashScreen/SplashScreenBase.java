@@ -1,5 +1,7 @@
 package screens.SplashScreen;
 
+import java.time.Duration;
+import javafx.animation.ScaleTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -11,7 +13,6 @@ public  class SplashScreenBase extends AnchorPane {
     public SplashScreenBase() {
 
         backgroundImage = new ImageView();
-
         setId("AnchorPane");
         setPrefHeight(400.0);
         setPrefWidth(600.0);
@@ -20,7 +21,8 @@ public  class SplashScreenBase extends AnchorPane {
         backgroundImage.setFitWidth(2043.0);
         backgroundImage.setPickOnBounds(true);
         backgroundImage.setPreserveRatio(true);
-        backgroundImage.setImage(new Image(getClass().getResource("/assets/splash.png").toExternalForm()));
+        
+       
 
         getChildren().add(backgroundImage);
 

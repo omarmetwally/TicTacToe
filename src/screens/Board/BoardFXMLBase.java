@@ -669,7 +669,7 @@ public class BoardFXMLBase extends AnchorPane {
 
     private void endOfGame() {
         if (!game.isDraw()) {
-            game.incrementPlayerScore();
+            game.incrementPlayerScoreAI();
             updateScoreDisplay();
         }
         highlightWinningCombination();
