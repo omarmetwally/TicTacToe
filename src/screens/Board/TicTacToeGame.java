@@ -20,17 +20,23 @@ public class TicTacToeGame {
     private String player2Name;
     private char[][] board;
     private char currentPlayerMark;
+    private char xo;
     private GameMode modeOfGame; // "Multi" or "Single"
     private boolean gameOver;
     private int player1Score = 0;
     private int player2Score = 0;
 
-    public TicTacToeGame(String player1Name, String player2Name, GameMode modeOfGame) {
+    public TicTacToeGame(String player1Name, String player2Name, GameMode modeOfGame,char xo) {
         this.player1Name = player1Name;
         this.player2Name = player2Name;
         this.modeOfGame = modeOfGame;
         this.board = new char[3][3];
+        if(xo == 'X'){
         this.currentPlayerMark = 'X';
+        }else if(xo == 'O'){
+          this.currentPlayerMark = 'O';
+        }
+        this.xo = xo;
         this.gameOver = false;
         initializeBoard();
     }
@@ -140,17 +146,25 @@ public class TicTacToeGame {
 
     public void resetGame() {
         initializeBoard();
-        currentPlayerMark = 'X';
+        currentPlayerMark = 'O';
         gameOver = false;
     }
 
     public void incrementPlayerScore() {
         char winningMark = checkWinningMark();
+      if(xo=='X'){  
         if (winningMark == 'X') {
             player1Score++; // Increment score for Player 1 if 'X' wins
         } else if (winningMark == 'O') {
             player2Score++; // Increment score for Player 2 (or AI) if 'O' wins
         }
+      }else if(xo=='O'){
+           if (winningMark == 'O') {
+            player2Score++; // Increment score for Player 1 if 'X' wins
+        } else if (winningMark == 'X') {
+            player1Score++; // Increment score for Player 2 (or AI) if 'O' wins
+        }
+      }
     }
 
     public int getPlayer1Score() {
@@ -168,7 +182,8 @@ public class TicTacToeGame {
     public void aiMove() {
         if (modeOfGame == GameMode.AI) {
             Random rand = new Random();
-            while (!gameOver) {
+        if(xo=='X'){   
+            while (!gameOver ) {
                 int row = rand.nextInt(3);
                 int col = rand.nextInt(3);
                 if (board[row][col] == ' ') {
@@ -178,6 +193,21 @@ public class TicTacToeGame {
                     break;
                 }
             }
+        }else if(xo=='O'){
+            currentPlayerMark='O';
+            while (!gameOver ) {
+                int row = rand.nextInt(3);
+                int col = rand.nextInt(3);
+                if (board[row][col] == ' ') {
+                     currentPlayerMark = ' ';
+                    currentPlayerMark = 'X'; // AI uses 'X'
+                    placeMark(row, col);
+                    currentPlayerMark = 'O'; // 3lshan a-Switch back to player 1
+                    
+                    break;
+                }
+            }
+        }
         }
     }
 

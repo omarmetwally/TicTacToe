@@ -12,9 +12,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Javapro/TicTacToe/src/screens/login_screen/LoginScreenBase.java</file>
-            <file>file:/F:/Javapro/TicTacToe/src/screens/Board/BoardFXMLBase.java</file>
-            <file>file:/F:/Javapro/TicTacToe/src/tictactoe/TicTacToe.java</file>
+            <file>file:/F:/finaljava/TicTacToe/src/screens/Board/TicTacToeGame.java</file>
+            <file>file:/F:/finaljava/TicTacToe/src/screens/Board/xoBase.java</file>
+            <file>file:/F:/finaljava/TicTacToe/src/screens/Board/BoardFXMLBase.java</file>
+            <file>file:/F:/finaljava/TicTacToe/src/tictactoe/TicTacToe.java</file>
         </group>
     </open-files>
 </project-private>

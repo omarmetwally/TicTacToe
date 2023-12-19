@@ -123,7 +123,7 @@ public class LocalPlayersBase extends AnchorPane {
         btnStart.setOnAction((event) -> {
        
 
-            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,tfPlayerOne.getText(),tfPlayerTwo.getText(),GameMode.TwoPlayers);
+            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,tfPlayerOne.getText(),tfPlayerTwo.getText(),GameMode.TwoPlayers,' ');
             Scene boardScene = new Scene(boardScreen);
             TicTacToe.changeScene(boardScene);
         });
