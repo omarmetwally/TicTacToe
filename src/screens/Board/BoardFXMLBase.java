@@ -81,10 +81,10 @@ public class BoardFXMLBase extends AnchorPane {
 
     private TicTacToeGame game;
 
-    public BoardFXMLBase(Stage stage, String Player1, String Player2, GameMode modeOfGame) {
+    public BoardFXMLBase(Stage stage, String Player1, String Player2, GameMode modeOfGame,char xo) {
 
         this.modeOfGame = modeOfGame;
-        game = new TicTacToeGame(Player1, Player2, modeOfGame);
+        game = new TicTacToeGame(Player1, Player2, modeOfGame,xo);
         imageView = new ImageView();
         imageView0 = new ImageView();
         gridPane = new GridPane();
