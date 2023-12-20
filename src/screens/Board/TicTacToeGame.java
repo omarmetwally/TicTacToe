@@ -9,6 +9,7 @@ package screens.Board;
  *
  * @author Omar
  */
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -51,7 +52,10 @@ public class TicTacToeGame {
         if (row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == ' ') {
             board[row][col] = currentPlayerMark;
             gameOver = checkForWin() || isBoardFull();
+            if(gamemode == GameMode.Twoplayer){
+                //those player switches for TwoPlayers only 
             currentPlayerMark = (currentPlayerMark == 'X') ? 'O' : 'X';
+            }
             return true;
         }
         return false;
@@ -87,13 +91,42 @@ public class TicTacToeGame {
    public boolean isDraw() {
         return isBoardFull() && !checkForWin();
     }
+   
+   public char getWinnerMark() {
+       //in all possible directions
+       for(int i=0 ; i<3 ; i++){
+            //in case rows
+           if(board[i][0]==board[i][1] && board[i][1]==board[i][2] && board[i][0]!=' '){
+               return board [i][0];
+           }  //in case cols
+           if(board[0][i]==board[1][i]&& board[1][i]==board[2][i] && board[0][i]!=' '){
+               return board[0][i];
+           }
+           //in case main diagonal
+           if(board[0][0]==board[1][1] && board[1][1]==board[2][2] && board[0][0]!=' '){
+               return board[0][0];
+           }
+           //in case Secondry diagonal
+           if(board[0][2]==board[1][1] && board[1][1]==board[2][0] && board[0][2]!=' '){
+               return board[0][2];
+           }
+       }
+       return ' ';
+   }
 
     public String getWinner() {
+             //first must check from win the game
         if (checkForWin()) {
-            return (currentPlayerMark == 'X') ? player2Name : player1Name;
+            //to return the winner Mark 
+            char WinnerMark = getWinnerMark();
+            //then return the correspond Winner Name
+            return (WinnerMark == 'X') ? player1Name : player2Name;
+            
         }
         return null;
     }
+    
+ 
     
     public void aiMove() {
         if (gamemode == GameMode.Ai) {
@@ -117,10 +150,11 @@ public class TicTacToeGame {
         gameOver = false;
     }
     public void incrementPlayerScore() {
-        if (currentPlayerMark == 'X') {
-            player2Score++; 
-        } else {
-            player1Score++;
+        char WinnerMark = getWinnerMark();
+        if (WinnerMark == 'X') {
+            player1Score++; 
+        } else if(WinnerMark == 'O'){
+            player2Score++;
         }
     }
 
@@ -132,4 +166,7 @@ public class TicTacToeGame {
         return player2Score;
     }
 
+    public char[][] getBoard(){
+        return board;
+    }
 }

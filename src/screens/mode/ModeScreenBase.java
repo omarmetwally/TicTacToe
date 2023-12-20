@@ -8,6 +8,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import screens.Board.BoardFXMLBase;
+import screens.Board.GameMode;
 import screens.LocalOnlinescreen.LocalonscreenBase;
 import tictactoe.TicTacToe;
 
@@ -44,7 +45,9 @@ public class ModeScreenBase extends AnchorPane {
         btnSingle.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         btnSingle.setFont(new Font("Comic Sans MS Bold", 45.0));
         btnSingle.setOnAction((event) -> {
-
+            BoardFXMLBase localScreen = new BoardFXMLBase(stage,"You","Ai",GameMode.Ai);
+            Scene boardScene = new Scene(localScreen);
+            TicTacToe.changeScene(boardScene);
         });
 
         btnMulti.setLayoutX(1026.0);
