@@ -45,9 +45,11 @@ public class ModeScreenBase extends AnchorPane {
         btnSingle.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         btnSingle.setFont(new Font("Comic Sans MS Bold", 45.0));
         btnSingle.setOnAction((event) -> {
-            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,"Omar","  Ai",GameMode.AI);
+
+            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,"Player 1","  Robot",GameMode.AI);
             Scene boardScene = new Scene(boardScreen);
             TicTacToe.changeScene(boardScene);
+
 
         });
 
