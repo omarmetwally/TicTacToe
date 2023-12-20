@@ -39,15 +39,18 @@ public class ModeScreenBase extends AnchorPane {
         btnSingle.setMnemonicParsing(false);
         btnSingle.setPrefHeight(141.0);
         btnSingle.setPrefWidth(258.0);
-        btnSingle.setStyle("-fx-background-radius: 25; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
+        btnSingle.setStyle("-fx-background-radius: 25; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-font-style: Roboto; -fx-background-color: FFFF;");
         btnSingle.setText("Single");
         btnSingle.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         btnSingle.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         btnSingle.setFont(new Font("Comic Sans MS Bold", 45.0));
         btnSingle.setOnAction((event) -> {
-            BoardFXMLBase localScreen = new BoardFXMLBase(stage,"You","Ai",GameMode.Ai);
-            Scene boardScene = new Scene(localScreen);
+
+            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,"Player 1","  Robot",GameMode.AI);
+            Scene boardScene = new Scene(boardScreen);
             TicTacToe.changeScene(boardScene);
+
+
         });
 
         btnMulti.setLayoutX(1026.0);
