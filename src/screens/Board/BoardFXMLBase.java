@@ -443,7 +443,7 @@ public class BoardFXMLBase extends AnchorPane {
         });
         btnBack.setOnAction(event -> TicTacToe.goBack());
         
-        if (gamemode == GameMode.Ai) {
+        if (gamemode == GameMode.AI) {
             imageView2.setImage(new Image(getClass().getResource("/assets/O.png").toExternalForm()));
             imageView3.setImage(new Image(getClass().getResource("/assets/X.png").toExternalForm()));
             btnRecord.setVisible(false);
@@ -490,7 +490,7 @@ public class BoardFXMLBase extends AnchorPane {
     }
     private void handleButtonClick(int row, int col, Button button) {
     switch(gamemode){    
-        case Twoplayer:
+        case TwoPlayers:
         
         if (!game.isGameOver() && game.placeMark(row, col)) {
             String mark = String.valueOf(game.getCurrentPlayerMark());
@@ -551,6 +551,7 @@ public class BoardFXMLBase extends AnchorPane {
                 }
 
         }
+    }
     private void updateBoardUI() {
         Button[][] buttons = {
             {btn00, btn01, brn02},
@@ -674,40 +675,7 @@ public class BoardFXMLBase extends AnchorPane {
         alert.showAndWait();
     }
 
-    private void updateBoardUI() {
-        Button[][] buttons = {
-            {btn00, btn01, brn02},
-            {btn10, btn11, btn12},
-            {btn20, btn21, btn22}
-        };
-
-        char[][] boardState = game.getBoard();
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                char cell = boardState[row][col];
-                Button button = buttons[row][col];
-                if (cell == 'X') {
-                    btnImage = new ImageView(new Image(getClass().getResource("/assets/X.png").toExternalForm()));
-                    btnImage.setFitHeight(118.0);
-                    btnImage.setFitWidth(96.0);
-                    btnImage.setPickOnBounds(true);
-                    btnImage.setPreserveRatio(true);
-                    button.setDisable(true);
-                    button.setGraphic(btnImage);
-                } else if (cell == 'O') {
-                    btnImage = new ImageView(new Image(getClass().getResource("/assets/O.png").toExternalForm()));
-                    btnImage.setFitHeight(118.0);
-                    btnImage.setFitWidth(96.0);
-                    btnImage.setPickOnBounds(true);
-                    btnImage.setPreserveRatio(true);
-                    button.setDisable(true);
-                    button.setGraphic(btnImage);
-                } else {
-                    button.setGraphic(null);
-                }
-            }
-        }
-    }
+    
 
     private void endOfGame() {
         if (!game.isDraw()) {

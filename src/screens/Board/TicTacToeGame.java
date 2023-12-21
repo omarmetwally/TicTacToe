@@ -142,7 +142,7 @@ public class TicTacToeGame {
  
     
     public void aiMove() {
-        if (gamemode == GameMode.Ai) {
+        if (modeOfGame == GameMode.AI) {
             Random rand = new Random();
             while (!gameOver) {
                 int row = rand.nextInt(3);
@@ -154,7 +154,9 @@ public class TicTacToeGame {
                     break;
                 }
 
-     
+            }
+        }
+    }
 
     private char checkWinningMark() {
         // Iterate through the board to find the winning combination
@@ -211,22 +213,6 @@ public class TicTacToeGame {
         return board;
     }
 
-    
-    public void aiMove() {
-        if (modeOfGame == GameMode.AI) {
-            Random rand = new Random();
-            while (!gameOver) {
-                int row = rand.nextInt(3);
-                int col = rand.nextInt(3);
-                if (board[row][col] == ' ') {
-                    currentPlayerMark = 'O'; // AI uses 'O'
-                    placeMark(row, col);
-                    currentPlayerMark = 'X'; // 3lshan a-Switch back to player 1
-                    break;
-                }
-            }
-        }
-    }
 
     public List<int[]> getWinningCombination() {
         List<int[]> winningCombinations = new ArrayList<>();
