@@ -62,9 +62,11 @@ public class TicTacToeGame {
         if (row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == ' ') {
             board[row][col] = currentPlayerMark;
             gameOver = checkForWin() || isBoardFull();
+
             // Only switch player if it's a two-player game
             if (modeOfGame == GameMode.TwoPlayers) {
                 currentPlayerMark = (currentPlayerMark == 'X') ? 'O' : 'X';
+
             }
             return true;
         }
@@ -101,8 +103,31 @@ public class TicTacToeGame {
     public boolean isDraw() {
         return isBoardFull() && !checkForWin();
     }
+   
+   public char getWinnerMark() {
+       //in all possible directions
+       for(int i=0 ; i<3 ; i++){
+            //in case rows
+           if(board[i][0]==board[i][1] && board[i][1]==board[i][2] && board[i][0]!=' '){
+               return board [i][0];
+           }  //in case cols
+           if(board[0][i]==board[1][i]&& board[1][i]==board[2][i] && board[0][i]!=' '){
+               return board[0][i];
+           }
+           //in case main diagonal
+           if(board[0][0]==board[1][1] && board[1][1]==board[2][2] && board[0][0]!=' '){
+               return board[0][0];
+           }
+           //in case Secondry diagonal
+           if(board[0][2]==board[1][1] && board[1][1]==board[2][0] && board[0][2]!=' '){
+               return board[0][2];
+           }
+       }
+       return ' ';
+   }
 
     public String getWinner() {
+
         // Check if the game has been won
         if (checkForWin()) {
             // Determine the winning mark based on the board state
@@ -113,6 +138,25 @@ public class TicTacToeGame {
         }
         return null;
     }
+    
+ 
+    
+    public void aiMove() {
+        if (modeOfGame == GameMode.AI) {
+            Random rand = new Random();
+            while (!gameOver) {
+                int row = rand.nextInt(3);
+                int col = rand.nextInt(3);
+                if (board[row][col] == ' ') {
+                    currentPlayerMark = 'O'; // AI uses 'O'
+                    placeMark(row, col);
+                    currentPlayerMark = 'X'; // 3lshan a-Switch back to player 1
+                    break;
+                }
+
+            }
+        }
+    }
 
     private char checkWinningMark() {
         // Iterate through the board to find the winning combination
@@ -120,6 +164,7 @@ public class TicTacToeGame {
             // Check rows and columns
             if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != ' ') {
                 return board[i][0];
+
             }
             if (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[0][i] != ' ') {
                 return board[0][i];
@@ -145,11 +190,13 @@ public class TicTacToeGame {
     }
 
     public void incrementPlayerScore() {
-        char winningMark = checkWinningMark();
-        if (winningMark == 'X') {
-            player1Score++; // Increment score for Player 1 if 'X' wins
-        } else if (winningMark == 'O') {
-            player2Score++; // Increment score for Player 2 (or AI) if 'O' wins
+
+        char WinnerMark = getWinnerMark();
+        if (WinnerMark == 'X') {
+            player1Score++; 
+        } else if(WinnerMark == 'O'){
+            player2Score++;
+
         }
     }
 
@@ -161,25 +208,11 @@ public class TicTacToeGame {
         return player2Score;
     }
 
-    public char[][] getBoard() {
+
+    public char[][] getBoard(){
         return board;
     }
 
-    public void aiMove() {
-        if (modeOfGame == GameMode.AI) {
-            Random rand = new Random();
-            while (!gameOver) {
-                int row = rand.nextInt(3);
-                int col = rand.nextInt(3);
-                if (board[row][col] == ' ') {
-                    currentPlayerMark = 'O'; // AI uses 'O'
-                    placeMark(row, col);
-                    currentPlayerMark = 'X'; // 3lshan a-Switch back to player 1
-                    break;
-                }
-            }
-        }
-    }
 
     public List<int[]> getWinningCombination() {
         List<int[]> winningCombinations = new ArrayList<>();
@@ -219,5 +252,6 @@ public class TicTacToeGame {
 
         return winningCombinations; 
     }
+
 
 }
