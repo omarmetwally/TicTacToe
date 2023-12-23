@@ -1,6 +1,12 @@
 package screens.register_screen;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -161,5 +167,109 @@ public class RegisterScreenBase extends AnchorPane {
         getChildren().add(editTextCofirmPassword);
         getChildren().add(buttonRegister);
         getChildren().add(btnBack);
+        RegisterButton();
     }
+    private void RegisterButton() {
+        
+        buttonRegister.setOnAction((event) -> {
+            if (validateRegistrationData()) {
+                System.out.println("Validations are correct");
+                Registration newUserData = extractRegistrationData();
+                
+               
+                
+            }
+
+        });
+
+    }
+
+    private Boolean validateRegistrationData() {
+
+        if (editTextFirstName.getText().isEmpty() || editTextLastName.getText().isEmpty() || editTextUsername.getText().isEmpty() || editTextPassword.getText().isEmpty() || editTextCofirmPassword.getText().isEmpty()) {
+
+            showAlerDialog("One or more fields are empty. Please fill in all fields.");
+            System.out.println("Empty fields");
+
+            return false;
+
+        }else if(editTextUsername.getText().length()<8){
+            showAlerDialog("Username should be more than 8 chrachters.");
+
+            System.out.println("invalid syntax username");
+
+            return false;
+
+        } else if (!isUsernameValid(editTextUsername.getText())) {
+
+            showAlerDialog("Invalid username please do not use symbols.");
+
+            System.out.println("invalid syntax username");
+
+            return false;
+
+        } else if (editTextPassword.getText().length() < 5) {
+
+            showAlerDialog("Password should be 5 chrachters or more.");
+
+            System.out.println("invalid syntax username");
+
+            return false;
+
+            
+            
+        } else if (!arePassordsMatched()) {
+            showAlerDialog("Passwords are not matched.");
+
+            System.out.println("invalid syntax username");
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+    private Registration extractRegistrationData() {
+        
+        Registration registration = new Registration(editTextFirstName.getText(), 
+                editTextLastName.getText(), editTextUsername.getText(), editTextPassword.getText());
+    
+        return registration;
+    }
+
+    private Boolean arePassordsMatched() {
+
+        if (editTextPassword.getText().equals(editTextCofirmPassword.getText())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isUsernameValid(String username) {
+
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+$");
+        Matcher matcher = pattern.matcher(username);
+
+        return matcher.matches();
+    }
+
+    private void showAlerDialog(String dialogLable) {
+
+        Alert alert = new Alert(AlertType.NONE);
+        DialogPane dialogPane = alert.getDialogPane();
+        
+        dialogPane.setStyle("-fx-background-color: #3D7AD6;");
+        alert.setAlertType(AlertType.ERROR);
+        Label label = new Label(dialogLable);
+        label.setStyle("-fx-text-fill: #fcd015; -fx-font-family: 'Comic Sans MS'; -fx-font-size: 16;");
+
+        dialogPane.setContent(label);
+        alert.show();
+      
+
+    }
+    
 }
