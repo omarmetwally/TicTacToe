@@ -29,36 +29,33 @@ public class Helper extends Application{
         
 
         try {
-            playerSocket = new Socket("192.168.94.68", 5005);
+            playerSocket = new Socket("127.0.0.1", 5005);
             ear = new DataInputStream(playerSocket.getInputStream());
             mouth = new PrintStream(playerSocket.getOutputStream());
 
-            mouth.println("");
-            String serverReply = ear.readLine();
-            System.out.println("server says " + serverReply);
+
 
         } catch (IOException ex) {
             ex.printStackTrace();
         } 
-        finally {
-
-            try {
-                ear.close();
-                mouth.close();
-                playerSocket.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-        }
+       
 
     }
 
     public String registerRequest(String jsonObj) throws IOException{
         
-        mouth.println(jsonObj);
-        return ear.readLine();
+       if (playerSocket.isConnected()) {
+            mouth.println(jsonObj);
+            return ear.readLine();
+        } else {
+            return null;
+        }
     
+    }
+     public void closeConnection() throws IOException {
+        if (ear != null) ear.close();
+        if (mouth != null) mouth.close();
+        if (playerSocket != null) playerSocket.close();
     }
     
     @Override
