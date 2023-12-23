@@ -20,20 +20,20 @@ import javafx.stage.Stage;
  */
 public class Helper extends Application{
     
-    Socket playerSocket;
-    DataInputStream ear;
-    PrintStream mouth;
+    private Socket playerSocket;
+    private DataInputStream ear;
+    private PrintStream mouth;
 
     public Helper() {
         
         
 
         try {
-            playerSocket = new Socket("127.0.0.1", 5005);
+            playerSocket = new Socket("192.168.94.68", 5005);
             ear = new DataInputStream(playerSocket.getInputStream());
             mouth = new PrintStream(playerSocket.getOutputStream());
 
-            mouth.println("Test Test");
+            mouth.println("");
             String serverReply = ear.readLine();
             System.out.println("server says " + serverReply);
 
@@ -54,6 +54,13 @@ public class Helper extends Application{
 
     }
 
+    public String registerRequest(String jsonObj) throws IOException{
+        
+        mouth.println(jsonObj);
+        return ear.readLine();
+    
+    }
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
