@@ -1,5 +1,12 @@
 package screens.login_screen;
 
+import com.google.gson.Gson;
+import helper.Helper;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static javafx.application.Application.launch;
+import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -41,7 +48,7 @@ public class LoginScreenBase extends AnchorPane {
         dontHaveAnAccountLabel = new Label();
         registerNowButton = new Label();
         userNameLabel = new Text();
-        btnBack =new Button();
+        btnBack = new Button();
         setId("AnchorPane");
         setPrefHeight(Screen.getPrimary().getVisualBounds().getWidth());
         setPrefWidth(Screen.getPrimary().getVisualBounds().getHeight());
@@ -116,14 +123,31 @@ public class LoginScreenBase extends AnchorPane {
 //            userNameTextField.getText();
 //            passwordTextField.getText();
 //        });
-        
+
         loginButton.setOnAction((event) -> {
-             PllistBase listscreen = new PllistBase(stage);
-             Scene playerListScene = new Scene(listscreen);
-              TicTacToe.changeScene(playerListScene);
-             
+            new Thread(() -> {
+                try {
+                    Helper helper = new Helper();
+                    UserCredentials userCredentials = getUserCredentials();
+                    Gson gson = new Gson();
+                    String jsonUserCredentials = gson.toJson(userCredentials);
+
+                    helper.loginRequest(jsonUserCredentials);
+
+                    Platform.runLater(() -> {
+                        PllistBase listscreen = new PllistBase(stage);
+                        Scene playerListScene = new Scene(listscreen);
+                        TicTacToe.changeScene(playerListScene);
+
+                    });
+                } catch (IOException ex) {
+                    Logger.getLogger(LoginScreenBase.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }).start();
+
         });
-        
+
         dontHaveAnAccountLabel.setLayoutX(606.0);
         dontHaveAnAccountLabel.setLayoutY(689.0);
         dontHaveAnAccountLabel.setText("Don't have an account?");
@@ -138,12 +162,11 @@ public class LoginScreenBase extends AnchorPane {
         registerNowButton.setFont(new Font("Comic Sans MS Bold", 30.0));
         registerNowButton.setOnMouseClicked((event) -> {
             System.out.println("Register Now clicked");
-             RegisterScreenBase registerScreen = new RegisterScreenBase(stage);
-             Scene registerScene = new Scene(registerScreen);
-              TicTacToe.changeScene(registerScene);
+            RegisterScreenBase registerScreen = new RegisterScreenBase(stage);
+            Scene registerScene = new Scene(registerScreen);
+            TicTacToe.changeScene(registerScene);
         });
-        
-        
+
         btnBack.setLayoutX(31.0);
         btnBack.setLayoutY(20.0);
         btnBack.setMnemonicParsing(false);
@@ -162,4 +185,11 @@ public class LoginScreenBase extends AnchorPane {
         getChildren().add(registerNowButton);
         getChildren().add(btnBack);
     }
+
+    private UserCredentials getUserCredentials() {
+
+        return new UserCredentials(userNameTextField.getText(),
+                passwordTextField.getText());
+    }
+
 }
