@@ -15,11 +15,13 @@ import java.net.Socket;
  *
  * @author allam
  */
+
 public class Helper {
 
     Socket playerSocket;
     DataInputStream ear;
     PrintStream mouth;
+
 
     public Helper() {
 
@@ -27,16 +29,40 @@ public class Helper {
             playerSocket = new Socket("127.0.0.1", 5005);
             ear = new DataInputStream(playerSocket.getInputStream());
             mouth = new PrintStream(playerSocket.getOutputStream());
+
         } catch (IOException ex) {
             ex.printStackTrace();
-        }
+        } 
+       
 
     }
+
+    public String registerRequest(String jsonObj) throws IOException{
+        
+       if (playerSocket.isConnected()) {
+            mouth.println(jsonObj);
+            return ear.readLine();
+        } else {
+            return null;
+
+        }
+    
+    }
+
 
     public String loginRequest(String userCredential) throws IOException {
         mouth.println(userCredential);
         return ear.readLine();
+        
     }
+
+     public void closeConnection() throws IOException {
+        if (ear != null) ear.close();
+        if (mouth != null) mouth.close();
+        if (playerSocket != null) playerSocket.close();
+    }
+    
+    
 
     public static void main(String[] args) {
 
@@ -44,3 +70,5 @@ public class Helper {
     }
 
 }
+
+

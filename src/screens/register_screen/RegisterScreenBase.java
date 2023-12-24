@@ -1,6 +1,19 @@
 package screens.register_screen;
 
+import com.google.gson.Gson;
+import helper.Helper;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -9,6 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import screens.login_screen.LoginScreenBase;
 import tictactoe.TicTacToe;
 
 public class RegisterScreenBase extends AnchorPane {
@@ -41,8 +55,8 @@ public class RegisterScreenBase extends AnchorPane {
         editTextPassword = new PasswordField();
         editTextCofirmPassword = new PasswordField();
         buttonRegister = new Button();
-        btnBack=new Button();
-        
+        btnBack = new Button();
+
         setId("AnchorPane");
         setPrefHeight(890.0);
         setPrefWidth(1854.0);
@@ -56,7 +70,6 @@ public class RegisterScreenBase extends AnchorPane {
         backgroundIImage.setPreserveRatio(true);
         backgroundIImage.setImage(new Image(getClass().getResource("/assets/cover.png").toExternalForm()));
 
-        
         text.setLayoutX(450.0);
         text.setLayoutY(115.0);
         text.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
@@ -135,8 +148,7 @@ public class RegisterScreenBase extends AnchorPane {
         buttonRegister.setStyle("-fx-background-radius: 25; -fx-background-color: #ffffff; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-font-family: 'Comic Sans MS'; -fx-font-size: 45; -fx-font-weight: bold; -fx-text-fill: #fcd015; -fx-text-stroke: black; -fx-text-stroke-width: 1;");
         buttonRegister.setText("Register");
         buttonRegister.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
-        
-        
+
         btnBack.setLayoutX(31.0);
         btnBack.setLayoutY(20.0);
         btnBack.setMnemonicParsing(false);
@@ -145,9 +157,7 @@ public class RegisterScreenBase extends AnchorPane {
         btnBack.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         btnBack.setFont(new Font("Comic Sans MS Bold", 25.0));
         btnBack.setOnAction(event -> TicTacToe.goBack());
-        
-        
-        
+
         getChildren().add(backgroundIImage);
         getChildren().add(text);
         getChildren().add(text0);
@@ -161,5 +171,133 @@ public class RegisterScreenBase extends AnchorPane {
         getChildren().add(editTextCofirmPassword);
         getChildren().add(buttonRegister);
         getChildren().add(btnBack);
+        RegisterButton(stage);
     }
+
+    private void RegisterButton(Stage stage) {
+
+        buttonRegister.setOnAction((event) -> {
+            if (validateRegistrationData()) {
+                new Thread(() -> {
+                    Registration newUserData = extractRegistrationData();
+                    Gson gson = new Gson();
+                    String jsonData = gson.toJson(newUserData);
+
+                    Helper helper = new Helper();
+                    try {
+                        String response = helper.registerRequest("Register " + jsonData);
+                        Platform.runLater(() -> {
+                            if ("ok".equals(response)) {
+                                LoginScreenBase loginScreen = new LoginScreenBase(stage);
+                                Scene loginScene = new Scene(loginScreen);
+                                TicTacToe.goBack();
+                                TicTacToe.goBack();
+                               
+                                TicTacToe.changeScene(loginScene);
+                                
+                            } else {
+                                showAlerDialog("This username already taken");
+
+                            }
+                        });
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    } finally {
+                        try {
+                            helper.closeConnection();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
+    }
+
+    private Boolean validateRegistrationData() {
+
+        if (editTextFirstName.getText().isEmpty() || editTextLastName.getText().isEmpty() || editTextUsername.getText().isEmpty() || editTextPassword.getText().isEmpty() || editTextCofirmPassword.getText().isEmpty()) {
+
+            showAlerDialog("One or more fields are empty. Please fill in all fields.");
+            System.out.println("Empty fields");
+
+            return false;
+
+        } else if (editTextUsername.getText().length() < 8) {
+            showAlerDialog("Username should be more than 8 chrachters.");
+
+            System.out.println("invalid syntax username");
+
+            return false;
+
+        } else if (!isUsernameValid(editTextUsername.getText())) {
+
+            showAlerDialog("Invalid username please do not use symbols.");
+
+            System.out.println("invalid syntax username");
+
+            return false;
+
+        } else if (editTextPassword.getText().length() < 5) {
+
+            showAlerDialog("Password should be 5 chrachters or more.");
+
+            System.out.println("invalid syntax username");
+
+            return false;
+
+        } else if (!arePassordsMatched()) {
+            showAlerDialog("Passwords are not matched.");
+
+            System.out.println("invalid syntax username");
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+    private Registration extractRegistrationData() {
+
+        Registration registration = new Registration(editTextFirstName.getText(),
+                editTextLastName.getText(), editTextUsername.getText(), editTextPassword.getText());
+
+        return registration;
+    }
+
+    private Boolean arePassordsMatched() {
+
+        if (editTextPassword.getText().equals(editTextCofirmPassword.getText())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isUsernameValid(String username) {
+
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+$");
+        Matcher matcher = pattern.matcher(username);
+
+        return matcher.matches();
+    }
+
+    private void showAlerDialog(String dialogLable) {
+
+        Alert alert = new Alert(AlertType.NONE);
+        DialogPane dialogPane = alert.getDialogPane();
+
+        
+        dialogPane.setStyle("-fx-background-color: #3D7AD6;");
+        alert.setAlertType(AlertType.ERROR);
+        Label label = new Label(dialogLable);
+        label.setStyle("-fx-text-fill: #fcd015; -fx-font-family: 'Comic Sans MS'; -fx-font-size: 16;");
+
+        dialogPane.setContent(label);
+        alert.show();
+
+    }
+
 }
