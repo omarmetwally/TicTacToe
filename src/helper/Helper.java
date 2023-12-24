@@ -20,9 +20,9 @@ import javafx.stage.Stage;
  */
 public class Helper extends Application{
     
-    Socket playerSocket;
-    DataInputStream ear;
-    PrintStream mouth;
+    private Socket playerSocket;
+    private DataInputStream ear;
+    private PrintStream mouth;
 
     public Helper() {
         
@@ -33,27 +33,31 @@ public class Helper extends Application{
             ear = new DataInputStream(playerSocket.getInputStream());
             mouth = new PrintStream(playerSocket.getOutputStream());
 
-            mouth.println("Test Test");
-            String serverReply = ear.readLine();
-            System.out.println("server says " + serverReply);
+
 
         } catch (IOException ex) {
             ex.printStackTrace();
         } 
-        finally {
-
-            try {
-                ear.close();
-                mouth.close();
-                playerSocket.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-        }
+       
 
     }
 
+    public String registerRequest(String jsonObj) throws IOException{
+        
+       if (playerSocket.isConnected()) {
+            mouth.println(jsonObj);
+            return ear.readLine();
+        } else {
+            return null;
+        }
+    
+    }
+     public void closeConnection() throws IOException {
+        if (ear != null) ear.close();
+        if (mouth != null) mouth.close();
+        if (playerSocket != null) playerSocket.close();
+    }
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
