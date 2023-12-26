@@ -44,7 +44,7 @@ public class LoginScreenBase extends AnchorPane {
     protected final Label dontHaveAnAccountLabel;
     protected final Label registerNowButton;
     protected final Button btnBack;
-private JsonReceiveBase jsonReceiveBase;
+    private JsonReceiveBase jsonReceiveBase;
     public LoginScreenBase(Stage stage) {
         jsonReceiveBase=new JsonReceiveBase();
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
