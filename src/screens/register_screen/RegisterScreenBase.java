@@ -23,7 +23,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import models.JsonReceiveBase;
+import models.JsonWrapper;
 import screens.login_screen.LoginScreenBase;
+import screens.login_screen.ServerEventType;
 import tictactoe.TicTacToe;
 
 public class RegisterScreenBase extends AnchorPane {
@@ -37,9 +40,11 @@ public class RegisterScreenBase extends AnchorPane {
     protected final PasswordField editTextCofirmPassword;
     protected final Button buttonRegister;
     protected final Button btnBack;
+    private JsonReceiveBase jsonReceiveBase;
+
 
     public RegisterScreenBase(Stage stage) {
-
+        jsonReceiveBase=new JsonReceiveBase();
         backgroundIImage = new ImageView();
         text1 = new Text();
         text2 = new Text();
@@ -149,12 +154,27 @@ public class RegisterScreenBase extends AnchorPane {
                     Registration newUserData = extractRegistrationData();
                     Gson gson = new Gson();
                     String jsonData = gson.toJson(newUserData);
-
-                   
+                    String registerResponse = null;
+                    try {
+                        registerResponse = helper.registerRequest(jsonData);
+                        
+                    } catch (IOException ex) {
+                        Logger.getLogger(RegisterScreenBase.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                  
+                   jsonReceiveBase = JsonWrapper.fromJson(registerResponse, JsonReceiveBase.class);
                     try {
                         String response = helper.registerRequest("Register " + jsonData);
+                        
                         Platform.runLater(() -> {
-                            if ("ok".equals(response)) {
+                            if(jsonReceiveBase.getType().equals(ServerEventType.Register.name())&&jsonReceiveBase.getStatus()==1){
+                                LoginScreenBase loginScreen = new LoginScreenBase(stage);
+                                Scene loginScene = new Scene(loginScreen);
+                                TicTacToe.changeScene(loginScene);
+                            }else if(jsonReceiveBase.getType().equals(ServerEventType.Register.name())){
+                                System.out.println(jsonReceiveBase.getMessge());
+                        }
+                            /*if ("ok".equals(response)) {
                                 LoginScreenBase loginScreen = new LoginScreenBase(stage);
                                 Scene loginScene = new Scene(loginScreen);
                                 TicTacToe.goBack();
@@ -165,7 +185,7 @@ public class RegisterScreenBase extends AnchorPane {
                             } else {
                                 showAlerDialog("This username already taken");
 
-                            }
+                            }*/
                         });
                     } catch (IOException ex) {
                         ex.printStackTrace();
