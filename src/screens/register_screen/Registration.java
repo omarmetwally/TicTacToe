@@ -5,6 +5,8 @@
  */
 package screens.register_screen;
 
+import screens.login_screen.ServerEventType;
+
 /**
  *
  * @author Hadi
@@ -12,6 +14,7 @@ package screens.register_screen;
 public class Registration {
     
  
+    private ServerEventType type = ServerEventType.Register;
     private String username;
     private String password;
 
@@ -22,6 +25,9 @@ public class Registration {
     }
 
  
+    public ServerEventType getType() {
+        return type;
+    }
     public String getUsername() {
         return username;
     }
