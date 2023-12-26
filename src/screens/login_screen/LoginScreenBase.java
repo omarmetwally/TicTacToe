@@ -2,9 +2,13 @@ package screens.login_screen;
 
 import com.google.gson.Gson;
 import helper.Helper;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
+
+import java.io.IOException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javafx.application.Application.launch;
@@ -23,6 +27,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import models.JsonReceiveBase;
+import models.JsonWrapper;
 import screens.Plist.PllistBase;
 import screens.register_screen.RegisterScreenBase;
 import tictactoe.TicTacToe;
@@ -38,8 +44,9 @@ public class LoginScreenBase extends AnchorPane {
     protected final Label dontHaveAnAccountLabel;
     protected final Label registerNowButton;
     protected final Button btnBack;
-
+private JsonReceiveBase jsonReceiveBase;
     public LoginScreenBase(Stage stage) {
+        jsonReceiveBase=new JsonReceiveBase();
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
         backgroundIImage = new ImageView();
@@ -129,19 +136,23 @@ public class LoginScreenBase extends AnchorPane {
         loginButton.setOnAction((event) -> {
             new Thread(() -> {
                 try {
-
                     Helper helper = new Helper();
                     UserCredentials userCredentials = getUserCredentials();
                     Gson gson = new Gson();
                     String jsonUserCredentials = gson.toJson(userCredentials);
 
+
                     String loginResponse = helper.loginRequest(jsonUserCredentials);
+                  jsonReceiveBase = JsonWrapper.fromJson(loginResponse, JsonReceiveBase.class);
+                    /// start here 
                     System.out.println(loginResponse);
                     Platform.runLater(() -> {
-                        if("0".equals(loginResponse)){
+                        if(jsonReceiveBase.getType().equals(ServerEventType.Login.name())&&jsonReceiveBase.getStatus()==1){
                         PllistBase listscreen = new PllistBase(stage);
                         Scene playerListScene = new Scene(listscreen);
                         TicTacToe.changeScene(playerListScene);
+                        }else if(jsonReceiveBase.getType().equals(ServerEventType.Login.name())){
+                            System.out.println(jsonReceiveBase.getMessge());
                         }
                     });
 

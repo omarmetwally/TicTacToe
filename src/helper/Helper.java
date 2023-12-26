@@ -15,11 +15,16 @@ import java.net.Socket;
  *
  * @author allam
  */
+
 public class Helper {
 
     Socket playerSocket;
     DataInputStream ear;
     PrintStream mouth;
+
+
+
+
 
     public Helper() {
 
@@ -46,6 +51,7 @@ public class Helper {
 
     }
 
+
     public String loginRequest(String userCredential) throws IOException {
 
         if (playerSocket.isConnected()) {
@@ -69,9 +75,17 @@ public class Helper {
         }
     }
 
+
+   
+
+     
+  
+
     public static void main(String[] args) {
 
         new Helper();
     }
 
 }
+
+
