@@ -2,7 +2,9 @@ package screens.login_screen;
 
 import com.google.gson.Gson;
 import helper.Helper;
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javafx.application.Application.launch;
@@ -127,19 +129,22 @@ public class LoginScreenBase extends AnchorPane {
         loginButton.setOnAction((event) -> {
             new Thread(() -> {
                 try {
+
                     Helper helper = new Helper();
                     UserCredentials userCredentials = getUserCredentials();
                     Gson gson = new Gson();
                     String jsonUserCredentials = gson.toJson(userCredentials);
 
-                    helper.loginRequest(jsonUserCredentials);
-
+                    String loginResponse = helper.loginRequest(jsonUserCredentials);
+                    System.out.println(loginResponse);
                     Platform.runLater(() -> {
+                        if("0".equals(loginResponse)){
                         PllistBase listscreen = new PllistBase(stage);
                         Scene playerListScene = new Scene(listscreen);
                         TicTacToe.changeScene(playerListScene);
-
+                        }
                     });
+
                 } catch (IOException ex) {
                     Logger.getLogger(LoginScreenBase.class.getName()).log(Level.SEVERE, null, ex);
                 }

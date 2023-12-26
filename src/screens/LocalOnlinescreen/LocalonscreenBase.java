@@ -1,5 +1,6 @@
 package screens.LocalOnlinescreen;
 
+import java.net.Socket;
 import javafx.scene.Scene;
 
 import javafx.scene.control.Button;
