@@ -28,13 +28,9 @@ import tictactoe.TicTacToe;
 public class RegisterScreenBase extends AnchorPane {
 
     protected final ImageView backgroundIImage;
-    protected final Text text;
-    protected final Text text0;
     protected final Text text1;
     protected final Text text2;
     protected final Text text3;
-    protected final TextField editTextFirstName;
-    protected final TextField editTextLastName;
     protected final TextField editTextUsername;
     protected final PasswordField editTextPassword;
     protected final PasswordField editTextCofirmPassword;
@@ -44,13 +40,9 @@ public class RegisterScreenBase extends AnchorPane {
     public RegisterScreenBase(Stage stage) {
 
         backgroundIImage = new ImageView();
-        text = new Text();
-        text0 = new Text();
         text1 = new Text();
         text2 = new Text();
         text3 = new Text();
-        editTextFirstName = new TextField();
-        editTextLastName = new TextField();
         editTextUsername = new TextField();
         editTextPassword = new PasswordField();
         editTextCofirmPassword = new PasswordField();
@@ -70,19 +62,7 @@ public class RegisterScreenBase extends AnchorPane {
         backgroundIImage.setPreserveRatio(true);
         backgroundIImage.setImage(new Image(getClass().getResource("/assets/cover.png").toExternalForm()));
 
-        text.setLayoutX(450.0);
-        text.setLayoutY(115.0);
-        text.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
-        text.setStrokeWidth(0.0);
-        text.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 45; -fx-font-weight: bold; -fx-fill: #fcd015; -fx-stroke: black; -fx-stroke-width: 1;");
-        text.setText("First Name");
-
-        text0.setLayoutX(450.0);
-        text0.setLayoutY(245.0);
-        text0.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
-        text0.setStrokeWidth(0.0);
-        text0.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 45; -fx-font-weight: bold; -fx-fill: #fcd015; -fx-stroke: black; -fx-stroke-width: 1;");
-        text0.setText("Last Name");
+       
 
         text1.setLayoutX(450.0);
         text1.setLayoutY(365.0);
@@ -105,19 +85,8 @@ public class RegisterScreenBase extends AnchorPane {
         text3.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 45; -fx-font-weight: bold; -fx-fill: #fcd015; -fx-stroke: black; -fx-stroke-width: 1;");
         text3.setText("Confirm Password");
 
-        editTextFirstName.setLayoutX(1190.0);
-        editTextFirstName.setLayoutY(65.0);
-        editTextFirstName.setPrefHeight(55.0);
-        editTextFirstName.setPrefWidth(350.0);
-        editTextFirstName.setPromptText("First Name");
-        editTextFirstName.setFont(new Font("Comic Sans MS", 24.0));
 
-        editTextLastName.setLayoutX(1190.0);
-        editTextLastName.setLayoutY(195.0);
-        editTextLastName.setPrefHeight(55.0);
-        editTextLastName.setPrefWidth(350.0);
-        editTextLastName.setPromptText("Last Name");
-        editTextLastName.setFont(new Font("Comic Sans MS", 24.0));
+       
 
         editTextUsername.setLayoutX(1190.0);
         editTextUsername.setLayoutY(325.0);
@@ -159,13 +128,9 @@ public class RegisterScreenBase extends AnchorPane {
         btnBack.setOnAction(event -> TicTacToe.goBack());
 
         getChildren().add(backgroundIImage);
-        getChildren().add(text);
-        getChildren().add(text0);
         getChildren().add(text1);
         getChildren().add(text2);
         getChildren().add(text3);
-        getChildren().add(editTextFirstName);
-        getChildren().add(editTextLastName);
         getChildren().add(editTextUsername);
         getChildren().add(editTextPassword);
         getChildren().add(editTextCofirmPassword);
@@ -179,11 +144,12 @@ public class RegisterScreenBase extends AnchorPane {
         buttonRegister.setOnAction((event) -> {
             if (validateRegistrationData()) {
                 new Thread(() -> {
+                    Helper helper = new Helper();
                     Registration newUserData = extractRegistrationData();
                     Gson gson = new Gson();
                     String jsonData = gson.toJson(newUserData);
 
-                    Helper helper = new Helper();
+                   
                     try {
                         String response = helper.registerRequest("Register " + jsonData);
                         Platform.runLater(() -> {
@@ -216,7 +182,7 @@ public class RegisterScreenBase extends AnchorPane {
 
     private Boolean validateRegistrationData() {
 
-        if (editTextFirstName.getText().isEmpty() || editTextLastName.getText().isEmpty() || editTextUsername.getText().isEmpty() || editTextPassword.getText().isEmpty() || editTextCofirmPassword.getText().isEmpty()) {
+        if (editTextUsername.getText().isEmpty() || editTextPassword.getText().isEmpty() || editTextCofirmPassword.getText().isEmpty()) {
 
             showAlerDialog("One or more fields are empty. Please fill in all fields.");
             System.out.println("Empty fields");
@@ -261,8 +227,8 @@ public class RegisterScreenBase extends AnchorPane {
 
     private Registration extractRegistrationData() {
 
-        Registration registration = new Registration(editTextFirstName.getText(),
-                editTextLastName.getText(), editTextUsername.getText(), editTextPassword.getText());
+        Registration registration = new Registration(
+                 editTextUsername.getText(), editTextPassword.getText());
 
         return registration;
     }
