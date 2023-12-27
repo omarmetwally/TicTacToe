@@ -611,9 +611,7 @@ public class BoardFXMLBase extends AnchorPane {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML.fxml"));
             Parent root = loader.load();
-
             Text headerTextView = (Text) loader.getNamespace().get("headerTextView");
-            Button backButton = (Button) loader.getNamespace().get("btnBack");
             Button playAgainButton = (Button) loader.getNamespace().get("btnPlayAgain");
             MediaView winMediaView = (MediaView) loader.getNamespace().get("winMediaView");
 
@@ -640,9 +638,7 @@ public class BoardFXMLBase extends AnchorPane {
                 winMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
             }
-            backButton.setOnAction(e -> {
-                //lesa el exit
-            });
+            
             playAgainButton.setOnAction(e -> {
                 resetGame();
                 ((Stage) root.getScene().getWindow()).close();
