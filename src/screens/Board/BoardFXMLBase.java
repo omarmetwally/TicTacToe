@@ -625,7 +625,7 @@ public class BoardFXMLBase extends AnchorPane {
 
         try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AlertVideoFXML.fxml"));
             Parent root = loader.load();
             Text headerTextView = (Text) loader.getNamespace().get("headerTextView");
             Button playAgainButton = (Button) loader.getNamespace().get("btnPlayAgain");
@@ -642,14 +642,14 @@ public class BoardFXMLBase extends AnchorPane {
             headerTextView.setText(winnerText);
 
             if (!game.isDraw()) {
-                File videoPath = new File("src/assets/videos/win1.mp4");
+                File videoPath = new File("src/assets/videos/win.mp4");
                 Media media = new Media(videoPath.toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
                 winMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
 
             } else {
-                File videoPath = new File("src/assets/videos/draw.mp4");
+                File videoPath = new File("src/assets/videos/draw1.mp4");
                 Media media = new Media(videoPath.toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
                 winMediaView.setMediaPlayer(mediaPlayer);
