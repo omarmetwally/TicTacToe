@@ -131,9 +131,9 @@ public class LoginScreenBase extends AnchorPane {
                     UserCredentials userCredentials = getUserCredentials();
                     Gson gson = new Gson();
                     String jsonUserCredentials = gson.toJson(userCredentials);
-
+                   
                     helper.loginRequest(jsonUserCredentials);
-
+                    
                     Platform.runLater(() -> {
                         PllistBase listscreen = new PllistBase(stage);
                         Scene playerListScene = new Scene(listscreen);
