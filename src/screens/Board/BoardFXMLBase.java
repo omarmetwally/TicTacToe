@@ -80,6 +80,8 @@ public class BoardFXMLBase extends AnchorPane {
     protected final Button btnRecord;
     protected final Button btnBack;
     protected final MediaView WinnerVideo;
+    protected Text whosTurn;
+    protected boolean aiTurn = false;
 
     protected final GameMode gamemode; //'multi' ,'Single'
     protected ImageView btnImage;
@@ -142,6 +144,7 @@ public class BoardFXMLBase extends AnchorPane {
         btnRecord = new Button();
         btnBack = new Button();
         btnImage = new ImageView();
+        whosTurn = new Text();
 
         setId("AnchorPane");
         setPrefHeight(824.0);
@@ -288,8 +291,8 @@ public class BoardFXMLBase extends AnchorPane {
         imageView1.setPickOnBounds(true);
         imageView1.setPreserveRatio(true);
 
-        pane.setLayoutX(455.0);
-        pane.setLayoutY(292.0);
+        pane.setLayoutX(1526.0);
+        pane.setLayoutY(277.0);
         pane.setPrefHeight(300.0);
         pane.setPrefWidth(350.0);
 
@@ -369,6 +372,7 @@ public class BoardFXMLBase extends AnchorPane {
         button1.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         button1.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         button1.setFont(new Font("Comic Sans MS Bold", 34.0));
+        button1.setVisible(false);
 
         scorePlayer1.setCacheShape(false);
         scorePlayer1.setCenterShape(false);
@@ -388,7 +392,7 @@ public class BoardFXMLBase extends AnchorPane {
         scorePlayer2.setCacheShape(false);
         scorePlayer2.setCenterShape(false);
         scorePlayer2.setFocusTraversable(false);
-        scorePlayer2.setLayoutX(608.0);
+        scorePlayer2.setLayoutX(1686.0);
         scorePlayer2.setLayoutY(553.0);
         scorePlayer2.setMnemonicParsing(false);
         scorePlayer2.setPrefHeight(82.0);
@@ -452,6 +456,13 @@ public class BoardFXMLBase extends AnchorPane {
             btnRecord.setVisible(false);
         }
 
+        whosTurn.setFill(javafx.scene.paint.Color.valueOf("#fcd015"));
+        whosTurn.setLayoutX(870.0);
+        whosTurn.setLayoutY(188.0);
+        whosTurn.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
+        whosTurn.setStrokeWidth(0.0);
+        whosTurn.setText("");
+        whosTurn.setFont(new Font("Comic Sans MS Bold", 60.0));
         getChildren().add(imageView);
         getChildren().add(imageView0);
         gridPane.getColumnConstraints().add(columnConstraints);
@@ -489,7 +500,7 @@ public class BoardFXMLBase extends AnchorPane {
         getChildren().add(scorePlayer2);
         getChildren().add(btnRecord);
         getChildren().add(btnBack);
-
+        getChildren().add(whosTurn);
     }
 
     private void handleButtonClick(int row, int col, Button button) {
@@ -506,6 +517,7 @@ public class BoardFXMLBase extends AnchorPane {
                     btnImage.setPickOnBounds(true);
                     btnImage.setPreserveRatio(true);
                     button.setDisable(true);
+                    updateTurnDisplay();
 
                     if (game.isGameOver()) {
                         if (!game.isDraw()) {
@@ -529,6 +541,8 @@ public class BoardFXMLBase extends AnchorPane {
                     btnImage.setPickOnBounds(true);
                     btnImage.setPreserveRatio(true);
                     button.setDisable(true);
+                    aiTurn = true;
+                    updateTurnDisplay();
 
                     if (game.isGameOver()) {
 
@@ -541,6 +555,8 @@ public class BoardFXMLBase extends AnchorPane {
                                 Platform.runLater(() -> {
                                     game.aiMove();
                                     updateBoardUI();
+                                    aiTurn = false;
+                                    updateTurnDisplay();
                                     if (game.isGameOver()) {
                                         // b3ml check
                                         endOfGame();
@@ -624,6 +640,7 @@ public class BoardFXMLBase extends AnchorPane {
 
             System.out.println(game.getWinner());
             String winnerText = game.isDraw() ? "It's a Draw!" : game.getWinner() + " wins!";
+            whosTurn.setText(winnerText);
             headerTextView.setText(winnerText);
 
             if (!game.isDraw()) {
@@ -661,6 +678,7 @@ public class BoardFXMLBase extends AnchorPane {
     private void resetGame() {
         game.resetGame();
         resetBoardUI();
+        whosTurn.setText("");
     }
 
     private void resetBoardUI() {
@@ -704,6 +722,18 @@ public class BoardFXMLBase extends AnchorPane {
         for (int[] coordinate : winningCombination) {
             Button button = (Button) gridPane.getChildren().get(coordinate[0] * 3 + coordinate[1]);
             button.setStyle("-fx-background-color: #FF0000;");
+        }
+    }
+
+    private void updateTurnDisplay() {
+        if (!game.isGameOver() && !aiTurn) {
+            char currentPlayer = game.getCurrentPlayerMark();
+            String playerName = (currentPlayer == 'X') ? game.getPlayer1Name() : game.getPlayer2Name();
+            whosTurn.setText(playerName + "'s Turn!");
+
+        } else {
+            String playerName = game.getPlayer2Name();
+            whosTurn.setText(playerName + "'s Turn!");
         }
     }
 
