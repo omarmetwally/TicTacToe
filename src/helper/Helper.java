@@ -23,6 +23,9 @@ public class Helper {
     PrintStream mouth;
 
 
+
+
+
     public Helper() {
 
         try {
@@ -32,37 +35,51 @@ public class Helper {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-        } 
-       
+        }
 
     }
 
-    public String registerRequest(String jsonObj) throws IOException{
-        
-       if (playerSocket.isConnected()) {
+    public String registerRequest(String jsonObj) throws IOException {
+
+        if (playerSocket.isConnected()) {
             mouth.println(jsonObj);
             return ear.readLine();
         } else {
             return null;
 
         }
-    
+
     }
 
 
     public String loginRequest(String userCredential) throws IOException {
-        mouth.println(userCredential);
-        return ear.readLine();
-        
+
+        if (playerSocket.isConnected()) {
+            mouth.println(userCredential); 
+            return ear.readLine(); 
+        } else {
+            return null;
+        }
+
     }
 
-     public void closeConnection() throws IOException {
-        if (ear != null) ear.close();
-        if (mouth != null) mouth.close();
-        if (playerSocket != null) playerSocket.close();
+    public void closeConnection() throws IOException {
+        if (ear != null) {
+            ear.close();
+        }
+        if (mouth != null) {
+            mouth.close();
+        }
+        if (playerSocket != null) {
+            playerSocket.close();
+        }
     }
-    
-    
+
+
+   
+
+     
+  
 
     public static void main(String[] args) {
 

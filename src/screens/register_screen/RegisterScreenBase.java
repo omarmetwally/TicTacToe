@@ -3,6 +3,7 @@ package screens.register_screen;
 import com.google.gson.Gson;
 import helper.Helper;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -19,38 +20,35 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import models.JsonReceiveBase;
+import models.JsonWrapper;
 import screens.login_screen.LoginScreenBase;
+import screens.login_screen.ServerEventType;
 import tictactoe.TicTacToe;
 
 public class RegisterScreenBase extends AnchorPane {
 
     protected final ImageView backgroundIImage;
-    protected final Text text;
-    protected final Text text0;
     protected final Text text1;
     protected final Text text2;
     protected final Text text3;
-    protected final TextField editTextFirstName;
-    protected final TextField editTextLastName;
     protected final TextField editTextUsername;
     protected final PasswordField editTextPassword;
     protected final PasswordField editTextCofirmPassword;
     protected final Button buttonRegister;
     protected final Button btnBack;
+    private JsonReceiveBase jsonReceiveBase;
 
     public RegisterScreenBase(Stage stage) {
-
+        jsonReceiveBase = new JsonReceiveBase();
         backgroundIImage = new ImageView();
-        text = new Text();
-        text0 = new Text();
         text1 = new Text();
         text2 = new Text();
         text3 = new Text();
-        editTextFirstName = new TextField();
-        editTextLastName = new TextField();
         editTextUsername = new TextField();
         editTextPassword = new PasswordField();
         editTextCofirmPassword = new PasswordField();
@@ -62,62 +60,40 @@ public class RegisterScreenBase extends AnchorPane {
         setPrefWidth(1854.0);
         setStyle("-fx-background-color: #3D7AD6; -fx-background-image: url('../../assets/cover.png');");
 
-        backgroundIImage.setFitHeight(1200.0);
-        backgroundIImage.setFitWidth(2124.0);
         backgroundIImage.setLayoutX(-2.0);
         backgroundIImage.setLayoutY(-1.0);
         backgroundIImage.setPickOnBounds(true);
         backgroundIImage.setPreserveRatio(true);
         backgroundIImage.setImage(new Image(getClass().getResource("/assets/cover.png").toExternalForm()));
-
-        text.setLayoutX(450.0);
-        text.setLayoutY(115.0);
-        text.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
-        text.setStrokeWidth(0.0);
-        text.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 45; -fx-font-weight: bold; -fx-fill: #fcd015; -fx-stroke: black; -fx-stroke-width: 1;");
-        text.setText("First Name");
-
-        text0.setLayoutX(450.0);
-        text0.setLayoutY(245.0);
-        text0.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
-        text0.setStrokeWidth(0.0);
-        text0.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 45; -fx-font-weight: bold; -fx-fill: #fcd015; -fx-stroke: black; -fx-stroke-width: 1;");
-        text0.setText("Last Name");
+        backgroundIImage.setFitHeight(1174.0);
+        backgroundIImage.setFitWidth(2043.0);
 
         text1.setLayoutX(450.0);
         text1.setLayoutY(365.0);
-        text1.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
-        text1.setStrokeWidth(0.0);
-        text1.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 45; -fx-font-weight: bold; -fx-fill: #fcd015; -fx-stroke: black; -fx-stroke-width: 1;");
+        text1.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        text1.setFill(javafx.scene.paint.Color.valueOf("#fcd015"));
+        text1.setFont(new Font("Comic Sans MS Bold", 58.0));
+        text1.setStroke(Color.BLACK);
+        text1.setStrokeWidth(2);
         text1.setText("Username");
 
         text2.setLayoutX(450.0);
         text2.setLayoutY(505.0);
-        text2.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
-        text2.setStrokeWidth(0.0);
-        text2.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 45; -fx-font-weight: bold; -fx-fill: #fcd015; -fx-stroke: black; -fx-stroke-width: 1;");
+        text2.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        text2.setFill(javafx.scene.paint.Color.valueOf("#fcd015"));
+        text2.setFont(new Font("Comic Sans MS Bold", 58.0));
+        text2.setStroke(Color.BLACK);
+        text2.setStrokeWidth(2);
         text2.setText("Password");
 
         text3.setLayoutX(450.0);
         text3.setLayoutY(635.0);
-        text3.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
-        text3.setStrokeWidth(0.0);
-        text3.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 45; -fx-font-weight: bold; -fx-fill: #fcd015; -fx-stroke: black; -fx-stroke-width: 1;");
+        text3.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        text3.setFill(javafx.scene.paint.Color.valueOf("#fcd015"));
+        text3.setFont(new Font("Comic Sans MS Bold", 58.0));
+        text3.setStroke(Color.BLACK);
+        text3.setStrokeWidth(2);
         text3.setText("Confirm Password");
-
-        editTextFirstName.setLayoutX(1190.0);
-        editTextFirstName.setLayoutY(65.0);
-        editTextFirstName.setPrefHeight(55.0);
-        editTextFirstName.setPrefWidth(350.0);
-        editTextFirstName.setPromptText("First Name");
-        editTextFirstName.setFont(new Font("Comic Sans MS", 24.0));
-
-        editTextLastName.setLayoutX(1190.0);
-        editTextLastName.setLayoutY(195.0);
-        editTextLastName.setPrefHeight(55.0);
-        editTextLastName.setPrefWidth(350.0);
-        editTextLastName.setPromptText("Last Name");
-        editTextLastName.setFont(new Font("Comic Sans MS", 24.0));
 
         editTextUsername.setLayoutX(1190.0);
         editTextUsername.setLayoutY(325.0);
@@ -159,13 +135,9 @@ public class RegisterScreenBase extends AnchorPane {
         btnBack.setOnAction(event -> TicTacToe.goBack());
 
         getChildren().add(backgroundIImage);
-        getChildren().add(text);
-        getChildren().add(text0);
         getChildren().add(text1);
         getChildren().add(text2);
         getChildren().add(text3);
-        getChildren().add(editTextFirstName);
-        getChildren().add(editTextLastName);
         getChildren().add(editTextUsername);
         getChildren().add(editTextPassword);
         getChildren().add(editTextCofirmPassword);
@@ -179,29 +151,31 @@ public class RegisterScreenBase extends AnchorPane {
         buttonRegister.setOnAction((event) -> {
             if (validateRegistrationData()) {
                 new Thread(() -> {
+                    Helper helper = new Helper();
                     Registration newUserData = extractRegistrationData();
                     Gson gson = new Gson();
                     String jsonData = gson.toJson(newUserData);
-
-                    Helper helper = new Helper();
+                    String registerResponse = null;
                     try {
-                        String response = helper.registerRequest("Register " + jsonData);
+                        registerResponse = helper.registerRequest(jsonData);
+
+                    } catch (IOException ex) {
+                        Logger.getLogger(RegisterScreenBase.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    jsonReceiveBase = JsonWrapper.fromJson(registerResponse, JsonReceiveBase.class);
+                    try {
+
                         Platform.runLater(() -> {
-                            if ("ok".equals(response)) {
+                            if (jsonReceiveBase.getType().equals(ServerEventType.Register.name()) && jsonReceiveBase.getStatus() == 1) {
                                 LoginScreenBase loginScreen = new LoginScreenBase(stage);
                                 Scene loginScene = new Scene(loginScreen);
-                                TicTacToe.goBack();
-                                TicTacToe.goBack();
-                               
                                 TicTacToe.changeScene(loginScene);
-                                
-                            } else {
-                                showAlerDialog("This username already taken");
-
+                            } else if (jsonReceiveBase.getType().equals(ServerEventType.Register.name())) {
+                                showAlerDialog(jsonReceiveBase.getMessge());
                             }
+
                         });
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
                     } finally {
                         try {
                             helper.closeConnection();
@@ -216,7 +190,7 @@ public class RegisterScreenBase extends AnchorPane {
 
     private Boolean validateRegistrationData() {
 
-        if (editTextFirstName.getText().isEmpty() || editTextLastName.getText().isEmpty() || editTextUsername.getText().isEmpty() || editTextPassword.getText().isEmpty() || editTextCofirmPassword.getText().isEmpty()) {
+        if (editTextUsername.getText().isEmpty() || editTextPassword.getText().isEmpty() || editTextCofirmPassword.getText().isEmpty()) {
 
             showAlerDialog("One or more fields are empty. Please fill in all fields.");
             System.out.println("Empty fields");
@@ -261,8 +235,8 @@ public class RegisterScreenBase extends AnchorPane {
 
     private Registration extractRegistrationData() {
 
-        Registration registration = new Registration(editTextFirstName.getText(),
-                editTextLastName.getText(), editTextUsername.getText(), editTextPassword.getText());
+        Registration registration = new Registration(
+                editTextUsername.getText(), editTextPassword.getText());
 
         return registration;
     }
@@ -289,7 +263,6 @@ public class RegisterScreenBase extends AnchorPane {
         Alert alert = new Alert(AlertType.NONE);
         DialogPane dialogPane = alert.getDialogPane();
 
-        
         dialogPane.setStyle("-fx-background-color: #3D7AD6;");
         alert.setAlertType(AlertType.ERROR);
         Label label = new Label(dialogLable);

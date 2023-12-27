@@ -5,6 +5,7 @@
  */
 package tictactoe;
 
+import java.net.Socket;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -30,6 +31,7 @@ public class TicTacToe extends Application {
     public void start(Stage stage) throws Exception {
 
         this.primaryStage = stage;
+        Socket currentSocketParameter;
         Parent root = new SplashScreenBase();
         // push awl Screen "Scene"
         Scene initialScene = new Scene(root);

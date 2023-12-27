@@ -1,5 +1,6 @@
 package screens.Board;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,20 +79,23 @@ public class BoardFXMLBase extends AnchorPane {
     protected final Button scorePlayer2;
     protected final Button btnRecord;
     protected final Button btnBack;
+    protected final MediaView WinnerVideo;
 
     protected final GameMode gamemode; //'multi' ,'Single'
     protected ImageView btnImage;
-    
+
     private TicTacToeGame game;
 
-    public BoardFXMLBase(Stage stage,String Player1,String Player2, GameMode gamemode) {
+    public BoardFXMLBase(Stage stage, String Player1, String Player2, GameMode gamemode) {
 
         this.gamemode = gamemode;
-        game = new TicTacToeGame(Player1, Player2,gamemode);
+        game = new TicTacToeGame(Player1, Player2, gamemode);
 
         imageView = new ImageView();
         imageView0 = new ImageView();
         gridPane = new GridPane();
+        WinnerVideo = new MediaView();
+
         columnConstraints = new ColumnConstraints();
         columnConstraints0 = new ColumnConstraints();
         columnConstraints1 = new ColumnConstraints();
@@ -441,13 +445,13 @@ public class BoardFXMLBase extends AnchorPane {
             handleButtonClick(2, 2, btn22);
         });
         btnBack.setOnAction(event -> TicTacToe.goBack());
-        
+
         if (gamemode == GameMode.AI) {
             imageView2.setImage(new Image(getClass().getResource("/assets/O.png").toExternalForm()));
             imageView3.setImage(new Image(getClass().getResource("/assets/X.png").toExternalForm()));
             btnRecord.setVisible(false);
         }
-        
+
         getChildren().add(imageView);
         getChildren().add(imageView0);
         gridPane.getColumnConstraints().add(columnConstraints);
@@ -487,12 +491,13 @@ public class BoardFXMLBase extends AnchorPane {
         getChildren().add(btnBack);
 
     }
+
     private void handleButtonClick(int row, int col, Button button) {
-    switch(gamemode){    
-        case TwoPlayers:
-        
-        if (!game.isGameOver() && game.placeMark(row, col)) {
-            String mark = String.valueOf(game.getCurrentPlayerMark());
+        switch (gamemode) {
+            case TwoPlayers:
+
+                if (!game.isGameOver() && game.placeMark(row, col)) {
+                    String mark = String.valueOf(game.getCurrentPlayerMark());
 
                     btnImage = new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm()));
                     button.setGraphic(btnImage);
@@ -501,7 +506,6 @@ public class BoardFXMLBase extends AnchorPane {
                     btnImage.setPickOnBounds(true);
                     btnImage.setPreserveRatio(true);
                     button.setDisable(true);
-
 
                     if (game.isGameOver()) {
                         if (!game.isDraw()) {
@@ -548,9 +552,13 @@ public class BoardFXMLBase extends AnchorPane {
                         }).start();
                     }
                 }
-
+                break;
+            case MULTI:
+                onlinePlayers();
         }
     }
+
+
     private void updateBoardUI() {
         Button[][] buttons = {
             {btn00, btn01, brn02},
@@ -597,6 +605,11 @@ public class BoardFXMLBase extends AnchorPane {
 
     private void endOfGameAlert() {
 
+        WinnerVideo.setFitHeight(500.0);
+        WinnerVideo.setFitWidth(500.0);
+        WinnerVideo.setLayoutX(200.0);
+        WinnerVideo.setLayoutY(200.0);
+
         try {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML.fxml"));
@@ -607,19 +620,25 @@ public class BoardFXMLBase extends AnchorPane {
             Button playAgainButton = (Button) loader.getNamespace().get("btnPlayAgain");
             MediaView winMediaView = (MediaView) loader.getNamespace().get("winMediaView");
 
+            winMediaView.setFitHeight(600.0);
+            winMediaView.setFitWidth(600.0);
+            winMediaView.setLayoutX(340.0);
+            winMediaView.setLayoutY(200.0);
+
             System.out.println(game.getWinner());
             String winnerText = game.isDraw() ? "It's a Draw!" : game.getWinner() + " wins!";
             headerTextView.setText(winnerText);
 
             if (!game.isDraw()) {
-                String videoPath = "file:///C:/Users/Omar/Downloads/vid/win.mp4";
-                Media media = new Media(videoPath);
+                File videoPath = new File("src/assets/videos/win1.mp4");
+                Media media = new Media(videoPath.toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
                 winMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
+
             } else {
-                String videoPath = "file:///C:/Users/Omar/Downloads/vid/draw.mp4";
-                Media media = new Media(videoPath);
+                File videoPath = new File("src/assets/videos/draw.mp4");
+                Media media = new Media(videoPath.toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
                 winMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
@@ -638,7 +657,6 @@ public class BoardFXMLBase extends AnchorPane {
             popupStage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
-
 
         }
     }
@@ -674,8 +692,6 @@ public class BoardFXMLBase extends AnchorPane {
         alert.showAndWait();
     }
 
-    
-
     private void endOfGame() {
         if (!game.isDraw()) {
             game.incrementPlayerScore();
@@ -693,5 +709,8 @@ public class BoardFXMLBase extends AnchorPane {
             button.setStyle("-fx-background-color: #FF0000;");
         }
     }
+private void onlinePlayers(){
 
+
+}
 }
