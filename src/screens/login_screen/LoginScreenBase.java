@@ -145,7 +145,7 @@ private JsonReceiveBase jsonReceiveBase;
                     String loginResponse = helper.loginRequest(jsonUserCredentials);
                   jsonReceiveBase = JsonWrapper.fromJson(loginResponse, JsonReceiveBase.class);
                     /// start here 
-                    System.out.println(loginResponse);
+                    //System.out.println(loginResponse);
                     Platform.runLater(() -> {
                         if(jsonReceiveBase.getType().equals(ServerEventType.Login.name())&&jsonReceiveBase.getStatus()==1){
                         PllistBase listscreen = new PllistBase(stage);
