@@ -253,5 +253,12 @@ public class TicTacToeGame {
         return winningCombinations; 
     }
 
+      public String getPlayer1Name() {
+        return player1Name;
+    }
+
+    public String getPlayer2Name() {
+        return player2Name;
+    }
 
 }
