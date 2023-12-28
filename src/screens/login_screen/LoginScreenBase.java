@@ -207,5 +207,10 @@ public class LoginScreenBase extends AnchorPane {
         return new UserCredentials(userNameTextField.getText(),
                 passwordTextField.getText());
     }
+    
+      public TextField getUserNameTextField(){
+        return userNameTextField;
+    }
+
 
 }
