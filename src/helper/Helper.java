@@ -62,6 +62,24 @@ public class Helper {
         }
 
     }
+    
+        public String ListRequest (String userNameJ) throws IOException{
+        if (playerSocket.isConnected()) {
+            mouth.println(userNameJ);
+            return ear.readLine();  // Store the response
+        }else {
+            return null;
+        }
+    }
+    
+    public String InviteRequest (String userNameJ) throws IOException{
+        if (playerSocket.isConnected()) {
+            mouth.println(userNameJ);
+            return ear.readLine();  // Store the response
+        }else {
+            return null;
+        }
+    }
 
     public void closeConnection() throws IOException {
         if (ear != null) {
