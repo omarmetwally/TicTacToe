@@ -53,8 +53,10 @@ public class PllistBase extends AnchorPane {
     protected final Image imgCover;
     private JsonReceiveBase jsonReceiveBase;
     private  JsonSendBase jsonSendBase;
+    private String userName;
 
-    public PllistBase(Stage stage) {
+    public PllistBase(Stage stage, String username) {
+        userName= username;
         jsonReceiveBase = new JsonReceiveBase();
         imgview = new ImageView();
         playlist = new Button();
@@ -151,19 +153,21 @@ public class PllistBase extends AnchorPane {
         getChildren().add(Backbtn);
         
         getActivePlayers(stage);
-
+        
+       
     }
+    
+
+    
     //Method to get Available players from Server
      private void getActivePlayers (Stage stage) {
         new Thread(()-> {
-            Scene currentScene = stage.getScene();
-            if(currentScene.getRoot() instanceof LoginScreenBase){
-                 LoginScreenBase loginScreen = (LoginScreenBase) currentScene.getRoot();
-                    String username = loginScreen.getUserNameTextField().getText();
+          
+                  
                     Helper helper = new Helper();
                     String response = null;
                      Player newplayer = new Player();
-                     newplayer.setUserName(username);
+                     newplayer.setUserName(userName);
                     Gson gson = new Gson();
                     String jsonData = gson.toJson(newplayer);
                 try {
@@ -202,7 +206,7 @@ public class PllistBase extends AnchorPane {
                 } catch (IOException ex) {
                     Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+            
         }).start();
     }
 
@@ -260,17 +264,15 @@ public class PllistBase extends AnchorPane {
 
 }
      private void invitePlayer(Player player) {
+         
+         // Retrieve the associated Player object from the item property
+        String username = player.getName();
+        //To send Username of the Player that i want to play with him
+        sendInviteRequest(username); 
             try {
                 // Load the second FXML file for the invitation dialog
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("alert.fxml"));
                 Parent root = loader.load();
-                //Scene scene = new Scene(root);
-
-                // Create the dialog
-               // Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                
-               // alert.getDialogPane().setContent(root);
-                //Text waittext = (Text) loader.getNamespace().get("headerTextView");
                 Button cancel = (Button) loader.getNamespace().get("cnacelbtn");
                 cancel.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: #2AAAFD;");
                 cancel.setTextFill(javafx.scene.paint.Color.valueOf("#ffff"));
@@ -296,4 +298,25 @@ public class PllistBase extends AnchorPane {
                 e.printStackTrace();
             }
         }
+     
+     private void sendInviteRequest(String username){
+         new Thread(()-> {
+                  
+                  
+                  System.out.println("in sendInviteRequest"+userName);
+                   Helper helper = new Helper();
+                   OnlineBoard game = new OnlineBoard(userName, username);
+                   Gson gson2 = new Gson();
+                   String jsonTwoUsers = gson2.toJson(game);
+                   System.out.println("UserName of the Player that need to invite him "+jsonTwoUsers);
+                   
+             try {
+                String Response = helper.InviteRequest(jsonTwoUsers);
+              
+                 //handle Response from Server
+             } catch (IOException ex) {
+                 Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
+             }
+        }).start();
+    }
 }
