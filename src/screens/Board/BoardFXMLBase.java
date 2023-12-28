@@ -27,6 +27,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import screens.Record.Record;
 import tictactoe.TicTacToe;
 
 public class BoardFXMLBase extends AnchorPane {
@@ -82,6 +83,7 @@ public class BoardFXMLBase extends AnchorPane {
     protected final MediaView WinnerVideo;
     protected Text whosTurn;
     protected boolean aiTurn = false;
+    protected final Record record;
 
     protected final GameMode gamemode; //'multi' ,'Single'
     protected ImageView btnImage;
@@ -90,6 +92,7 @@ public class BoardFXMLBase extends AnchorPane {
 
     public BoardFXMLBase(Stage stage, String Player1, String Player2, GameMode gamemode) {
 
+        record = new Record();
         this.gamemode = gamemode;
         game = new TicTacToeGame(Player1, Player2, gamemode);
 
@@ -412,6 +415,11 @@ public class BoardFXMLBase extends AnchorPane {
         btnRecord.setText("Record");
         btnRecord.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         btnRecord.setFont(new Font("Comic Sans MS Bold", 25.0));
+        btnRecord.setOnAction((event) -> {
+            btnRecord.setDisable(true);
+            // record.setIsRecording(true);
+            record.startRecording(Player1, Player2);
+        });
 
         btnBack.setLayoutX(31.0);
         btnBack.setLayoutY(20.0);
@@ -504,12 +512,16 @@ public class BoardFXMLBase extends AnchorPane {
     }
 
     private void handleButtonClick(int row, int col, Button button) {
+        btnRecord.setDisable(true);
         switch (gamemode) {
             case TwoPlayers:
 
                 if (!game.isGameOver() && game.placeMark(row, col)) {
                     String mark = String.valueOf(game.getCurrentPlayerMark());
 
+                    if (record.isRecording()) {
+                        record.recordMove(mark,row, col);
+                    }
                     btnImage = new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm()));
                     button.setGraphic(btnImage);
                     btnImage.setFitHeight(118.0);
@@ -625,11 +637,9 @@ public class BoardFXMLBase extends AnchorPane {
 
         try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AlertVideoFXML.fxml"));
             Parent root = loader.load();
-
             Text headerTextView = (Text) loader.getNamespace().get("headerTextView");
-            Button backButton = (Button) loader.getNamespace().get("btnBack");
             Button playAgainButton = (Button) loader.getNamespace().get("btnPlayAgain");
             MediaView winMediaView = (MediaView) loader.getNamespace().get("winMediaView");
 
@@ -644,22 +654,20 @@ public class BoardFXMLBase extends AnchorPane {
             headerTextView.setText(winnerText);
 
             if (!game.isDraw()) {
-                File videoPath = new File("src/assets/videos/win1.mp4");
+                File videoPath = new File("src/assets/videos/win.mp4");
                 Media media = new Media(videoPath.toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
                 winMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
 
             } else {
-                File videoPath = new File("src/assets/videos/draw.mp4");
+                File videoPath = new File("src/assets/videos/draw1.mp4");
                 Media media = new Media(videoPath.toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
                 winMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
             }
-            backButton.setOnAction(e -> {
-                //lesa el exit
-            });
+
             playAgainButton.setOnAction(e -> {
                 resetGame();
                 ((Stage) root.getScene().getWindow()).close();
