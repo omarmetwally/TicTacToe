@@ -21,11 +21,6 @@ public class Helper {
     Socket playerSocket;
     DataInputStream ear;
     PrintStream mouth;
-
-
-
-
-
     public Helper() {
 
         try {
@@ -77,12 +72,20 @@ public class Helper {
 
 
    
+    public String sendMove(String moveJson) throws IOException {
 
+        if (playerSocket.isConnected()) {
+            mouth.println(moveJson); 
+            return ear.readLine(); 
+        } else {
+            return null;
+        }
+
+    }
      
   
 
     public static void main(String[] args) {
-
         new Helper();
     }
 

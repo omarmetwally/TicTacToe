@@ -1,5 +1,6 @@
 package screens.Board;
 
+import helper.Helper;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import models.OnlineGameModel;
 import tictactoe.TicTacToe;
 
 public class BoardFXMLBase extends AnchorPane {
@@ -80,14 +82,17 @@ public class BoardFXMLBase extends AnchorPane {
     protected final Button btnRecord;
     protected final Button btnBack;
     protected final MediaView WinnerVideo;
-
+    protected Text whosTurn;
+    protected boolean aiTurn = false;
+    private Helper helper;
+    private OnlineGameModel onlineGameModel;
     protected final GameMode gamemode; //'multi' ,'Single'
     protected ImageView btnImage;
 
     private TicTacToeGame game;
 
     public BoardFXMLBase(Stage stage, String Player1, String Player2, GameMode gamemode) {
-
+        helper = new Helper();
         this.gamemode = gamemode;
         game = new TicTacToeGame(Player1, Player2, gamemode);
 
@@ -142,6 +147,7 @@ public class BoardFXMLBase extends AnchorPane {
         btnRecord = new Button();
         btnBack = new Button();
         btnImage = new ImageView();
+        whosTurn = new Text();
 
         setId("AnchorPane");
         setPrefHeight(824.0);
@@ -288,8 +294,8 @@ public class BoardFXMLBase extends AnchorPane {
         imageView1.setPickOnBounds(true);
         imageView1.setPreserveRatio(true);
 
-        pane.setLayoutX(455.0);
-        pane.setLayoutY(292.0);
+        pane.setLayoutX(1526.0);
+        pane.setLayoutY(277.0);
         pane.setPrefHeight(300.0);
         pane.setPrefWidth(350.0);
 
@@ -369,6 +375,7 @@ public class BoardFXMLBase extends AnchorPane {
         button1.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         button1.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         button1.setFont(new Font("Comic Sans MS Bold", 34.0));
+        button1.setVisible(false);
 
         scorePlayer1.setCacheShape(false);
         scorePlayer1.setCenterShape(false);
@@ -388,7 +395,7 @@ public class BoardFXMLBase extends AnchorPane {
         scorePlayer2.setCacheShape(false);
         scorePlayer2.setCenterShape(false);
         scorePlayer2.setFocusTraversable(false);
-        scorePlayer2.setLayoutX(608.0);
+        scorePlayer2.setLayoutX(1686.0);
         scorePlayer2.setLayoutY(553.0);
         scorePlayer2.setMnemonicParsing(false);
         scorePlayer2.setPrefHeight(82.0);
@@ -417,34 +424,36 @@ public class BoardFXMLBase extends AnchorPane {
         btnBack.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         btnBack.setFont(new Font("Comic Sans MS Bold", 25.0));
 
-        btn00.setOnAction((event) -> {
-            handleButtonClick(0, 0, btn00);
-        });
-        btn01.setOnAction((event) -> {
-            handleButtonClick(0, 1, btn01);
-        });
-        brn02.setOnAction((event) -> {
-            handleButtonClick(0, 2, brn02);
-        });
-        btn10.setOnAction((event) -> {
-            handleButtonClick(1, 0, btn10);
-        });
-        btn11.setOnAction((event) -> {
-            handleButtonClick(1, 1, btn11);
-        });
-        btn12.setOnAction((event) -> {
-            handleButtonClick(1, 2, btn12);
-        });
-        btn20.setOnAction((event) -> {
-            handleButtonClick(2, 0, btn20);
-        });
-        btn21.setOnAction((event) -> {
-            handleButtonClick(2, 1, btn21);
-        });
-        btn22.setOnAction((event) -> {
-            handleButtonClick(2, 2, btn22);
-        });
-        btnBack.setOnAction(event -> TicTacToe.goBack());
+        if (onlineGameModel.getCurrentPlayerUserName().equals("Samuel")||gamemode!=GameMode.MULTI) {
+            btn00.setOnAction((event) -> {
+                handleButtonClick(0, 0, btn00);
+            });
+            btn01.setOnAction((event) -> {
+                handleButtonClick(0, 1, btn01);
+            });
+            brn02.setOnAction((event) -> {
+                handleButtonClick(0, 2, brn02);
+            });
+            btn10.setOnAction((event) -> {
+                handleButtonClick(1, 0, btn10);
+            });
+            btn11.setOnAction((event) -> {
+                handleButtonClick(1, 1, btn11);
+            });
+            btn12.setOnAction((event) -> {
+                handleButtonClick(1, 2, btn12);
+            });
+            btn20.setOnAction((event) -> {
+                handleButtonClick(2, 0, btn20);
+            });
+            btn21.setOnAction((event) -> {
+                handleButtonClick(2, 1, btn21);
+            });
+            btn22.setOnAction((event) -> {
+                handleButtonClick(2, 2, btn22);
+            });
+            btnBack.setOnAction(event -> TicTacToe.goBack());
+        }
 
         if (gamemode == GameMode.AI) {
             imageView2.setImage(new Image(getClass().getResource("/assets/O.png").toExternalForm()));
@@ -452,6 +461,13 @@ public class BoardFXMLBase extends AnchorPane {
             btnRecord.setVisible(false);
         }
 
+        whosTurn.setFill(javafx.scene.paint.Color.valueOf("#fcd015"));
+        whosTurn.setLayoutX(870.0);
+        whosTurn.setLayoutY(188.0);
+        whosTurn.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
+        whosTurn.setStrokeWidth(0.0);
+        whosTurn.setText("");
+        whosTurn.setFont(new Font("Comic Sans MS Bold", 60.0));
         getChildren().add(imageView);
         getChildren().add(imageView0);
         gridPane.getColumnConstraints().add(columnConstraints);
@@ -489,7 +505,7 @@ public class BoardFXMLBase extends AnchorPane {
         getChildren().add(scorePlayer2);
         getChildren().add(btnRecord);
         getChildren().add(btnBack);
-
+        getChildren().add(whosTurn);
     }
 
     private void handleButtonClick(int row, int col, Button button) {
@@ -506,6 +522,7 @@ public class BoardFXMLBase extends AnchorPane {
                     btnImage.setPickOnBounds(true);
                     btnImage.setPreserveRatio(true);
                     button.setDisable(true);
+                    updateTurnDisplay();
 
                     if (game.isGameOver()) {
                         if (!game.isDraw()) {
@@ -529,9 +546,10 @@ public class BoardFXMLBase extends AnchorPane {
                     btnImage.setPickOnBounds(true);
                     btnImage.setPreserveRatio(true);
                     button.setDisable(true);
+                    aiTurn = true;
+                    updateTurnDisplay();
 
                     if (game.isGameOver()) {
-
                         endOfGame();
                     } else {
                         // Run AI in thread
@@ -541,6 +559,8 @@ public class BoardFXMLBase extends AnchorPane {
                                 Platform.runLater(() -> {
                                     game.aiMove();
                                     updateBoardUI();
+                                    aiTurn = false;
+                                    updateTurnDisplay();
                                     if (game.isGameOver()) {
                                         // b3ml check
                                         endOfGame();
@@ -554,10 +574,9 @@ public class BoardFXMLBase extends AnchorPane {
                 }
                 break;
             case MULTI:
-                onlinePlayers();
+                onlinePlayers(row, col);
         }
     }
-
 
     private void updateBoardUI() {
         Button[][] buttons = {
@@ -627,6 +646,7 @@ public class BoardFXMLBase extends AnchorPane {
 
             System.out.println(game.getWinner());
             String winnerText = game.isDraw() ? "It's a Draw!" : game.getWinner() + " wins!";
+            whosTurn.setText(winnerText);
             headerTextView.setText(winnerText);
 
             if (!game.isDraw()) {
@@ -664,6 +684,7 @@ public class BoardFXMLBase extends AnchorPane {
     private void resetGame() {
         game.resetGame();
         resetBoardUI();
+        whosTurn.setText("");
     }
 
     private void resetBoardUI() {
@@ -709,8 +730,57 @@ public class BoardFXMLBase extends AnchorPane {
             button.setStyle("-fx-background-color: #FF0000;");
         }
     }
-private void onlinePlayers(){
 
+    private void updateTurnDisplay() {
+        if (!game.isGameOver() && !aiTurn) {
+            char currentPlayer = game.getCurrentPlayerMark();
+            String playerName = (currentPlayer == 'X') ? game.getPlayer1Name() : game.getPlayer2Name();
+            whosTurn.setText(playerName + "'s Turn!");
 
-}
+        } else {
+            String playerName = game.getPlayer2Name();
+            whosTurn.setText(playerName + "'s Turn!");
+        }
+    }
+
+    private void onlinePlayers(int row, int col) {
+
+        if (!game.isGameOver() && game.placeMark(row, col)) {
+            String mark = String.valueOf(game.getCurrentPlayerMark());
+            btnImage = new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm()));
+            button.setGraphic(btnImage);
+            btnImage.setFitHeight(118.0);
+            btnImage.setFitWidth(96.0);
+            btnImage.setPickOnBounds(true);
+            btnImage.setPreserveRatio(true);
+            button.setDisable(true);
+            aiTurn = true;
+            updateTurnDisplay();
+
+            if (game.isGameOver()) {
+                endOfGame();
+            } else {
+                // Run AI in thread
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(500);
+                        Platform.runLater(() -> {
+                            game.aiMove();
+                            updateBoardUI();
+                            aiTurn = false;
+                            updateTurnDisplay();
+                            if (game.isGameOver()) {
+                                // b3ml check
+                                endOfGame();
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
+        }
+
+    }
+
 }
