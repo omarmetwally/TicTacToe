@@ -33,18 +33,20 @@ import javafx.stage.StageStyle;
 import models.JsonReceiveBase;
 import models.JsonSendBase;
 import models.JsonWrapper;
+import screens.Board.BoardFXMLBase;
+import screens.Board.GameMode;
 import screens.login_screen.LoginScreenBase;
 import screens.login_screen.ServerEventType;
 import tictactoe.TicTacToe;
 
 
 public class PllistBase extends AnchorPane {
-    
-     protected final ImageView imgview;
+    protected final ImageView imgview;
     protected final Button playlist;
     protected final HBox hbox;
     protected final Label name;
     protected final Label status;
+     protected final Label profileName;
     protected final Pane pane;
     protected final VBox vBox;
     protected ListView<Player> playerListView;
@@ -54,7 +56,11 @@ public class PllistBase extends AnchorPane {
     private JsonReceiveBase jsonReceiveBase;
     private  JsonSendBase jsonSendBase;
     private String userName;
-
+    private String senderUserName;
+    private String reciverUserName;
+    private volatile boolean inviteResponseReceived = false;
+    private volatile boolean inviteAccepted = false;
+    private Stage st;
     public PllistBase(Stage stage, String username) {
         userName= username;
         jsonReceiveBase = new JsonReceiveBase();
@@ -63,12 +69,13 @@ public class PllistBase extends AnchorPane {
         hbox = new HBox();
         name = new Label();
         status = new Label();
+        profileName= new Label();
         pane = new Pane();
         vBox = new VBox(30);
         playerListView = new ListView<>();
         Backbtn = new Button();
         imgCover = new Image("/assets/cover.png");
-        
+     
         setId("AnchorPane");
         setPrefHeight(736.0);
         setPrefWidth(1413.0);
@@ -113,6 +120,15 @@ public class PllistBase extends AnchorPane {
         status.setText("Points");
         status.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         status.setFont(new Font("Comic Sans MS Bold", 40.0));
+        
+        profileName.setAlignment(javafx.geometry.Pos.CENTER);
+        profileName.setLayoutX(1480);
+        profileName.setLayoutY(180.0);
+        profileName.setPrefHeight(39.0);
+        profileName.setPrefWidth(550.0);
+        profileName.setText(userName);
+        profileName.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
+        profileName.setFont(new Font("Comic Sans MS Bold", 40.0));
 
         pane.setLayoutX(555.0);
         pane.setLayoutY(260.0);
@@ -133,7 +149,10 @@ public class PllistBase extends AnchorPane {
         
         // Update the observable list with the received list of players
        
-      
+        // Create an instance of YourUIType for the current player
+     
+
+    // Add the current player's UI to the map  
         Backbtn.setLayoutX(31.0);
         Backbtn.setLayoutY(20.0);
         Backbtn.setMnemonicParsing(false);
@@ -151,64 +170,43 @@ public class PllistBase extends AnchorPane {
         pane.getChildren().add(playerListView);
         getChildren().add(pane);
         getChildren().add(Backbtn);
-        
+        getChildren().add(profileName);
+
         getActivePlayers(stage);
-        
+        startListener();
        
     }
     
-
-    
     //Method to get Available players from Server
      private void getActivePlayers (Stage stage) {
-        new Thread(()-> {
-          
-                  
+            new Thread(()-> {
                     Helper helper = new Helper();
                     String response = null;
                      Player newplayer = new Player();
                      newplayer.setUserName(userName);
                     Gson gson = new Gson();
                     String jsonData = gson.toJson(newplayer);
-                try {
+           try {
                      response = helper.ListRequest(jsonData);
                      System.out.println("Received response: Aya " + response);
-                     
-                     //Proccess the response from the server
-                    //JsonReceiveBase jsonReceiveBase = JsonWrapper.fromJson(response, JsonReceiveBase.class);
-                    // Check the status in the JsonReceiveBase object
-                    
+
                     Type typee = new TypeToken<ArrayList<Player>>() {}.getType();                   
                     ArrayList<Player> playerList = JsonWrapper.fromJson(response, typee);
                      
                      // Update the playerListView with the received list of players
-                       
                         Platform.runLater(() -> {
                         // Clear the existing list and add the new players
-                        observablePlayerList.clear();
-                        observablePlayerList.addAll(playerList);
-                        });
-                        
-                        
-//                    int status = jsonReceiveBase.getStatus();
-//                    String type = jsonReceiveBase.getType();
-//                    String message = jsonReceiveBase.getMessge();
-//                    if (status == 1 && ServerEventType.AvailPlayers.name().equals(type)){
-//                         
-//                    Type typee = new TypeToken<ArrayList<Player>>() {}.getType();                   
-//                    ArrayList<Player> playerList = JsonWrapper.fromJson(response, typee);
-//                     
-//                     // Update the playerListView with the received list of players
-//                        Platform.runLater(() -> playerListView.getItems().setAll(playerList));
-//                    }else {
-//                        System.out.println("Invalid response from the server.");
-//                    }  
+                          observablePlayerList.clear();
+                          observablePlayerList.addAll(playerList);
+                          // playerListView.getItems().setAll(playerList);
+                        });  
                 } catch (IOException ex) {
                     Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            
+         
         }).start();
     }
+    
 
     class PlayerListCell extends ListCell<Player> {
     @Override
@@ -236,7 +234,7 @@ public class PllistBase extends AnchorPane {
             pointsLabel.setFont(new Font("Bookman Old Style Bold", 25.0));
           //  pointsLabel.setPadding(new Insets(0.0, 0.0, 0.0, 22.0));
             
-            Button inviteButton = new Button("Invite");
+               Button inviteButton = new Button("Invite");
                inviteButton.setMnemonicParsing(false);
                
                inviteButton.setLayoutX(200);
@@ -263,13 +261,17 @@ public class PllistBase extends AnchorPane {
     }
 
 }
+    
+    
+    
      private void invitePlayer(Player player) {
          
          // Retrieve the associated Player object from the item property
         String username = player.getName();
         //To send Username of the Player that i want to play with him
         sendInviteRequest(username); 
-            try {
+            
+           try {
                 // Load the second FXML file for the invitation dialog
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("alert.fxml"));
                 Parent root = loader.load();
@@ -284,12 +286,25 @@ public class PllistBase extends AnchorPane {
                         stage.close();
                     }
                 });
-        
-
                 Stage popupStage = new Stage();
                 popupStage.initModality(Modality.APPLICATION_MODAL);
                 popupStage.initStyle(StageStyle.UNDECORATED);
                 popupStage.setScene(new Scene(root, Color.TRANSPARENT));
+                new Thread(() -> {
+                boolean accepted = waitForInviteResponse();
+
+                Platform.runLater(() -> {
+                    if (accepted) {
+                        popupStage.close();
+                        BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.TwoPlayers);
+                        Scene boardScene = new Scene(boardScreen);
+                        TicTacToe.changeScene(boardScene);
+                    } else {
+                        // Handle rejection case
+                        popupStage.close();
+                    }
+                });
+            }).start();
                 popupStage.showAndWait(); 
           
                 
@@ -297,26 +312,174 @@ public class PllistBase extends AnchorPane {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-     
+        
+     }
      private void sendInviteRequest(String username){
-         new Thread(()-> {
-                  
-                  
-                  System.out.println("in sendInviteRequest"+userName);
+         new Thread(()-> { 
                    Helper helper = new Helper();
                    OnlineBoard game = new OnlineBoard(userName, username);
                    Gson gson2 = new Gson();
                    String jsonTwoUsers = gson2.toJson(game);
-                   System.out.println("UserName of the Player that need to invite him "+jsonTwoUsers);
                    
+                   System.out.println("Send to Server (Sender,Reciever)"+jsonTwoUsers);
+                 
              try {
-                String Response = helper.InviteRequest(jsonTwoUsers);
-              
-                 //handle Response from Server
+                 String Response = helper.InviteRequest(jsonTwoUsers);  
+                  //handle Response from Server
              } catch (IOException ex) {
                  Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
-             }
+             } 
+            }).start(); 
+     }
+     
+     //to be Client ready for any response from server
+     public void startListener () {
+         new Thread(() -> {
+            Helper helper = new Helper();
+            while (true) {
+                try {
+                    System.out.println("Listening for server messages...");
+                    String message = helper.readMessage();
+                    if (message != null) {
+                        System.out.println("Message received: " + message);
+                        handleServerMessage(message);
+                    }
+                    try {
+                        Thread.sleep(100);  // Short sleep to prevent tight looping
+                    } catch (InterruptedException e) {
+                        System.out.println("Listener thread interrupted");
+                        break;  
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, "IOException in listener thread", ex);
+                   
+                } catch (Exception e) {
+                    Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, "Unexpected exception in listener thread", e);
+                   
+
+                }
+            }
+            System.out.println("Listener thread exiting");
         }).start();
+     }
+     
+     private void handleServerMessage(String Message){
+         if (Message == null) {
+            System.out.println("Received null message from server.");
+            return;
+        }
+         try{
+             if (Message.trim().startsWith("[")) {
+                System.out.println("nothing"); //because the response of Players List
+            }
+            else {
+
+                JsonReceiveBase receivedMessage = JsonWrapper.fromJson(Message, JsonReceiveBase.class);
+                if (receivedMessage.getType().equals(ServerEventType.Invite.name())) {
+                    // Handle the invite 
+                    OnlineBoard on = JsonWrapper.fromJson(Message, OnlineBoard.class);;
+                    senderUserName = on.getSenderUserName();
+                    reciverUserName = on.getReceiverUserName();
+                    if (reciverUserName.equals(userName)) {
+                        Platform.runLater(() -> showInvitationPopup(senderUserName));
+                    }
+                } else if (receivedMessage.getType().equals(ServerEventType.InviteResponse.name())) {
+                    InviteResponse response = JsonWrapper.fromJson(Message, InviteResponse.class);
+                    if (response.getSenderUserName().equals(userName) && response.getStatus() == 1) {
+                        inviteResponseReceived = true;
+                        inviteAccepted = true; 
+                    }
+
+                }
+            }
+         }catch (Exception e) {
+            System.out.println("Error parsing server message: " + e.getMessage());
+        }
+     }
+     
+     
+     
+    
+     
+     private void showInvitationPopup(String senderUsername) {
+         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Game Invitation");
+        alert.setHeaderText("You have received an invitation!");
+
+        ButtonType buttonAccept = new ButtonType("Accept", ButtonBar.ButtonData.OK_DONE);
+        ButtonType buttonReject = new ButtonType("Reject", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonAccept, buttonReject);
+
+        Label label = new Label("Would you like to accept the game invitation from" + senderUsername + " ?");
+        alert.getDialogPane().setContent(label);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == buttonAccept) {
+            System.out.println("Invitation Accepted");
+            acceptInvite(senderUserName);
+            BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.TwoPlayers);
+            Scene boardScene = new Scene(boardScreen);
+            TicTacToe.changeScene(boardScene);
+
+        } else {
+            System.out.println("Invitation Rejected");
+            rejectInvite(senderUserName);
+        }
+     }
+     
+     private void acceptInvite(String senderUserName) {
+        // Send acceptance message to server
+        sendInviteResponse(senderUserName, true);
     }
+     
+     private void rejectInvite(String senderUserName) {
+        // Send acceptance message to server
+        sendInviteResponse(senderUserName, false);
+    } 
+     
+    private void sendInviteResponse(String senderUserName, boolean accepted) {
+        // Construct the response message
+        InviteResponse response = new InviteResponse();
+        response.setType(ServerEventType.InviteResponse.name());
+        response.setSenderUserName(senderUserName); //
+        response.setReceiverUserName(reciverUserName); //the playe who response 
+        response.setStatus(accepted ? 1 : 0); // 1 for accept, 0 for reject
+
+        String jsonResponse = JsonWrapper.toJson(response);
+
+        // Send the response to the server
+        try {
+            Helper helper = new Helper();
+            String Response = helper.InviteRequest(jsonResponse);
+            InviteResponseRecive rec = JsonWrapper.fromJson(Response, InviteResponseRecive.class);
+
+            if (rec.getType().equals(ServerEventType.InviteResponse.name())) {
+                if (rec.getStatus() == 1) {
+                   
+                     System.out.println("Done " + reciverUserName + "Acepted your request");
+                  
+                } else {
+                    System.out.println("Sorry " + reciverUserName + "Rejected your request");
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    //Method to make Sender wait for response from receiver
+    private boolean waitForInviteResponse() {
+        while (!inviteResponseReceived) {
+            try {
+                System.out.println("wait");
+                Thread.sleep(100); // Sleep for a short period to avoid busy waiting
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return inviteAccepted;
+    }
+ 
+    
 }
