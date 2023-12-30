@@ -15,16 +15,11 @@ import java.net.Socket;
  *
  * @author allam
  */
-
 public class Helper {
 
     Socket playerSocket;
     DataInputStream ear;
     PrintStream mouth;
-
-
-
-
 
     public Helper() {
 
@@ -51,32 +46,40 @@ public class Helper {
 
     }
 
-
     public String loginRequest(String userCredential) throws IOException {
 
         if (playerSocket.isConnected()) {
-            mouth.println(userCredential); 
-            return ear.readLine(); 
+            mouth.println(userCredential);
+            return ear.readLine();
         } else {
             return null;
         }
 
     }
-    
-        public String ListRequest (String userNameJ) throws IOException{
+
+    public String ListRequest(String userNameJ) throws IOException {
         if (playerSocket.isConnected()) {
             mouth.println(userNameJ);
             return ear.readLine();  // Store the response
-        }else {
+        } else {
             return null;
         }
     }
-    
-    public String InviteRequest (String userNameJ) throws IOException{
+
+    public String InviteRequest(String userNameJ) throws IOException {
         if (playerSocket.isConnected()) {
             mouth.println(userNameJ);
             return ear.readLine();  // Store the response
-        }else {
+        } else {
+            return null;
+        }
+    }
+
+    public String readMessage() throws IOException {
+       if (playerSocket.isConnected()) {
+            
+            return ear.readLine();  // Store the response
+        } else {
             return null;
         }
     }
@@ -93,17 +96,9 @@ public class Helper {
         }
     }
 
-
-   
-
-     
-  
-
     public static void main(String[] args) {
 
         new Helper();
     }
 
 }
-
-

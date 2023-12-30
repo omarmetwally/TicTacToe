@@ -137,8 +137,9 @@ public class LoginScreenBase extends AnchorPane {
 
         loginButton.setOnAction((event) -> {
             new Thread(() -> {
+               Helper helper = new Helper();
                 try {
-                    Helper helper = new Helper();
+                    
                     UserCredentials userCredentials = getUserCredentials();
                     Gson gson = new Gson();
                     String jsonUserCredentials = gson.toJson(userCredentials);
@@ -161,6 +162,13 @@ public class LoginScreenBase extends AnchorPane {
                 } catch (IOException ex) {
                     Logger.getLogger(LoginScreenBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                finally {
+                        try {
+                            helper.closeConnection();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
 
             }).start();
 

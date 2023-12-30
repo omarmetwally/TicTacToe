@@ -13,6 +13,22 @@ import screens.login_screen.ServerEventType;
  */
 public class OnlineBoard {
     String senderUserName;
+
+    public String getSenderUserName() {
+        return senderUserName;
+    }
+
+    public void setSenderUserName(String senderUserName) {
+        this.senderUserName = senderUserName;
+    }
+
+    public String getReceiverUserName() {
+        return ReceiverUserName;
+    }
+
+    public void setReceiverUserName(String ReceiverUserName) {
+        this.ReceiverUserName = ReceiverUserName;
+    }
     String ReceiverUserName;
     String currentTurn;
     private ServerEventType type = ServerEventType.Invite;
