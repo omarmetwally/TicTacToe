@@ -1,6 +1,10 @@
 package screens.Board;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,10 +32,12 @@ import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import screens.Record.Record;
+import screens.Record.RecordFXMLBase;
 import tictactoe.TicTacToe;
 
 public class BoardFXMLBase extends AnchorPane {
@@ -88,7 +94,11 @@ public class BoardFXMLBase extends AnchorPane {
     protected Text whosTurn;
     protected boolean aiTurn = false;
     protected final Record record;
+
     protected  MediaPlayer mediaPlayer;
+
+    private boolean isRecording = false;
+
 
     protected final GameMode gamemode; //'multi' ,'Single'
     protected ImageView btnImage;
@@ -514,6 +524,10 @@ public class BoardFXMLBase extends AnchorPane {
         getChildren().add(btnRecord);
         getChildren().add(btnBack);
         getChildren().add(whosTurn);
+        if (gamemode == GameMode.RECORD) {
+            System.out.println("in record");
+            selectRecordFileForReplay();
+        }
     }
 
     private void handleButtonClick(int row, int col, Button button) {
@@ -558,6 +572,7 @@ public class BoardFXMLBase extends AnchorPane {
                     btnImage.setPickOnBounds(true);
                     btnImage.setPreserveRatio(true);
                     button.setDisable(true);
+                    disableAllButtons();
                     aiTurn = true;
                     updateTurnDisplay();
 
@@ -573,6 +588,7 @@ public class BoardFXMLBase extends AnchorPane {
                                     game.aiMove();
                                     updateBoardUI();
                                     aiTurn = false;
+                                    enableAllButtons();
                                     updateTurnDisplay();
                                     if (game.isGameOver()) {
                                         // b3ml check
@@ -632,6 +648,14 @@ public class BoardFXMLBase extends AnchorPane {
         }
 
     }
+       private void enableAllButtons() {
+        for (int i = 0; i < gridPane.getChildren().size(); i++) {
+            Button button = (Button) gridPane.getChildren().get(i);
+            button.setDisable(false);
+        }
+
+    }
+
 
     private void endOfGameAlert() {
 
@@ -764,6 +788,86 @@ public class BoardFXMLBase extends AnchorPane {
             String playerName = game.getPlayer2Name();
             whosTurn.setText(playerName + "'s Turn!");
         }
+    }
+
+    private List<String> readMovesFromFile(String fileName) {
+        List<String> moves = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                moves.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return moves;
+    }
+
+    public void replayGame(String fileName) {
+        String[] players = extractPlayerNamesFromFile(fileName);
+        List<String> moves = readMovesFromFile(fileName);
+
+        initializeBoardWithPlayers();
+        new Thread(() -> {
+            for (String move : moves) {
+              
+
+                Platform.runLater(() -> replayMove(move));
+                try {
+                    // Sleep for 1 second
+                    Thread.sleep(1000);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void replayMove(String move) {
+     
+        String[] parts = move.split("[, ]+"); 
+        int row = Integer.parseInt(parts[3]);
+        int col = Integer.parseInt(parts[5]);
+
+        if (!game.isGameOver() && game.placeMark(row, col)) {
+       
+            updateBoardUI();
+            if (game.isGameOver()) {
+
+                highlightWinningCombination();
+                String winnerText = game.isDraw() ? "It's a Draw!" : game.getWinner() + " wins!";
+                whosTurn.setText(winnerText);
+            }
+
+        }
+
+    }
+
+    private void initializeBoardWithPlayers() {
+
+        scorePlayer1.setVisible(false);
+        scorePlayer2.setVisible(false);
+        btnRecord.setVisible(false);
+
+        resetGame(); 
+    }
+
+    public void selectRecordFileForReplay() {
+        String directory = System.getProperty("user.dir") + "/src/screens/Record/";
+        File selectedFile = new File(directory, RecordFXMLBase.fileName);
+
+        System.out.println("Absolute path: " + selectedFile.getAbsolutePath());
+
+        if (selectedFile != null) {
+            replayGame(selectedFile.getAbsolutePath());
+        }
+    }
+
+    private String[] extractPlayerNamesFromFile(String fileName) {
+    
+        String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
+        return baseName.split("&");
     }
 
 }
