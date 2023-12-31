@@ -37,6 +37,7 @@ import screens.Board.BoardFXMLBase;
 import screens.Board.GameMode;
 import screens.login_screen.LoginScreenBase;
 import screens.login_screen.ServerEventType;
+import screens.mode.ModeScreenBase;
 import tictactoe.TicTacToe;
 
 
@@ -61,6 +62,7 @@ public class PllistBase extends AnchorPane {
     private volatile boolean inviteResponseReceived = false;
     private volatile boolean inviteAccepted = false;
     private Stage st;
+    private alertBase alert;
     public PllistBase(Stage stage, String username) {
         userName= username;
         jsonReceiveBase = new JsonReceiveBase();
@@ -74,11 +76,12 @@ public class PllistBase extends AnchorPane {
         vBox = new VBox(30);
         playerListView = new ListView<>();
         Backbtn = new Button();
-        imgCover = new Image("/assets/cover.png");
-     
+        imgCover = new Image("/assets/cov.jpg");
+        alert = new alertBase();
         setId("AnchorPane");
         setPrefHeight(736.0);
         setPrefWidth(1413.0);
+       // setStyle("-fx-background-color: #3C7CD7;");
 
         imgview.setFitHeight(1174.0);
         imgview.setFitWidth(2043.0);
@@ -103,11 +106,13 @@ public class PllistBase extends AnchorPane {
         hbox.setLayoutX(550.0);
         hbox.setLayoutY(155.0);
         hbox.setPrefHeight(49.0);
-        hbox.setPrefWidth(826.0);
-
+        hbox.setPrefWidth(848.0);
+        hbox.setStyle("-fx-background-color: #4787EE; -fx-background-radius: 10;");
+        
+        
         name.setAlignment(javafx.geometry.Pos.CENTER);
         name.setPrefHeight(30.0);
-        name.setPrefWidth(130.0);
+        name.setPrefWidth(136.0);
         name.setText("Name");
         name.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         name.setFont(new Font("Comic Sans MS Bold", 40.0));
@@ -122,8 +127,8 @@ public class PllistBase extends AnchorPane {
         status.setFont(new Font("Comic Sans MS Bold", 40.0));
         
         profileName.setAlignment(javafx.geometry.Pos.CENTER);
-        profileName.setLayoutX(1480);
-        profileName.setLayoutY(180.0);
+        profileName.setLayoutX(1500);
+        profileName.setLayoutY(170.0);
         profileName.setPrefHeight(39.0);
         profileName.setPrefWidth(550.0);
         profileName.setText(userName);
@@ -139,6 +144,8 @@ public class PllistBase extends AnchorPane {
         vBox.setPrefWidth(765.0);
         
          // Load the CSS file
+        String css = getClass().getResource("Plist.css").toExternalForm();
+        getStylesheets().add(css); 
         playerListView.setCellFactory(param -> new PlayerListCell());
         playerListView.setStyle("-fx-control-inner-background: LIGHTSKYBLUE;");
         playerListView.setPrefHeight(500.0);
@@ -146,12 +153,6 @@ public class PllistBase extends AnchorPane {
         observablePlayerList = FXCollections.observableArrayList();
         playerListView.setItems(observablePlayerList);
         // playerListView.setBackground(imgList);
-        
-        // Update the observable list with the received list of players
-       
-        // Create an instance of YourUIType for the current player
-     
-
     // Add the current player's UI to the map  
         Backbtn.setLayoutX(31.0);
         Backbtn.setLayoutY(20.0);
@@ -160,7 +161,11 @@ public class PllistBase extends AnchorPane {
         Backbtn.setText("Back");
         Backbtn.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         Backbtn.setFont(new Font("Comic Sans MS Bold", 25.0));
-        Backbtn.setOnAction(event -> TicTacToe.goBack());
+        Backbtn.setOnAction((event) -> {
+            ModeScreenBase boardScreen =new ModeScreenBase(stage);
+            Scene boardScene = new Scene(boardScreen);
+            TicTacToe.changeScene(boardScene);
+        });
            
         getChildren().add(imgview);
         getChildren().add(playlist);
@@ -172,13 +177,13 @@ public class PllistBase extends AnchorPane {
         getChildren().add(Backbtn);
         getChildren().add(profileName);
 
-        getActivePlayers(stage);
+        getActivePlayers();
         startListener();
        
     }
     
     //Method to get Available players from Server
-     private void getActivePlayers (Stage stage) {
+     private void getActivePlayers () {
             new Thread(()-> {
                     Helper helper = new Helper();
                     String response = null;
@@ -188,17 +193,17 @@ public class PllistBase extends AnchorPane {
                     String jsonData = gson.toJson(newplayer);
            try {
                      response = helper.ListRequest(jsonData);
-                     System.out.println("Received response: Aya " + response);
-
+                    // System.out.println("Received response: Aya " + response);
                     Type typee = new TypeToken<ArrayList<Player>>() {}.getType();                   
                     ArrayList<Player> playerList = JsonWrapper.fromJson(response, typee);
-                     
+                      // To Remove the Player that login from the list
+                       playerList.removeIf(player -> player.getUserName().equals(userName));
                      // Update the playerListView with the received list of players
                         Platform.runLater(() -> {
                         // Clear the existing list and add the new players
                           observablePlayerList.clear();
                           observablePlayerList.addAll(playerList);
-                          // playerListView.getItems().setAll(playerList);
+                          
                         });  
                 } catch (IOException ex) {
                     Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
@@ -218,25 +223,20 @@ public class PllistBase extends AnchorPane {
            setGraphic(null);
         } else {
             
-          /*   Circle circle= new Circle();
-            circle.setFill(javafx.scene.paint.Color.DODGERBLUE);
-            circle.setRadius(30.0);
-            circle.setStroke(javafx.scene.paint.Color.BLACK);
-            circle.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-            circle.setFill(new ImagePattern(player.getImage()));   */
-            
             Label nameLabel = new Label(player.getName());
             nameLabel.setTextFill(javafx.scene.paint.Color.WHITE);
             nameLabel.setFont(new Font("Bookman Old Style Bold", 25.0));
+            nameLabel.setMinWidth(200);
            // nameLabel.setPadding(new Insets(0.0, 0.0, 0.0, 20.0));
             Label pointsLabel = new Label(""+player.getPoints());
             pointsLabel.setTextFill(javafx.scene.paint.Color.WHITE);
             pointsLabel.setFont(new Font("Bookman Old Style Bold", 25.0));
+            pointsLabel.setMinWidth(100);
           //  pointsLabel.setPadding(new Insets(0.0, 0.0, 0.0, 22.0));
             
                Button inviteButton = new Button("Invite");
                inviteButton.setMnemonicParsing(false);
-               
+               inviteButton.setMinWidth(90); 
                inviteButton.setLayoutX(200);
                inviteButton.setPrefHeight(50.0);
                inviteButton.setPrefWidth(90.0);
@@ -248,15 +248,23 @@ public class PllistBase extends AnchorPane {
                // Set the UserData property of the inviteButton to store the associated Player
                inviteButton.setUserData(player); 
                inviteButton.setOnAction(e -> invitePlayer((Player) inviteButton.getUserData()));
-
-
             HBox hbox = new HBox();
             hbox.getChildren().addAll(nameLabel, new Region(), pointsLabel, new Region(), inviteButton);
-            HBox.setHgrow(new Region(), Priority.ALWAYS);   //to add felxiable space 
-            hbox.setSpacing(10);   //Space between image and name
-            HBox.setMargin(nameLabel, new Insets(0, 0, 0, 0)); // Right and left margin for pointsLabel
-            hbox.setSpacing(120); // Spacing between pointsLabel and inviteButton   
+            HBox.setHgrow(new Region(), Priority.ALWAYS);   // to add flexible space
+            hbox.setSpacing(10);   
+            HBox.setMargin(nameLabel, new Insets(0, 0, 0, 0)); 
+            hbox.setSpacing(110); // Spacing between pointsLabel and inviteButton
+            
             setGraphic(hbox);
+            
+            int index = getIndex();
+            if (index % 2 == 0) {
+                // Even row
+                setStyle("-fx-background-color: #3c74ce;");  
+            } else {
+                // Odd row
+                setStyle("-fx-background-color: #4787EE;");  
+            }
         }
     }
 
@@ -264,7 +272,7 @@ public class PllistBase extends AnchorPane {
     
     
     
-     private void invitePlayer(Player player) {
+private void invitePlayer(Player player) {
          
          // Retrieve the associated Player object from the item property
         String username = player.getName();
@@ -276,6 +284,7 @@ public class PllistBase extends AnchorPane {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("alert.fxml"));
                 Parent root = loader.load();
                 Button cancel = (Button) loader.getNamespace().get("cnacelbtn");
+                Text text = (Text) loader.getNamespace().get("waittxt");
                 cancel.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: #2AAAFD;");
                 cancel.setTextFill(javafx.scene.paint.Color.valueOf("#ffff"));
                 cancel.setFont(new Font("System Bold Italic", 25.0));
@@ -286,6 +295,8 @@ public class PllistBase extends AnchorPane {
                         stage.close();
                     }
                 });
+                text.setText("Waiting for Approval...");
+                text.setFont(new Font("Comic Sans MS Bold", 41.0));
                 Stage popupStage = new Stage();
                 popupStage.initModality(Modality.APPLICATION_MODAL);
                 popupStage.initStyle(StageStyle.UNDECORATED);
@@ -301,7 +312,6 @@ public class PllistBase extends AnchorPane {
                         TicTacToe.changeScene(boardScene);
                     } else {
                         // Handle rejection case
-                        popupStage.close();
                     }
                 });
             }).start();
@@ -325,7 +335,6 @@ public class PllistBase extends AnchorPane {
                  
              try {
                  String Response = helper.InviteRequest(jsonTwoUsers);  
-                  //handle Response from Server
              } catch (IOException ex) {
                  Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
              } 
@@ -359,7 +368,6 @@ public class PllistBase extends AnchorPane {
 
                 }
             }
-            System.out.println("Listener thread exiting");
         }).start();
      }
      
@@ -370,26 +378,30 @@ public class PllistBase extends AnchorPane {
         }
          try{
              if (Message.trim().startsWith("[")) {
-                System.out.println("nothing"); //because the response of Players List
+                // getActivePlayers();
             }
             else {
 
                 JsonReceiveBase receivedMessage = JsonWrapper.fromJson(Message, JsonReceiveBase.class);
                 if (receivedMessage.getType().equals(ServerEventType.Invite.name())) {
                     // Handle the invite 
-                    OnlineBoard on = JsonWrapper.fromJson(Message, OnlineBoard.class);;
-                    senderUserName = on.getSenderUserName();
-                    reciverUserName = on.getReceiverUserName();
+                    OnlineBoard online = JsonWrapper.fromJson(Message, OnlineBoard.class);;
+                    senderUserName = online.getSenderUserName();
+                    reciverUserName = online.getReceiverUserName();
                     if (reciverUserName.equals(userName)) {
                         Platform.runLater(() -> showInvitationPopup(senderUserName));
                     }
+                    System.out.println("Receiver Player receive response from server");
                 } else if (receivedMessage.getType().equals(ServerEventType.InviteResponse.name())) {
                     InviteResponse response = JsonWrapper.fromJson(Message, InviteResponse.class);
                     if (response.getSenderUserName().equals(userName) && response.getStatus() == 1) {
                         inviteResponseReceived = true;
                         inviteAccepted = true; 
                     }
-
+                }
+                else if (receivedMessage.getType().equals(ServerEventType.Login.name()))
+                {
+                    getActivePlayers();
                 }
             }
          }catch (Exception e) {
@@ -416,23 +428,23 @@ public class PllistBase extends AnchorPane {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == buttonAccept) {
             System.out.println("Invitation Accepted");
-            acceptInvite(senderUserName);
+            acceptInvitation(senderUserName);
             BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.TwoPlayers);
             Scene boardScene = new Scene(boardScreen);
             TicTacToe.changeScene(boardScene);
 
         } else {
             System.out.println("Invitation Rejected");
-            rejectInvite(senderUserName);
+            rejectInvitation(senderUserName);
         }
      }
      
-     private void acceptInvite(String senderUserName) {
-        // Send acceptance message to server
+     private void acceptInvitation(String senderUserName) {
+        // Send acceptance message to servers
         sendInviteResponse(senderUserName, true);
     }
      
-     private void rejectInvite(String senderUserName) {
+     private void rejectInvitation(String senderUserName) {
         // Send acceptance message to server
         sendInviteResponse(senderUserName, false);
     } 
@@ -441,28 +453,32 @@ public class PllistBase extends AnchorPane {
         // Construct the response message
         InviteResponse response = new InviteResponse();
         response.setType(ServerEventType.InviteResponse.name());
-        response.setSenderUserName(senderUserName); //
+        response.setSenderUserName(senderUserName); 
         response.setReceiverUserName(reciverUserName); //the playe who response 
         response.setStatus(accepted ? 1 : 0); // 1 for accept, 0 for reject
 
         String jsonResponse = JsonWrapper.toJson(response);
 
-        // Send the response to the server
+        // Receive response of  Receiver from server
         try {
             Helper helper = new Helper();
             String Response = helper.InviteRequest(jsonResponse);
             InviteResponseRecive rec = JsonWrapper.fromJson(Response, InviteResponseRecive.class);
 
+           
             if (rec.getType().equals(ServerEventType.InviteResponse.name())) {
+               if(senderUserName.equals(userName)) {  
                 if (rec.getStatus() == 1) {
                    
                      System.out.println("Done " + reciverUserName + "Acepted your request");
+                     // inviteResponseReceived = true;
                   
                 } else {
                     System.out.println("Sorry " + reciverUserName + "Rejected your request");
+                    // inviteResponseReceived = true;
                 }
             }
-
+         }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -481,5 +497,8 @@ public class PllistBase extends AnchorPane {
         return inviteAccepted;
     }
  
-    
+    //method to handle the popup 
+    private void popUp (String alertText,String buttonText) {
+        
+    }
 }

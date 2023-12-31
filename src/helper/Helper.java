@@ -98,16 +98,7 @@ public class Helper {
         }
     }
   
-    
-  public String receiveInvitation() throws IOException {
-    if (playerSocket.isConnected()) {
-           String message = ear.readLine();
-           System.out.println("in the Helper i recieve from Allam  "+message);
-            return message;
-    } else {
-        return null;
-    }    
-}
+
     
 
     public void closeConnection() throws IOException {
