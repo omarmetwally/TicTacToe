@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import screens.Board.BoardFXMLBase;
 import screens.Board.GameMode;
 import screens.LocalOnlinescreen.LocalonscreenBase;
+import screens.Record.RecordFXMLBase;
 import tictactoe.TicTacToe;
 
 public class ModeScreenBase extends AnchorPane {
@@ -18,12 +19,14 @@ public class ModeScreenBase extends AnchorPane {
     protected final ImageView imageView;
     protected final Button btnSingle;
     protected final Button btnMulti;
+    protected final Button btnOfflineRecord;
 
     public ModeScreenBase(Stage stage) {
 
         imageView = new ImageView();
         btnSingle = new Button();
         btnMulti = new Button();
+        btnOfflineRecord = new Button();
 
         setId("AnchorPane");
         setPrefHeight(824.0);
@@ -47,10 +50,9 @@ public class ModeScreenBase extends AnchorPane {
         btnSingle.setFont(new Font("Comic Sans MS Bold", 45.0));
         btnSingle.setOnAction((event) -> {
 
-            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,"Player 1","  Robot",GameMode.AI);
+            BoardFXMLBase boardScreen = new BoardFXMLBase(stage, "Player 1", "  Robot", GameMode.AI);
             Scene boardScene = new Scene(boardScreen);
             TicTacToe.changeScene(boardScene);
-
 
         });
 
@@ -72,9 +74,31 @@ public class ModeScreenBase extends AnchorPane {
 
         });
 
+        btnOfflineRecord.setLayoutX(759);
+        btnOfflineRecord.setLayoutY(718);
+        btnOfflineRecord.setMnemonicParsing(false);
+        btnOfflineRecord.setPrefHeight(141.0);
+        btnOfflineRecord.setPrefWidth(406.0);
+        btnOfflineRecord.setStyle("-fx-background-radius: 25; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
+        btnOfflineRecord.setText("Offline Record");
+        btnOfflineRecord.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        btnOfflineRecord.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
+        btnOfflineRecord.setFont(new Font("Comic Sans MS Bold", 39.0));
+          btnOfflineRecord.setOnAction((event) -> {
+
+            RecordFXMLBase recordScreen = new RecordFXMLBase(stage);
+            Scene recordScene = new Scene(recordScreen);
+            TicTacToe.changeScene(recordScene);
+
+        });
+        
+        
+        
+        
         getChildren().add(imageView);
         getChildren().add(btnSingle);
         getChildren().add(btnMulti);
+        getChildren().add(btnOfflineRecord);
 
     }
 }
