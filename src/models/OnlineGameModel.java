@@ -11,21 +11,24 @@ import java.net.Socket;
  *
  * @author Sasa Adel
  */
-public class OnlineGameModel {
+public class OnlineGameModel extends JsonSendBase {
 
     private String player1UserName;
     private String player2UserName;
     private String currentPlayerUserName;
     private int row;
     private int col;
-    private int type;
-    private String currentPlayerMark;
+    private char currentPlayerMark;
 
-    public String getCurrentPlayerMark() {
+    public OnlineGameModel() {
+        super.type = ServerEventType.OnlineGame.name();
+    }
+
+    public char getCurrentPlayerMark() {
         return currentPlayerMark;
     }
 
-    public void setCurrentPlayerMark(String currentPlayerMark) {
+    public void setCurrentPlayerMark(char currentPlayerMark) {
         this.currentPlayerMark = currentPlayerMark;
     }
 
@@ -69,13 +72,10 @@ public class OnlineGameModel {
         this.col = col;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
-
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
-
-    
 }

@@ -52,5 +52,3 @@ public abstract class alertBase extends AnchorPane {
     
          
 }
-
-    

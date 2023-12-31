@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -62,22 +63,22 @@ public class LocalPlayersBase extends AnchorPane {
         tPlayerOne.setFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         tPlayerOne.setLayoutX(600.0);
         tPlayerOne.setLayoutY(350.0);
-        tPlayerOne.setStroke(javafx.scene.paint.Color.BLACK);
-        tPlayerOne.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
+        tPlayerOne.setStroke(Color.BLACK);
+        tPlayerOne.setStrokeWidth(2);
         tPlayerOne.setText("Player 1");
         tPlayerOne.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
-        tPlayerOne.setWrappingWidth(200.0);
-        tPlayerOne.setFont(new Font("Comic Sans MS Bold", 50.0));
+        tPlayerOne.setWrappingWidth(250.0);
+        tPlayerOne.setFont(new Font("Comic Sans MS Bold", 58.0));
 
         tPlayerTwo.setFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         tPlayerTwo.setLayoutX(600.0);
         tPlayerTwo.setLayoutY(500.0);
-        tPlayerTwo.setStroke(javafx.scene.paint.Color.BLACK);
-        tPlayerTwo.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
+        tPlayerTwo.setStroke(Color.BLACK);
+        tPlayerTwo.setStrokeWidth(2);
         tPlayerTwo.setText("Player 2");
         tPlayerTwo.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
-        tPlayerTwo.setWrappingWidth(200.0);
-        tPlayerTwo.setFont(new Font("Comic Sans MS Bold", 50.0));
+        tPlayerTwo.setWrappingWidth(250.0);
+        tPlayerTwo.setFont(new Font("Comic Sans MS Bold", 58.0));
 
         rectangle.setArcHeight(5.0);
         rectangle.setArcWidth(5.0);

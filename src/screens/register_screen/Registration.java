@@ -5,7 +5,7 @@
  */
 package screens.register_screen;
 
-import screens.login_screen.ServerEventType;
+import models.ServerEventType;
 
 /**
  *

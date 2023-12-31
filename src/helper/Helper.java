@@ -10,24 +10,29 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import models.JsonReceiveBase;
+import models.ServerEventType;
 
 /**
  *
  * @author allam
  */
-
 public class Helper {
 
     Socket playerSocket;
     DataInputStream ear;
     PrintStream mouth;
+    JsonReceiveBase jsonreceive;
+    String messageSent;
+    String messageRecieved;
+
     public Helper() {
 
         try {
             playerSocket = new Socket("127.0.0.1", 5005);
             ear = new DataInputStream(playerSocket.getInputStream());
             mouth = new PrintStream(playerSocket.getOutputStream());
-
+            jsonreceive = new JsonReceiveBase();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -38,7 +43,9 @@ public class Helper {
 
         if (playerSocket.isConnected()) {
             mouth.println(jsonObj);
-            return ear.readLine();
+            String respo = ear.readLine();
+            System.out.println("in the Helper i recieve from Aya  " + respo);
+            return respo;
         } else {
             return null;
 
@@ -46,16 +53,55 @@ public class Helper {
 
     }
 
-
     public String loginRequest(String userCredential) throws IOException {
 
         if (playerSocket.isConnected()) {
-            mouth.println(userCredential); 
-            return ear.readLine(); 
+            mouth.println(userCredential);
+            String respo = ear.readLine();
+            System.out.println("in the Helper i recieve from Samuel  " + respo);
+            return respo;
         } else {
             return null;
         }
 
+    }
+
+    public String ListRequest(String userNameJ) throws IOException {
+        if (playerSocket.isConnected()) {
+            mouth.println(userNameJ);
+            String resposne = ear.readLine();  // Store the response
+            System.out.println("in the Helper i recieve from Aya  " + resposne);
+            return resposne;
+        } else {
+            return null;
+        }
+    }
+
+    public String InviteRequest(String userNameJ) throws IOException {
+        if (playerSocket.isConnected()) {
+            mouth.println(userNameJ);
+            return ear.readLine();  // Store the response  
+        } else {
+            return null;
+        }
+    }
+
+    public String readMessage() throws IOException {
+        if (playerSocket.isConnected()) {
+            return ear.readLine();  // Store the response  
+        } else {
+            return null;
+        }
+    }
+
+    public String receiveInvitation() throws IOException {
+        if (playerSocket.isConnected()) {
+            String message = ear.readLine();
+            System.out.println("in the Helper i recieve from Allam  " + message);
+            return message;
+        } else {
+            return null;
+        }
     }
 
     public void closeConnection() throws IOException {
@@ -70,25 +116,18 @@ public class Helper {
         }
     }
 
-
-   
-    public String sendMove(String moveJson) throws IOException {
-
+    public void sendMove(String moveJson) throws IOException {
+        System.err.println(moveJson);
         if (playerSocket.isConnected()) {
-            mouth.println(moveJson); 
-            return ear.readLine(); 
+            mouth.println(moveJson);
         } else {
-            return null;
+            return;
         }
 
     }
-     
-  
 
     public static void main(String[] args) {
         new Helper();
     }
 
 }
-
-

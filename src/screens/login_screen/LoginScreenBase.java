@@ -1,5 +1,6 @@
 package screens.login_screen;
 
+import models.ServerEventType;
 import com.google.gson.Gson;
 import helper.Helper;
 
@@ -45,7 +46,9 @@ public class LoginScreenBase extends AnchorPane {
     protected final Label registerNowButton;
     protected final Button btnBack;
     private JsonReceiveBase jsonReceiveBase;
+    
     public LoginScreenBase(Stage stage) {
+        
         jsonReceiveBase=new JsonReceiveBase();
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
@@ -146,7 +149,7 @@ public class LoginScreenBase extends AnchorPane {
                     System.out.println(loginResponse);
                     Platform.runLater(() -> {
                         if(jsonReceiveBase.getType().equals(ServerEventType.Login.name())&&jsonReceiveBase.getStatus()==1){
-                        PllistBase listscreen = new PllistBase(stage);
+                        PllistBase listscreen = new PllistBase(stage,userNameTextField.getText());
                         Scene playerListScene = new Scene(listscreen);
                         TicTacToe.changeScene(playerListScene);
                         }else if(jsonReceiveBase.getType().equals(ServerEventType.Login.name())){
@@ -161,6 +164,8 @@ public class LoginScreenBase extends AnchorPane {
             }).start();
 
         });
+        
+     
 
         dontHaveAnAccountLabel.setLayoutX(606.0);
         dontHaveAnAccountLabel.setLayoutY(689.0);
@@ -199,11 +204,13 @@ public class LoginScreenBase extends AnchorPane {
         getChildren().add(registerNowButton);
         getChildren().add(btnBack);
     }
-
+    
     private UserCredentials getUserCredentials() {
 
         return new UserCredentials(userNameTextField.getText(),
                 passwordTextField.getText());
     }
+    
+
 
 }

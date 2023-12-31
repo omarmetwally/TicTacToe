@@ -5,6 +5,8 @@
  */
 package screens.login_screen;
 
+import models.ServerEventType;
+
 /**
  *
  * @author allam

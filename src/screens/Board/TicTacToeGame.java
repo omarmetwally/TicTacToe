@@ -103,28 +103,28 @@ public class TicTacToeGame {
     public boolean isDraw() {
         return isBoardFull() && !checkForWin();
     }
-   
-   public char getWinnerMark() {
-       //in all possible directions
-       for(int i=0 ; i<3 ; i++){
+
+    public char getWinnerMark() {
+        //in all possible directions
+        for (int i = 0; i < 3; i++) {
             //in case rows
-           if(board[i][0]==board[i][1] && board[i][1]==board[i][2] && board[i][0]!=' '){
-               return board [i][0];
-           }  //in case cols
-           if(board[0][i]==board[1][i]&& board[1][i]==board[2][i] && board[0][i]!=' '){
-               return board[0][i];
-           }
-           //in case main diagonal
-           if(board[0][0]==board[1][1] && board[1][1]==board[2][2] && board[0][0]!=' '){
-               return board[0][0];
-           }
-           //in case Secondry diagonal
-           if(board[0][2]==board[1][1] && board[1][1]==board[2][0] && board[0][2]!=' '){
-               return board[0][2];
-           }
-       }
-       return ' ';
-   }
+            if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != ' ') {
+                return board[i][0];
+            }  //in case cols
+            if (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[0][i] != ' ') {
+                return board[0][i];
+            }
+            //in case main diagonal
+            if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != ' ') {
+                return board[0][0];
+            }
+            //in case Secondry diagonal
+            if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] != ' ') {
+                return board[0][2];
+            }
+        }
+        return ' ';
+    }
 
     public String getWinner() {
 
@@ -138,9 +138,7 @@ public class TicTacToeGame {
         }
         return null;
     }
-    
- 
-    
+
     public void aiMove() {
         if (modeOfGame == GameMode.AI) {
             Random rand = new Random();
@@ -193,8 +191,8 @@ public class TicTacToeGame {
 
         char WinnerMark = getWinnerMark();
         if (WinnerMark == 'X') {
-            player1Score++; 
-        } else if(WinnerMark == 'O'){
+            player1Score++;
+        } else if (WinnerMark == 'O') {
             player2Score++;
 
         }
@@ -208,11 +206,9 @@ public class TicTacToeGame {
         return player2Score;
     }
 
-
-    public char[][] getBoard(){
+    public char[][] getBoard() {
         return board;
     }
-
 
     public List<int[]> getWinningCombination() {
         List<int[]> winningCombinations = new ArrayList<>();
@@ -250,10 +246,10 @@ public class TicTacToeGame {
             return winningCombinations;
         }
 
-        return winningCombinations; 
+        return winningCombinations;
     }
 
-      public String getPlayer1Name() {
+    public String getPlayer1Name() {
         return player1Name;
     }
 
@@ -261,4 +257,9 @@ public class TicTacToeGame {
         return player2Name;
     }
 
+    public void setCurrentPlayerMark(char currentPlayerMark) {
+        this.currentPlayerMark = currentPlayerMark;
+    }
+
+    
 }

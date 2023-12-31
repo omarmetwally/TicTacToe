@@ -41,7 +41,6 @@ public class TicTacToe extends Application {
         primaryStage.show();
         new Thread(() -> {
             try {
-
                 Thread.sleep(2000);
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();

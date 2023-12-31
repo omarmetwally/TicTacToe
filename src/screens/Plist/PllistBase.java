@@ -1,8 +1,17 @@
 package screens.Plist;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import helper.Helper;
 import java.io.IOException;
 import java.lang.*;
+import java.lang.reflect.Type;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +20,7 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import static javafx.scene.input.KeyCode.T;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -20,120 +30,64 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import models.JsonReceiveBase;
+import models.JsonSendBase;
+import models.JsonWrapper;
+import screens.Board.BoardFXMLBase;
+import screens.Board.GameMode;
+import screens.login_screen.LoginScreenBase;
+import models.ServerEventType;
 import tictactoe.TicTacToe;
 
 public class PllistBase extends AnchorPane {
-    
-    
+
     protected final ImageView imgview;
     protected final Button playlist;
     protected final HBox hbox;
     protected final Label name;
     protected final Label status;
+    protected final Label profileName;
     protected final Pane pane;
     protected final VBox vBox;
-    protected final FlowPane flow1;
-    protected final Circle circle1;
-    protected final Label aya;
-    protected final Label ayanum;
-    protected final Button invbtn1;
-    protected final FlowPane flow2;
-    protected final Circle circle2;
-    protected final Label samuel;
-    protected final Label samuelnum;
-    protected final Button invbtn2;
-    protected final FlowPane flow3;
-    protected final Circle circle3;
-    protected final Label hadi;
-    protected final Label hadinum;
-    protected final Button invbtn3;
-    protected final FlowPane flow4;
-    protected final Circle circle4;
-    protected final Label omar;
-    protected final Label omarnum;
-    protected final Button invbtn4;
-    protected final FlowPane flow5;
-    protected final Circle circle5;
-    protected final Label allam;
-    protected final Label allamnum;
-    protected final Button invbtn5;
-    protected final FlowPane flow7;
-    protected final Circle circle1111111;
-    protected final Label aya111111;
-    protected final Label ayanum111111;
-    protected final Button invbtn1111111;
+    protected ListView<Player> playerListView;
+    private ObservableList<Player> observablePlayerList;
     protected final Button Backbtn;
-    protected final Image  img1;
-    protected final Image  img2;
-    protected final Image  img3;
-    protected final Image  img4;
-    protected final Image  img5;
-    protected final Image  img6;
-  
+    protected final Image imgCover;
+    private JsonReceiveBase jsonReceiveBase;
+    private JsonSendBase jsonSendBase;
+    private String userName;
+    private String senderUserName;
+    private String reciverUserName;
+    private volatile boolean inviteResponseReceived = false;
+    private volatile boolean inviteAccepted = false;
+    private Stage st;
 
-
-
-    public PllistBase(Stage stage) {
-
-       imgview = new ImageView();
+    public PllistBase(Stage stage, String username) {
+        userName = username;
+        jsonReceiveBase = new JsonReceiveBase();
+        imgview = new ImageView();
         playlist = new Button();
         hbox = new HBox();
         name = new Label();
         status = new Label();
+        profileName = new Label();
         pane = new Pane();
         vBox = new VBox(30);
-        flow1 = new FlowPane();
-        circle1 = new Circle();
-        aya = new Label();
-        ayanum = new Label();
-        invbtn1 = new Button();
-        flow2 = new FlowPane();
-        circle2 = new Circle();
-        samuel = new Label();
-        samuelnum = new Label();
-        invbtn2 = new Button();
-        flow3 = new FlowPane();
-        circle3 = new Circle();
-        hadi = new Label();
-        hadinum = new Label();
-        invbtn3 = new Button();
-        flow4 = new FlowPane();
-        circle4 = new Circle();
-        omar = new Label();
-        omarnum = new Label();
-        invbtn4 = new Button();
-        flow5 = new FlowPane();
-        circle5 = new Circle();
-        allam = new Label();
-        allamnum = new Label();
-        invbtn5 = new Button();
-        flow7 = new FlowPane();
-        circle1111111 = new Circle();
-        aya111111 = new Label();
-        ayanum111111 = new Label();
-        invbtn1111111 = new Button();
+        playerListView = new ListView<>();
         Backbtn = new Button();
-        img1 = new Image("/assets/a65832155622ac173337874f02b218fb.jpg");
-        img2 = new Image("/assets/images.png");   
-        img3 = new Image("/assets/download.png");
-        img4 = new Image("/assets/im.png");
-        img5 = new Image("/assets/images.jpg");
-        img6 = new Image("/assets/flat-business-woman-user-profile-avatar-icon-vector-4334111.jpg");
-         
-         
+        imgCover = new Image("/assets/cover.png");
+
         setId("AnchorPane");
         setPrefHeight(736.0);
         setPrefWidth(1413.0);
-        
-        
-        
+
         imgview.setFitHeight(1174.0);
         imgview.setFitWidth(2043.0);
         imgview.setLayoutX(-17.0);
         imgview.setLayoutY(-5.0);
         imgview.setPickOnBounds(true);
         imgview.setPreserveRatio(true);
-        imgview.setImage(new Image(getClass().getResource("/assets/cover.png").toExternalForm()));
+        imgview.setImage(imgCover);
 
         playlist.setLayoutX(850);
         playlist.setLayoutY(18.0);
@@ -146,14 +100,14 @@ public class PllistBase extends AnchorPane {
         playlist.setFont(new Font("Comic Sans MS Bold", 26.0));
 
         hbox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        hbox.setLayoutX(602.0);
+        hbox.setLayoutX(550.0);
         hbox.setLayoutY(155.0);
         hbox.setPrefHeight(49.0);
         hbox.setPrefWidth(826.0);
 
         name.setAlignment(javafx.geometry.Pos.CENTER);
         name.setPrefHeight(30.0);
-        name.setPrefWidth(144.0);
+        name.setPrefWidth(130.0);
         name.setText("Name");
         name.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         name.setFont(new Font("Comic Sans MS Bold", 40.0));
@@ -167,6 +121,15 @@ public class PllistBase extends AnchorPane {
         status.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         status.setFont(new Font("Comic Sans MS Bold", 40.0));
 
+        profileName.setAlignment(javafx.geometry.Pos.CENTER);
+        profileName.setLayoutX(1480);
+        profileName.setLayoutY(180.0);
+        profileName.setPrefHeight(39.0);
+        profileName.setPrefWidth(550.0);
+        profileName.setText(userName);
+        profileName.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
+        profileName.setFont(new Font("Comic Sans MS Bold", 40.0));
+
         pane.setLayoutX(555.0);
         pane.setLayoutY(260.0);
         pane.setPrefHeight(490.0);
@@ -175,228 +138,18 @@ public class PllistBase extends AnchorPane {
         vBox.setPrefHeight(560.0);
         vBox.setPrefWidth(765.0);
 
-        flow1.setPrefHeight(56.0);
-        flow1.setPrefWidth(900.0);
+        // Load the CSS file
+        playerListView.setCellFactory(param -> new PlayerListCell());
+        playerListView.setStyle("-fx-control-inner-background: LIGHTSKYBLUE;");
+        playerListView.setPrefHeight(500.0);
+        playerListView.setPrefWidth(873.0);
+        observablePlayerList = FXCollections.observableArrayList();
+        playerListView.setItems(observablePlayerList);
+        // playerListView.setBackground(imgList);
 
-        circle1.setFill(javafx.scene.paint.Color.DODGERBLUE);
-        circle1.setRadius(30.0);
-        circle1.setStroke(javafx.scene.paint.Color.BLACK);
-        circle1.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-        circle1.setFill(new ImagePattern(img1));
-
-        aya.setPrefHeight(60.0);
-        aya.setPrefWidth(351.0);
-        aya.setText("Aya ");
-        aya.setTextFill(javafx.scene.paint.Color.WHITE);
-        aya.setFont(new Font("Bookman Old Style Bold", 32.0));
-        aya.setPadding(new Insets(0.0, 0.0, 0.0, 20.0));
-
-        ayanum.setLayoutX(80.0);
-        ayanum.setLayoutY(10.0);
-        ayanum.setPrefHeight(60.0);
-        ayanum.setPrefWidth(260.0);
-        ayanum.setText("230");
-        ayanum.setTextFill(javafx.scene.paint.Color.WHITE);
-        ayanum.setFont(new Font("Bookman Old Style Bold", 32.0));
-        ayanum.setPadding(new Insets(0.0, 0.0, 0.0, 22.0));
-
-        invbtn1.setMnemonicParsing(false);
-        invbtn1.setPrefHeight(50.0);
-        invbtn1.setPrefWidth(90.0);
-        invbtn1.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
-        invbtn1.setText("Invite");
-        invbtn1.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
-        invbtn1.setFont(new Font("Bookman Old Style Bold", 20.0));
-        invbtn1.setOnAction(e -> {
-             invitePlayer();
-        });
-
-        
-        
-        flow2.setPrefHeight(56.0);
-        flow2.setPrefWidth(773.0);
-
-        circle2.setFill(javafx.scene.paint.Color.DODGERBLUE);
-        circle2.setRadius(30.0);
-        circle2.setStroke(javafx.scene.paint.Color.BLACK);
-        circle2.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-        circle2.setFill(new ImagePattern(img2));
-
-        samuel.setPrefHeight(60.0);
-        samuel.setPrefWidth(351.0);
-        samuel.setText("Samuel ");
-        samuel.setTextFill(javafx.scene.paint.Color.WHITE);
-        samuel.setFont(new Font("Bookman Old Style Bold", 32.0));
-        samuel.setPadding(new Insets(0.0, 0.0, 0.0, 20.0));
-
-        samuelnum.setLayoutX(80.0);
-        samuelnum.setLayoutY(10.0);
-        samuelnum.setPrefHeight(60.0);
-        samuelnum.setPrefWidth(260.0);
-        samuelnum.setText("130");
-        samuelnum.setTextFill(javafx.scene.paint.Color.WHITE);
-        samuelnum.setFont(new Font("Bookman Old Style Bold", 32.0));
-        samuelnum.setPadding(new Insets(0.0, 0.0, 0.0, 22.0));
-
-        invbtn2.setMnemonicParsing(false);
-        invbtn2.setPrefHeight(50.0);
-        invbtn2.setPrefWidth(90.0);
-        invbtn2.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
-        invbtn2.setText("Invite");
-        invbtn2.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
-        invbtn2.setFont(new Font("Bookman Old Style Bold", 20.0));
-        invbtn2.setOnAction(e -> {
-             invitePlayer();
-        });
-        
-        
-        flow3.setPrefHeight(56.0);
-        flow3.setPrefWidth(773.0);
-
-        circle3.setFill(javafx.scene.paint.Color.DODGERBLUE);
-        circle3.setRadius(30.0);
-        circle3.setStroke(javafx.scene.paint.Color.BLACK);
-        circle3.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-        circle3.setFill(new ImagePattern(img3));
-
-        hadi.setPrefHeight(60.0);
-        hadi.setPrefWidth(351.0);
-        hadi.setText("Hadi ");
-        hadi.setTextFill(javafx.scene.paint.Color.WHITE);
-        hadi.setFont(new Font("Bookman Old Style Bold", 32.0));
-        hadi.setPadding(new Insets(0.0, 0.0, 0.0, 20.0));
-
-        hadinum.setLayoutX(80.0);
-        hadinum.setLayoutY(10.0);
-        hadinum.setPrefHeight(60.0);
-        hadinum.setPrefWidth(260.0);
-        hadinum.setText("200");
-        hadinum.setTextFill(javafx.scene.paint.Color.WHITE);
-        hadinum.setFont(new Font("Bookman Old Style Bold", 32.0));
-        hadinum.setPadding(new Insets(0.0, 0.0, 0.0, 22.0));
-
-        invbtn3.setMnemonicParsing(false);
-        invbtn3.setPrefHeight(50.0);
-        invbtn3.setPrefWidth(90.0);
-        invbtn3.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
-        invbtn3.setText("Invite");
-        invbtn3.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
-        invbtn3.setFont(new Font("Bookman Old Style Bold", 20.0));
-        invbtn3.setOnAction(e -> {
-             invitePlayer();
-        });
-        
-        
-        flow4.setPrefHeight(56.0);
-        flow4.setPrefWidth(773.0);
-
-        circle4.setFill(javafx.scene.paint.Color.DODGERBLUE);
-        circle4.setRadius(30.0);
-        circle4.setStroke(javafx.scene.paint.Color.BLACK);
-        circle4.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-        circle4.setFill(new ImagePattern(img4));
-
-        omar.setPrefHeight(60.0);
-        omar.setPrefWidth(351.0);
-        omar.setText("Omar ");
-        omar.setTextFill(javafx.scene.paint.Color.WHITE);
-        omar.setFont(new Font("Bookman Old Style Bold", 32.0));
-        omar.setPadding(new Insets(0.0, 0.0, 0.0, 20.0));
-
-        omarnum.setLayoutX(80.0);
-        omarnum.setLayoutY(10.0);
-        omarnum.setPrefHeight(60.0);
-        omarnum.setPrefWidth(260.0);
-        omarnum.setText("100");
-        omarnum.setTextFill(javafx.scene.paint.Color.WHITE);
-        omarnum.setFont(new Font("Bookman Old Style Bold", 32.0));
-        omarnum.setPadding(new Insets(0.0, 0.0, 0.0, 22.0));
-
-        invbtn4.setMnemonicParsing(false);
-        invbtn4.setPrefHeight(50.0);
-        invbtn4.setPrefWidth(90.0);
-        invbtn4.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
-        invbtn4.setText("Invite");
-        invbtn4.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
-        invbtn4.setFont(new Font("Bookman Old Style Bold", 20.0));
-        invbtn4.setOnAction(e -> {
-             invitePlayer();
-        });
-        
-        
-        flow5.setPrefHeight(56.0);
-        flow5.setPrefWidth(773.0);
-
-        circle5.setFill(javafx.scene.paint.Color.DODGERBLUE);
-        circle5.setRadius(30.0);
-        circle5.setStroke(javafx.scene.paint.Color.BLACK);
-        circle5.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-        circle5.setFill(new ImagePattern(img5));
-        
-        allam.setPrefHeight(60.0);
-        allam.setPrefWidth(351.0);
-        allam.setText("Allam ");
-        allam.setTextFill(javafx.scene.paint.Color.WHITE);
-        allam.setFont(new Font("Bookman Old Style Bold", 32.0));
-        allam.setPadding(new Insets(0.0, 0.0, 0.0, 20.0));
-
-        allamnum.setLayoutX(80.0);
-        allamnum.setLayoutY(10.0);
-        allamnum.setPrefHeight(60.0);
-        allamnum.setPrefWidth(260.0);
-        allamnum.setText("400");
-        allamnum.setTextFill(javafx.scene.paint.Color.WHITE);
-        allamnum.setFont(new Font("Bookman Old Style Bold", 32.0));
-        allamnum.setPadding(new Insets(0.0, 0.0, 0.0, 22.0));
-
-        invbtn5.setMnemonicParsing(false);
-        invbtn5.setPrefHeight(50.0);
-        invbtn5.setPrefWidth(90.0);
-        invbtn5.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
-        invbtn5.setText("Invite");
-        invbtn5.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
-        invbtn5.setFont(new Font("Bookman Old Style Bold", 20.0));
-        invbtn5.setOnAction(e -> {
-             invitePlayer();
-        });
-
-        flow7.setLayoutX(10.0);
-        flow7.setLayoutY(310.0);
-        flow7.setPrefHeight(56.0);
-        flow7.setPrefWidth(773.0);
-
-        circle1111111.setFill(javafx.scene.paint.Color.DODGERBLUE);
-        circle1111111.setRadius(30.0);
-        circle1111111.setStroke(javafx.scene.paint.Color.BLACK);
-        circle1111111.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-        circle1111111.setFill(new ImagePattern(img6));
-        aya111111.setPrefHeight(60.0);
-        aya111111.setPrefWidth(351.0);
-        aya111111.setText("Mariam ");
-        aya111111.setTextFill(javafx.scene.paint.Color.WHITE);
-        aya111111.setFont(new Font("Bookman Old Style Bold", 32.0));
-        aya111111.setPadding(new Insets(0.0, 0.0, 0.0, 20.0));
-
-        ayanum111111.setLayoutX(80.0);
-        ayanum111111.setLayoutY(10.0);
-        ayanum111111.setPrefHeight(60.0);
-        ayanum111111.setPrefWidth(260.0);
-        ayanum111111.setText("70");
-        ayanum111111.setTextFill(javafx.scene.paint.Color.WHITE);
-        ayanum111111.setFont(new Font("Bookman Old Style Bold", 32.0));
-        ayanum111111.setPadding(new Insets(0.0, 0.0, 0.0, 22.0));
-
-        invbtn1111111.setMnemonicParsing(false);
-        invbtn1111111.setPrefHeight(50.0);
-        invbtn1111111.setPrefWidth(90.0);
-        invbtn1111111.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
-        invbtn1111111.setText("Invite");
-        invbtn1111111.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
-        invbtn1111111.setFont(new Font("Bookman Old Style Bold", 20.0));
-        invbtn1111111.setOnAction(e -> {
-             invitePlayer();
-        });
-        
+        // Update the observable list with the received list of players
+        // Create an instance of YourUIType for the current player
+        // Add the current player's UI to the map  
         Backbtn.setLayoutX(31.0);
         Backbtn.setLayoutY(20.0);
         Backbtn.setMnemonicParsing(false);
@@ -405,84 +158,319 @@ public class PllistBase extends AnchorPane {
         Backbtn.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         Backbtn.setFont(new Font("Comic Sans MS Bold", 25.0));
         Backbtn.setOnAction(event -> TicTacToe.goBack());
-        
-       
-        
+
         getChildren().add(imgview);
         getChildren().add(playlist);
         hbox.getChildren().add(name);
         hbox.getChildren().add(status);
         getChildren().add(hbox);
-        flow1.getChildren().add(circle1);
-        flow1.getChildren().add(aya);
-        flow1.getChildren().add(ayanum);
-        flow1.getChildren().add(invbtn1);
-        vBox.getChildren().add(flow1);
-        flow2.getChildren().add(circle2);
-        flow2.getChildren().add(samuel);
-        flow2.getChildren().add(samuelnum);
-        flow2.getChildren().add(invbtn2);
-        vBox.getChildren().add(flow2);
-        flow3.getChildren().add(circle3);
-        flow3.getChildren().add(hadi);
-        flow3.getChildren().add(hadinum);
-        flow3.getChildren().add(invbtn3);
-        vBox.getChildren().add(flow3);
-        flow4.getChildren().add(circle4);
-        flow4.getChildren().add(omar);
-        flow4.getChildren().add(omarnum);
-        flow4.getChildren().add(invbtn4);
-        vBox.getChildren().add(flow4);
-        flow5.getChildren().add(circle5);
-        flow5.getChildren().add(allam);
-        flow5.getChildren().add(allamnum);
-        flow5.getChildren().add(invbtn5);
-        vBox.getChildren().add(flow5);
-        flow7.getChildren().add(circle1111111);
-        flow7.getChildren().add(aya111111);
-        flow7.getChildren().add(ayanum111111);
-        flow7.getChildren().add(invbtn1111111);
-        vBox.getChildren().add(flow7);
-        pane.getChildren().add(vBox);
+        pane.getChildren().add(playerListView);
         getChildren().add(pane);
         getChildren().add(Backbtn);
+        getChildren().add(profileName);
+
+        getActivePlayers(stage);
+        startListener();
 
     }
-     private void invitePlayer() {
-            try {
-                // Load the second FXML file for the invitation dialog
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("alert.fxml"));
-                Parent root = loader.load();
-                //Scene scene = new Scene(root);
 
-                // Create the dialog
-               // Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                
-               // alert.getDialogPane().setContent(root);
-                //Text waittext = (Text) loader.getNamespace().get("headerTextView");
-                Button cancel = (Button) loader.getNamespace().get("cnacelbtn");
-                cancel.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: #2AAAFD;");
-                cancel.setTextFill(javafx.scene.paint.Color.valueOf("#ffff"));
-                cancel.setFont(new Font("System Bold Italic", 25.0));
-                cancel.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        Stage stage = (Stage) cancel.getScene().getWindow();
-                        stage.close();
+    //Method to get Available players from Server
+    private void getActivePlayers(Stage stage) {
+        new Thread(() -> {
+            Helper helper = new Helper();
+            String response = null;
+            Player newplayer = new Player();
+            newplayer.setUserName(userName);
+            Gson gson = new Gson();
+            String jsonData = gson.toJson(newplayer);
+            try {
+                response = helper.ListRequest(jsonData);
+                System.out.println("Received response: Aya " + response);
+
+                Type typee = new TypeToken<ArrayList<Player>>() {
+                }.getType();
+                ArrayList<Player> playerList = JsonWrapper.fromJson(response, typee);
+
+                // Update the playerListView with the received list of players
+                Platform.runLater(() -> {
+                    // Clear the existing list and add the new players
+                    observablePlayerList.clear();
+                    observablePlayerList.addAll(playerList);
+                    // playerListView.getItems().setAll(playerList);
+                });
+            } catch (IOException ex) {
+                Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }).start();
+    }
+
+    class PlayerListCell extends ListCell<Player> {
+
+        @Override
+        protected void updateItem(Player player, boolean empty) {
+            super.updateItem(player, empty);
+
+            if (empty || player == null) {
+                setText(null);
+                setGraphic(null);
+            } else {
+
+                /*   Circle circle= new Circle();
+            circle.setFill(javafx.scene.paint.Color.DODGERBLUE);
+            circle.setRadius(30.0);
+            circle.setStroke(javafx.scene.paint.Color.BLACK);
+            circle.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
+            circle.setFill(new ImagePattern(player.getImage()));   */
+                Label nameLabel = new Label(player.getName());
+                nameLabel.setTextFill(javafx.scene.paint.Color.WHITE);
+                nameLabel.setFont(new Font("Bookman Old Style Bold", 25.0));
+                // nameLabel.setPadding(new Insets(0.0, 0.0, 0.0, 20.0));
+                Label pointsLabel = new Label("" + player.getPoints());
+                pointsLabel.setTextFill(javafx.scene.paint.Color.WHITE);
+                pointsLabel.setFont(new Font("Bookman Old Style Bold", 25.0));
+                //  pointsLabel.setPadding(new Insets(0.0, 0.0, 0.0, 22.0));
+
+                Button inviteButton = new Button("Invite");
+                inviteButton.setMnemonicParsing(false);
+
+                inviteButton.setLayoutX(200);
+                inviteButton.setPrefHeight(50.0);
+                inviteButton.setPrefWidth(90.0);
+                inviteButton.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
+                inviteButton.setText("Invite");
+                inviteButton.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
+                inviteButton.setFont(new Font("Bookman Old Style Bold", 20.0));
+                // Set the UserData property of the inviteButton to store the associated Player
+                // Set the UserData property of the inviteButton to store the associated Player
+                inviteButton.setUserData(player);
+                inviteButton.setOnAction(e -> invitePlayer((Player) inviteButton.getUserData()));
+
+                HBox hbox = new HBox();
+                hbox.getChildren().addAll(nameLabel, new Region(), pointsLabel, new Region(), inviteButton);
+                HBox.setHgrow(new Region(), Priority.ALWAYS);   //to add felxiable space 
+                hbox.setSpacing(10);   //Space between image and name
+                HBox.setMargin(nameLabel, new Insets(0, 0, 0, 0)); // Right and left margin for pointsLabel
+                hbox.setSpacing(120); // Spacing between pointsLabel and inviteButton   
+                setGraphic(hbox);
+            }
+        }
+
+    }
+
+    private void invitePlayer(Player player) {
+
+        // Retrieve the associated Player object from the item property
+        String username = player.getName();
+        //To send Username of the Player that i want to play with him
+        sendInviteRequest(username);
+
+        try {
+            // Load the second FXML file for the invitation dialog
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("alert.fxml"));
+            Parent root = loader.load();
+            Button cancel = (Button) loader.getNamespace().get("cnacelbtn");
+            cancel.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: #2AAAFD;");
+            cancel.setTextFill(javafx.scene.paint.Color.valueOf("#ffff"));
+            cancel.setFont(new Font("System Bold Italic", 25.0));
+            cancel.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    Stage stage = (Stage) cancel.getScene().getWindow();
+                    stage.close();
+                }
+            });
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initStyle(StageStyle.UNDECORATED);
+            popupStage.setScene(new Scene(root, Color.TRANSPARENT));
+            new Thread(() -> {
+                boolean accepted = waitForInviteResponse();
+
+                Platform.runLater(() -> {
+                    if (accepted) {
+                        popupStage.close();
+                        System.out.println("Game Accepted");
+                        System.out.println(senderUserName);
+                        System.out.println(reciverUserName);
+                        BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.Online);
+                        Scene boardScene = new Scene(boardScreen);
+                        TicTacToe.changeScene(boardScene);
+                    } else {
+                        // Handle rejection case
+                        popupStage.close();
                     }
                 });
-        
+            }).start();
+            popupStage.showAndWait();
 
-                Stage popupStage = new Stage();
-                popupStage.initModality(Modality.APPLICATION_MODAL);
-                popupStage.initStyle(StageStyle.UNDECORATED);
-                popupStage.setScene(new Scene(root, Color.TRANSPARENT));
-                popupStage.showAndWait(); 
-          
-                
-        
-            } catch (IOException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void sendInviteRequest(String username) {
+        new Thread(() -> {
+            Helper helper = new Helper();
+            OnlineBoard game = new OnlineBoard(userName, username);
+            Gson gson2 = new Gson();
+            String jsonTwoUsers = gson2.toJson(game);
+
+            System.out.println("Send to Server (Sender,Reciever)" + jsonTwoUsers);
+
+            try {
+                String Response = helper.InviteRequest(jsonTwoUsers);
+                //handle Response from Server
+            } catch (IOException ex) {
+                Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }).start();
+    }
+
+    //to be Client ready for any response from server
+    public void startListener() {
+        new Thread(() -> {
+            Helper helper = new Helper();
+            while (true) {
+                try {
+                    System.out.println("Listening for server messages...");
+                    String message = helper.readMessage();
+                    if (message != null) {
+                        System.out.println("Message received: " + message);
+                        handleServerMessage(message);
+                    }
+                    try {
+                        Thread.sleep(100);  // Short sleep to prevent tight looping
+                    } catch (InterruptedException e) {
+                        System.out.println("Listener thread interrupted");
+                        break;
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, "IOException in listener thread", ex);
+
+                } catch (Exception e) {
+                    Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, "Unexpected exception in listener thread", e);
+
+                }
+            }
+            System.out.println("Listener thread exiting");
+        }).start();
+    }
+
+    private void handleServerMessage(String Message) {
+        if (Message == null) {
+            System.out.println("Received null message from server.");
+            return;
+        }
+        try {
+            if (Message.trim().startsWith("[")) {
+                System.out.println("nothing"); //because the response of Players List
+            } else {
+
+                JsonReceiveBase receivedMessage = JsonWrapper.fromJson(Message, JsonReceiveBase.class);
+                if (receivedMessage.getType().equals(ServerEventType.Invite.name())) {
+                    // Handle the invite 
+                    OnlineBoard on = JsonWrapper.fromJson(Message, OnlineBoard.class);;
+                    senderUserName = on.getSenderUserName();
+                    reciverUserName = on.getReceiverUserName();
+                    if (reciverUserName.equals(userName)) {
+                        Platform.runLater(() -> showInvitationPopup(senderUserName));
+                    }
+                } else if (receivedMessage.getType().equals(ServerEventType.InviteResponse.name())) {
+                    InviteResponse response = JsonWrapper.fromJson(Message, InviteResponse.class);
+                    if (response.getSenderUserName().equals(userName) && response.getStatus() == 1) {
+                        inviteResponseReceived = true;
+                        inviteAccepted = true;
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error parsing server message: " + e.getMessage());
+        }
+    }
+
+    private void showInvitationPopup(String senderUsername) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Game Invitation");
+        alert.setHeaderText("You have received an invitation!");
+
+        ButtonType buttonAccept = new ButtonType("Accept", ButtonBar.ButtonData.OK_DONE);
+        ButtonType buttonReject = new ButtonType("Reject", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonAccept, buttonReject);
+
+        Label label = new Label("Would you like to accept the game invitation from" + senderUsername + " ?");
+        alert.getDialogPane().setContent(label);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == buttonAccept) {
+            System.out.println("Invitation Accepted");
+            acceptInvite(senderUserName);
+            System.out.println("Game Accepted");
+            System.out.println(reciverUserName);
+            System.out.println(senderUserName);
+            System.out.println(reciverUserName);
+            BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.Online);
+            Scene boardScene = new Scene(boardScreen);
+            TicTacToe.changeScene(boardScene);
+        } else {
+            System.out.println("Invitation Rejected");
+            rejectInvite(senderUserName);
+        }
+    }
+
+    private void acceptInvite(String senderUserName) {
+        // Send acceptance message to server
+        sendInviteResponse(senderUserName, true);
+    }
+
+    private void rejectInvite(String senderUserName) {
+        // Send acceptance message to server
+        sendInviteResponse(senderUserName, false);
+    }
+
+    private void sendInviteResponse(String senderUserName, boolean accepted) {
+        // Construct the response message
+        InviteResponse response = new InviteResponse();
+        response.setType(ServerEventType.InviteResponse.name());
+        response.setSenderUserName(senderUserName); //
+        response.setReceiverUserName(reciverUserName); //the playe who response 
+        response.setStatus(accepted ? 1 : 0); // 1 for accept, 0 for reject
+
+        String jsonResponse = JsonWrapper.toJson(response);
+
+        // Send the response to the server
+        try {
+            Helper helper = new Helper();
+            String Response = helper.InviteRequest(jsonResponse);
+            InviteResponseRecive rec = JsonWrapper.fromJson(Response, InviteResponseRecive.class);
+
+            if (rec.getType().equals(ServerEventType.InviteResponse.name())) {
+                if (rec.getStatus() == 1) {
+                    System.out.println("Done " + reciverUserName + "Acepted your request");
+
+                } else {
+                    System.out.println("Sorry " + reciverUserName + "Rejected your request");
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Method to make Sender wait for response from receiver
+    private boolean waitForInviteResponse() {
+        while (!inviteResponseReceived) {
+            try {
+                //  System.out.println("wait");
+                Thread.sleep(100); // Sleep for a short period to avoid busy waiting
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        return inviteAccepted;
+    }
+
 }
