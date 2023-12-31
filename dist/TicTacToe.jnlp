@@ -8,15 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <jar href="TicTacToe.jar" size="4694624" download="eager" />
-=======
-    <jar href="TicTacToe.jar" size="2594001" download="eager" />
->>>>>>> _M2/XO_server_invite
-=======
-    <jar href="TicTacToe.jar" size="4697278" download="eager" />
->>>>>>> 6e1f0e85328d1ab438d9eb2434277be874478f87
+    <jar href="TicTacToe.jar" size="4697462" download="eager" />
     <jar href="lib\gson-2.2.2.jar" size="189285" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="TicTacToe" >
