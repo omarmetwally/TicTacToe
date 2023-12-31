@@ -94,7 +94,7 @@ public class RecordFXMLBase extends AnchorPane {
                 System.out.println(newValue);
                 fileName = newValue;
                 String[] baseName = extractPlayerNamesFromFile(fileName);
-                BoardFXMLBase boardScreen = new BoardFXMLBase(s, baseName[0], baseName[1], GameMode.RECORD);
+                BoardFXMLBase boardScreen = new BoardFXMLBase(s, baseName[0], baseName[1], GameMode.RECORD,null);
                 Scene boardScene = new Scene(boardScreen);
                 TicTacToe.changeScene(boardScene);
             }
