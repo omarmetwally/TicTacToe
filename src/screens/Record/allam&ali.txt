@@ -1,0 +1,6 @@
+O - Row: 0, Col: 0
+X - Row: 1, Col: 1
+O - Row: 2, Col: 2
+X - Row: 1, Col: 2
+O - Row: 0, Col: 2
+X - Row: 1, Col: 0
