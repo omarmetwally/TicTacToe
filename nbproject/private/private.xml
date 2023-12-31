@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+<<<<<<< HEAD
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group/>
+=======
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>src/screens/Plist/PllistBase.java</url>
+            <bookmark id="1">
+                <name/>
+                <line>220</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/F:/Client_dev/TicTacToe/src/screens/Plist/Player.java</file>
+            <file>file:/F:/Client_dev/TicTacToe/src/screens/Plist/alertBase.java</file>
+            <file>file:/F:/Client_dev/TicTacToe/src/helper/Helper.java</file>
+            <file>file:/F:/Client_dev/TicTacToe/src/tictactoe/TicTacToe.java</file>
+            <file>file:/F:/Client_dev/TicTacToe/src/screens/Plist/PllistBase.java</file>
+            <file>file:/F:/Client_dev/TicTacToe/src/screens/Plist/OnlineBoard.java</file>
+        </group>
+>>>>>>> 10578440b27c09e6b50fa40465b2084da55427c3
     </open-files>
 </project-private>

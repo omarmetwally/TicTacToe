@@ -5,13 +5,14 @@
  */
 package screens.Plist;
 
+import models.JsonReceiveBase;
 import screens.login_screen.ServerEventType;
 
 /**
  *
  * @author Aya
  */
-public class OnlineBoard {
+public class OnlineBoard  {
     String senderUserName;
     String receiverUserName;
     private ServerEventType type = ServerEventType.Invite;
@@ -25,11 +26,13 @@ public class OnlineBoard {
         //this.currentTurn = currentTurn;
     }
 
-    public void setSenderUN(String senderUN) {
+    public void setSenderUserName(String senderUN) {
         this.senderUserName = senderUN;
     }
 
-    public void setReceiverUN(String ReceiverUN) {
+
+
+    public void setReceiverUserName(String ReceiverUN) {
         this.receiverUserName = ReceiverUN;
     }
 
@@ -37,11 +40,12 @@ public class OnlineBoard {
         this.currentTurn = currentTurn;
     }
 
-    public String getSenderUN() {
+    public String getSenderUserName() {
         return senderUserName;
     }
 
-    public String getReceiverUN() {
+
+    public String getReceiverUserName() {
         return receiverUserName;
     }
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="TicTacToe.jnlp">
+  <information>
+    <title>TicTacToe</title>
+    <vendor>Omar</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+<<<<<<< HEAD:dist/run1561582436/TicTacToe.jnlp
+    <jar href="TicTacToe.jar" size="4697462" download="eager" />
+=======
+    <jar href="TicTacToe.jar" size="4703747" download="eager" />
+>>>>>>> 10578440b27c09e6b50fa40465b2084da55427c3:dist/run58778439/TicTacToe.jnlp
+    <jar href="lib\gson-2.2.2.jar" size="189285" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="TicTacToe" >
+    <param name="requiredFXVersion" value="8.0+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="800" height="600" main-class="tictactoe.TicTacToe"  name="TicTacToe" />
+  <update check="always"/>
+</jnlp>
