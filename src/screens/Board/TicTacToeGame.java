@@ -64,7 +64,7 @@ public class TicTacToeGame {
             gameOver = checkForWin() || isBoardFull();
 
             // Only switch player if it's a two-player game
-            if (modeOfGame == GameMode.TwoPlayers) {
+            if (modeOfGame == GameMode.TwoPlayers|| modeOfGame == GameMode.RECORD) {
                 currentPlayerMark = (currentPlayerMark == 'X') ? 'O' : 'X';
 
             }
