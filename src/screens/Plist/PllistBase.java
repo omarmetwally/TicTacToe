@@ -307,7 +307,7 @@ private void invitePlayer(Player player) {
                 Platform.runLater(() -> {
                     if (accepted) {
                         popupStage.close();
-                        BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.TwoPlayers);
+                        BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.TwoPlayers,userName);
                         Scene boardScene = new Scene(boardScreen);
                         TicTacToe.changeScene(boardScene);
                     } else {
@@ -429,7 +429,7 @@ private void invitePlayer(Player player) {
         if (result.isPresent() && result.get() == buttonAccept) {
             System.out.println("Invitation Accepted");
             acceptInvitation(senderUserName);
-            BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.TwoPlayers);
+            BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.TwoPlayers,userName);
             Scene boardScene = new Scene(boardScreen);
             TicTacToe.changeScene(boardScene);
 

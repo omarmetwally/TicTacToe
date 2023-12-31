@@ -125,7 +125,7 @@ public class LocalPlayersBase extends AnchorPane {
        
 
 
-            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,tfPlayerOne.getText(),tfPlayerTwo.getText(),GameMode.TwoPlayers);
+            BoardFXMLBase boardScreen =new BoardFXMLBase(stage,tfPlayerOne.getText(),tfPlayerTwo.getText(),GameMode.TwoPlayers,null);
 
             Scene boardScene = new Scene(boardScreen);
             TicTacToe.changeScene(boardScene);
