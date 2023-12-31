@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -23,10 +25,12 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import screens.Record.Record;
 import tictactoe.TicTacToe;
 
@@ -84,6 +88,7 @@ public class BoardFXMLBase extends AnchorPane {
     protected Text whosTurn;
     protected boolean aiTurn = false;
     protected final Record record;
+    protected  MediaPlayer mediaPlayer;
 
     protected final GameMode gamemode; //'multi' ,'Single'
     protected ImageView btnImage;
@@ -520,7 +525,7 @@ public class BoardFXMLBase extends AnchorPane {
                     String mark = String.valueOf(game.getCurrentPlayerMark());
 
                     if (record.isRecording()) {
-                        record.recordMove(mark,row, col);
+                        record.recordMove(mark, row, col);
                     }
                     btnImage = new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm()));
                     button.setGraphic(btnImage);
@@ -630,23 +635,17 @@ public class BoardFXMLBase extends AnchorPane {
 
     private void endOfGameAlert() {
 
-        WinnerVideo.setFitHeight(500.0);
-        WinnerVideo.setFitWidth(500.0);
-        WinnerVideo.setLayoutX(200.0);
-        WinnerVideo.setLayoutY(200.0);
-
         try {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("AlertVideoFXML.fxml"));
             Parent root = loader.load();
             Text headerTextView = (Text) loader.getNamespace().get("headerTextView");
             Button playAgainButton = (Button) loader.getNamespace().get("btnPlayAgain");
+            Button backButton = (Button) loader.getNamespace().get("btnBack");
             MediaView winMediaView = (MediaView) loader.getNamespace().get("winMediaView");
 
-            winMediaView.setFitHeight(600.0);
-            winMediaView.setFitWidth(600.0);
-            winMediaView.setLayoutX(340.0);
-            winMediaView.setLayoutY(200.0);
+            winMediaView.setLayoutX(350.0);
+            winMediaView.setLayoutY(190.0);
 
             System.out.println(game.getWinner());
             String winnerText = game.isDraw() ? "It's a Draw!" : game.getWinner() + " wins!";
@@ -656,29 +655,51 @@ public class BoardFXMLBase extends AnchorPane {
             if (!game.isDraw()) {
                 File videoPath = new File("src/assets/videos/win.mp4");
                 Media media = new Media(videoPath.toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                mediaPlayer = new MediaPlayer(media);
                 winMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
 
             } else {
                 File videoPath = new File("src/assets/videos/draw1.mp4");
                 Media media = new Media(videoPath.toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                mediaPlayer = new MediaPlayer(media);
                 winMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
+
             }
 
             playAgainButton.setOnAction(e -> {
                 resetGame();
+                stopMediaPlayer();
                 ((Stage) root.getScene().getWindow()).close();
+            });
+
+            backButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    stopMediaPlayer();
+                    Stage stage = (Stage) backButton.getScene().getWindow();
+                    stage.close();
+
+                }
             });
 
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.setScene(new Scene(root));
+            popupStage.initStyle(StageStyle.UNDECORATED);
+            popupStage.setScene(new Scene(root, Color.TRANSPARENT));
             popupStage.showAndWait();
+
         } catch (Exception e) {
             e.printStackTrace();
+
+        }
+    }
+
+    private void stopMediaPlayer() {
+
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
 
         }
     }
