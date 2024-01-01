@@ -5,16 +5,27 @@
  */
 package tictactoe;
 
+import com.google.gson.Gson;
+import helper.Helper;
+import java.io.IOException;
+import screens.Plist.PllistBase;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import screens.login_screen.LoginScreenBase;
 import screens.LocalPlayers.LocalPlayersBase;
 import screens.LocalOnlinescreen.LocalonscreenBase;
+import screens.Plist.ForExit;
+import screens.Plist.LogOut;
+import static screens.Plist.PllistBase.getUserName;
+import static screens.Plist.PllistBase.getUserNametoExit;
 import screens.SplashScreen.SplashScreenBase;
 import screens.mode.ModeScreenBase;
 
@@ -24,6 +35,8 @@ import screens.mode.ModeScreenBase;
  */
 public class TicTacToe extends Application {
 
+    // PllistBase plist = new PllistBase();
+   
     private static Stage primaryStage;
     private static NavigationHistory navHistory = new NavigationHistory();
 
@@ -57,6 +70,23 @@ public class TicTacToe extends Application {
                 }
             });
         }).start();
+        PllistBase.getUserName();
+        primaryStage.setOnCloseRequest((WindowEvent event) -> {
+            // Your code to handle the close event goes here
+           new Thread(() -> {
+                try {
+                    Helper helper = new Helper();
+                    ForExit forExit = getUserNametoExit();
+                    Gson gson = new Gson();
+                    
+                    String logg = gson.toJson(forExit);
+                     helper.LogOutRequest(logg);
+                    System.out.println("Logout req =" + logg);
+                } catch (IOException ex) {
+                    Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }).start();
+        });
 
     }
 
@@ -78,6 +108,7 @@ public class TicTacToe extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+        
     }
 
 }

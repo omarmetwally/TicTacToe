@@ -10,5 +10,5 @@ package screens.login_screen;
  * @author allam
  */
 public enum ServerEventType {
-    Login,Register,AvailPlayers,Invite,InviteResponse
+    Login,Register,AvailPlayers,Invite,InviteResponse,Logout,Exit
 }

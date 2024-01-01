@@ -1,45 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/F:/ITI/Native%20Mobile%20Data/Java/TicTacToe/src/screens/Plist/OnlineBoard.java</file>
-            <file>file:/F:/ITI/Native%20Mobile%20Data/Java/TicTacToe/src/screens/Plist/PllistBase.java</file>
-            <file>file:/F:/ITI/Native%20Mobile%20Data/Java/TicTacToe/src/screens/Board/BoardFXMLBase.java</file>
-=======
-<<<<<<< HEAD
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
-=======
->>>>>>> a81827939af4fabac95302ff856f850288ed5b92
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
         <file>
             <url>src/screens/Plist/PllistBase.java</url>
             <bookmark id="1">
                 <name/>
-                <line>238</line>
+                <line>254</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
-        <group/>
-=======
         <group>
-<<<<<<< HEAD
+            <file>file:/F:/Client_dev/TicTacToe/src/screens/login_screen/LoginScreenBase.java</file>
+            <file>file:/F:/Client_dev/TicTacToe/src/helper/Helper.java</file>
             <file>file:/F:/Client_dev/TicTacToe/src/tictactoe/TicTacToe.java</file>
             <file>file:/F:/Client_dev/TicTacToe/src/screens/Plist/PllistBase.java</file>
-=======
-            <file>file:/C:/Omar/java/new/TicTacToe/src/screens/Board/BoardFXMLBase.java</file>
->>>>>>> e65d456acfa83d168f210a68620d3f127807bb1f
->>>>>>> 7cf147a20545248c8d8ab003ad71a9c3292acfb1
+            <file>file:/F:/Client_dev/TicTacToe/src/screens/Plist/LogOut.java</file>
         </group>
->>>>>>> 14010c63924659b625a34ec752bd80666f953e79
->>>>>>> a81827939af4fabac95302ff856f850288ed5b92
     </open-files>
 </project-private>

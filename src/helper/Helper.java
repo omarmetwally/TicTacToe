@@ -99,7 +99,12 @@ public class Helper {
         }
     }
   
-
+    public void LogOutRequest (String loggedoutUsername) throws IOException{
+          if (playerSocket.isConnected()) {
+             mouth.println(loggedoutUsername);
+             // Store the response  
+          }
+    }
     
 
     public void closeConnection() throws IOException {
