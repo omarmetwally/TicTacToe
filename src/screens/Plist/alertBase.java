@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 
 public   class alertBase extends AnchorPane {
 
-    protected final Text waittxt;
+    protected static Text waittxt;
     protected final Button cnacelbtn;
 
     public alertBase() {
@@ -56,11 +56,8 @@ public   class alertBase extends AnchorPane {
         Stage stage = (Stage) cnacelbtn.getScene().getWindow();
         stage.close();
     }
-
-    public void handleRejectInvitation() {
-        // Update the text and button for rejection
-        waittxt.setText("Sorry, your invitation was rejected.");
-        cnacelbtn.setText("OK");
-        cnacelbtn.setOnAction(event -> handleCancelButtonAction());
+    public static void setTextAlert(String text) {
+        waittxt.setText(text);
     }
+    
 }

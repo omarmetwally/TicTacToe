@@ -26,6 +26,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import models.JsonReceiveBase;
 import models.JsonWrapper;
+import screens.Plist.AlertMessage;
 import screens.login_screen.LoginScreenBase;
 import models.ServerEventType;
 import tictactoe.TicTacToe;
@@ -147,7 +148,7 @@ public class RegisterScreenBase extends AnchorPane {
     }
 
     private void RegisterButton(Stage stage) {
-
+        AlertMessage alert = new AlertMessage();
         buttonRegister.setOnAction((event) -> {
             if (validateRegistrationData()) {
                 new Thread(() -> {
@@ -172,7 +173,9 @@ public class RegisterScreenBase extends AnchorPane {
                                 Scene loginScene = new Scene(loginScreen);
                                 TicTacToe.changeScene(loginScene);
                             } else if (jsonReceiveBase.getType().equals(ServerEventType.Register.name())) {
-                                showAlerDialog(jsonReceiveBase.getMessge());
+                                
+                                alert.showAction(jsonReceiveBase.getMessge());
+                                alert.toShowandWait();
                             }
 
                         });
@@ -189,39 +192,42 @@ public class RegisterScreenBase extends AnchorPane {
     }
 
     private Boolean validateRegistrationData() {
+        AlertMessage alert = new AlertMessage();
 
         if (editTextUsername.getText().isEmpty() || editTextPassword.getText().isEmpty() || editTextCofirmPassword.getText().isEmpty()) {
 
-            showAlerDialog("One or more fields are empty. Please fill in all fields.");
+            alert.showAction("One or more fields are empty.\n Please fill in all fields.");
+            alert.toShowandWait();
             System.out.println("Empty fields");
 
             return false;
 
-        } else if (editTextUsername.getText().length() < 8) {
-            showAlerDialog("Username should be more than 8 chrachters.");
-
+        } else if (editTextUsername.getText().length() <=6 &&  editTextUsername.getText().length() >= 15) {
+            alert.showAction("Username should be between\n8 and 10.");
+            alert.toShowandWait();
             System.out.println("invalid syntax username");
 
             return false;
 
         } else if (!isUsernameValid(editTextUsername.getText())) {
-
-            showAlerDialog("Invalid username please do not use symbols.");
-
+            alert.showAction("Invalid username \n please do not use symbols.");
+            alert.toShowandWait();
             System.out.println("invalid syntax username");
 
             return false;
 
         } else if (editTextPassword.getText().length() < 5) {
 
-            showAlerDialog("Password should be 5 chrachters or more.");
+            alert.showAction("Password should be 5 chrachters or more.");
+            alert.toShowandWait();
 
             System.out.println("invalid syntax username");
 
             return false;
 
         } else if (!arePassordsMatched()) {
-            showAlerDialog("Passwords are not matched.");
+            alert.showAction("Passwords are not matched.");
+            alert.toShowandWait();
 
             System.out.println("invalid syntax username");
 
@@ -256,21 +262,6 @@ public class RegisterScreenBase extends AnchorPane {
         Matcher matcher = pattern.matcher(username);
 
         return matcher.matches();
-    }
-
-    private void showAlerDialog(String dialogLable) {
-
-        Alert alert = new Alert(AlertType.NONE);
-        DialogPane dialogPane = alert.getDialogPane();
-
-        dialogPane.setStyle("-fx-background-color: #3D7AD6;");
-        alert.setAlertType(AlertType.ERROR);
-        Label label = new Label(dialogLable);
-        label.setStyle("-fx-text-fill: #fcd015; -fx-font-family: 'Comic Sans MS'; -fx-font-size: 16;");
-
-        dialogPane.setContent(label);
-        alert.show();
-
     }
 
 }
