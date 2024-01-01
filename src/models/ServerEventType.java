@@ -10,5 +10,5 @@ package models;
  * @author allam
  */
 public enum ServerEventType {
-    Login,Register,AvailPlayers,Invite,InviteResponse,OnlineGame
+    Login,Register,AvailPlayers,Invite,InviteResponse,OnlineGame,UpdateScore,Exit
 }

@@ -126,6 +126,15 @@ public class Helper {
 
     }
 
+    public void sendWinner(String moveJson) throws IOException {
+        System.err.println("Sent Winner"+moveJson);
+        if (playerSocket.isConnected()) {
+            mouth.println(moveJson);
+        } else {
+            return;
+        }
+
+    }
     public static void main(String[] args) {
         new Helper();
     }

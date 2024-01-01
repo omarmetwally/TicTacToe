@@ -8,13 +8,9 @@ package tictactoe;
 import java.net.Socket;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import screens.login_screen.LoginScreenBase;
-import screens.LocalPlayers.LocalPlayersBase;
-import screens.LocalOnlinescreen.LocalonscreenBase;
 import screens.SplashScreen.SplashScreenBase;
 import screens.mode.ModeScreenBase;
 
@@ -23,13 +19,10 @@ import screens.mode.ModeScreenBase;
  * @author Omar
  */
 public class TicTacToe extends Application {
-
     private static Stage primaryStage;
     private static NavigationHistory navHistory = new NavigationHistory();
-
     @Override
     public void start(Stage stage) throws Exception {
-
         this.primaryStage = stage;
         Socket currentSocketParameter;
         Parent root = new SplashScreenBase();
