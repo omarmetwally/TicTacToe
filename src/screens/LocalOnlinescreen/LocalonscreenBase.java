@@ -101,7 +101,7 @@ public class LocalonscreenBase extends AnchorPane {
 
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("IP Address Input");
-        dialog.setHeaderText("Enter Server IP Address");
+        dialog.setHeaderText("Enter Server IP Address (on cancel IP: 127.0.0.1)");
         dialog.setContentText("Please enter the Server IP address:");
 
         Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
