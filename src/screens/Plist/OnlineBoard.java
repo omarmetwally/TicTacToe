@@ -16,8 +16,9 @@ public class OnlineBoard {
 
     String senderUserName;
     String receiverUserName;
-    String currentTurn;
     private ServerEventType type = ServerEventType.Invite;
+    String currentTurn;
+    
 
     public OnlineBoard(String senderUN, String ReceiverUN) {
         this.senderUserName = senderUN;
@@ -28,6 +29,8 @@ public class OnlineBoard {
     public void setSenderUserName(String senderUN) {
         this.senderUserName = senderUN;
     }
+
+
 
     public void setReceiverUserName(String ReceiverUN) {
 
@@ -41,6 +44,7 @@ public class OnlineBoard {
     public String getSenderUserName() {
         return senderUserName;
     }
+
 
     public String getReceiverUserName() {
         return receiverUserName;

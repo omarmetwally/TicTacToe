@@ -15,7 +15,9 @@ import static javafx.application.Application.launch;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -45,10 +47,10 @@ public class LoginScreenBase extends AnchorPane {
     protected final Label registerNowButton;
     protected final Button btnBack;
     private JsonReceiveBase jsonReceiveBase;
-    
+
     public LoginScreenBase(Stage stage) {
-        
-        jsonReceiveBase=new JsonReceiveBase();
+
+        jsonReceiveBase = new JsonReceiveBase();
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
         backgroundIImage = new ImageView();
@@ -130,10 +132,8 @@ public class LoginScreenBase extends AnchorPane {
                 + "-fx-background-radius: 10; "
                 + "-fx-border-radius: 10;"
         );
-//        loginButton.setOnAction((event) -> {
-//            userNameTextField.getText();
-//            passwordTextField.getText();
-//        });
+        
+        
 
         loginButton.setOnAction((event) -> {
             new Thread(() -> {
@@ -143,18 +143,16 @@ public class LoginScreenBase extends AnchorPane {
                     Gson gson = new Gson();
                     String jsonUserCredentials = gson.toJson(userCredentials);
 
-
                     String loginResponse = helper.loginRequest(jsonUserCredentials);
-                  jsonReceiveBase = JsonWrapper.fromJson(loginResponse, JsonReceiveBase.class);
-                    /// start here 
-                    //System.out.println(loginResponse);
+                    jsonReceiveBase = JsonWrapper.fromJson(loginResponse, JsonReceiveBase.class);
+
                     Platform.runLater(() -> {
-                        if(jsonReceiveBase.getType().equals(ServerEventType.Login.name())&&jsonReceiveBase.getStatus()==1){
-                        PllistBase listscreen = new PllistBase(stage,userNameTextField.getText());
-                        Scene playerListScene = new Scene(listscreen);
-                        TicTacToe.changeScene(playerListScene);
+                        if (jsonReceiveBase.getType().equals(ServerEventType.Login.name()) && jsonReceiveBase.getStatus() == 1 ) {
+                            PllistBase listscreen = new PllistBase(stage, userNameTextField.getText());
+                            Scene playerListScene = new Scene(listscreen);
+                            TicTacToe.changeScene(playerListScene);
                         }else if(jsonReceiveBase.getType().equals(ServerEventType.Login.name())){
-                            System.out.println(jsonReceiveBase.getMessge());
+                            showAlerDialog(jsonReceiveBase.getMessge());
                         }
                     });
 
@@ -165,8 +163,6 @@ public class LoginScreenBase extends AnchorPane {
             }).start();
 
         });
-        
-     
 
         dontHaveAnAccountLabel.setLayoutX(606.0);
         dontHaveAnAccountLabel.setLayoutY(689.0);
@@ -205,13 +201,28 @@ public class LoginScreenBase extends AnchorPane {
         getChildren().add(registerNowButton);
         getChildren().add(btnBack);
     }
-    
+
     private UserCredentials getUserCredentials() {
 
         return new UserCredentials(userNameTextField.getText(),
                 passwordTextField.getText());
     }
     
+    private void showAlerDialog(String dialogLable) {
 
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        DialogPane dialogPane = alert.getDialogPane();
+
+        dialogPane.setStyle("-fx-background-color: #3D7AD6;");
+        alert.setAlertType(Alert.AlertType.ERROR);
+        Label label = new Label(dialogLable);
+        label.setStyle("-fx-text-fill: #fcd015; -fx-font-family: 'Comic Sans MS'; -fx-font-size: 16;");
+
+        dialogPane.setContent(label);
+        alert.show();
+
+    }
 
 }
+
+
