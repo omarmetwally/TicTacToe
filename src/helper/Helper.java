@@ -128,6 +128,13 @@ public class Helper {
             return null;
         }
     }
+    
+    public void LogOutRequest(String loggedoutUserName) throws IOException {
+           if (playerSocket.isConnected()) {
+            mouth.println(loggedoutUserName);
+          //  ear.readLine();  // Store the response  
+           }
+    }
 
     public void closeConnection() throws IOException {
         if (ear != null) {
