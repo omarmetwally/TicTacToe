@@ -12,6 +12,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import models.JsonReceiveBase;
 import models.ServerEventType;
+import screens.Plist.AlertMessage;
 
 /**
  *
@@ -19,6 +20,7 @@ import models.ServerEventType;
  */
 public class Helper {
 
+   public static boolean isCreated;
     Socket playerSocket;
     DataInputStream ear;
     PrintStream mouth;
@@ -26,16 +28,24 @@ public class Helper {
     String messageSent;
     String messageRecieved;
 
-    public Helper() {
+    static {
+        isCreated = false;
+    }
 
+    public Helper() {
         try {
             playerSocket = new Socket(HelperIP.ipHelper, 5005);
             System.out.println(HelperIP.ipHelper);
             ear = new DataInputStream(playerSocket.getInputStream());
             mouth = new PrintStream(playerSocket.getOutputStream());
             jsonreceive = new JsonReceiveBase();
+            isCreated = true;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            AlertMessage alertMessage = new AlertMessage();
+            alertMessage.showAction("Server Not Available!");
+            alertMessage.toShowandWait();
+          //  ex.printStackTrace();
+            isCreated=false;
         }
 
     }
@@ -67,16 +77,19 @@ public class Helper {
 
     }
 
-
-    public String ServerResponse() throws IOException{
+    public String ServerResponse() throws IOException {
         if (playerSocket.isConnected()) {
             return ear.readLine();  // Store the response  
-        }else{
+        } else {
             return null;
         }
     }
-  
 
+    public void TestConnectoin() throws IOException {
+        if (playerSocket.isConnected()) {
+
+        }
+    }
 
     public String ListRequest(String userNameJ) throws IOException {
         if (playerSocket.isConnected()) {
@@ -129,7 +142,7 @@ public class Helper {
     }
 
     public void sendMove(String moveJson) throws IOException {
-        System.err.println("Sent Move"+moveJson);
+        System.err.println("Sent Move" + moveJson);
         if (playerSocket.isConnected()) {
             mouth.println(moveJson);
         } else {
@@ -139,7 +152,7 @@ public class Helper {
     }
 
     public void sendWinner(String moveJson) throws IOException {
-        System.err.println("Sent Winner"+moveJson);
+        System.err.println("Sent Winner" + moveJson);
         if (playerSocket.isConnected()) {
             mouth.println(moveJson);
         } else {
@@ -147,6 +160,7 @@ public class Helper {
         }
 
     }
+
     public static void main(String[] args) {
         new Helper();
     }
