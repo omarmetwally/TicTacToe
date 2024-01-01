@@ -31,6 +31,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import models.JsonReceiveBase;
 import models.JsonWrapper;
+import screens.Plist.AlertMessage;
 import screens.Plist.PllistBase;
 import screens.register_screen.RegisterScreenBase;
 import tictactoe.TicTacToe;
@@ -152,7 +153,11 @@ public class LoginScreenBase extends AnchorPane {
                             Scene playerListScene = new Scene(listscreen);
                             TicTacToe.changeScene(playerListScene);
                         }else if(jsonReceiveBase.getType().equals(ServerEventType.Login.name())){
-                            showAlerDialog(jsonReceiveBase.getMessge());
+                          //  showAlerDialog(jsonReceiveBase.getMessge());
+                            
+                            AlertMessage alert = new AlertMessage();
+                            alert.showAction(jsonReceiveBase.getMessge());
+                            alert.toShowandWait();
                         }
                     });
 
@@ -207,21 +212,7 @@ public class LoginScreenBase extends AnchorPane {
         return new UserCredentials(userNameTextField.getText(),
                 passwordTextField.getText());
     }
-    
-    private void showAlerDialog(String dialogLable) {
-
-        Alert alert = new Alert(Alert.AlertType.NONE);
-        DialogPane dialogPane = alert.getDialogPane();
-
-        dialogPane.setStyle("-fx-background-color: #3D7AD6;");
-        alert.setAlertType(Alert.AlertType.ERROR);
-        Label label = new Label(dialogLable);
-        label.setStyle("-fx-text-fill: #fcd015; -fx-font-family: 'Comic Sans MS'; -fx-font-size: 16;");
-
-        dialogPane.setContent(label);
-        alert.show();
-
-    }
+   
 
 }
 
