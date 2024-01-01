@@ -528,6 +528,10 @@ public class BoardFXMLBase extends AnchorPane {
             System.out.println("in record");
             selectRecordFileForReplay();
         }
+         if (gamemode == GameMode.AI || gamemode == GameMode.TwoPlayers) {
+
+            whosTurn.setText(Player1 + "'s Turn!");
+        }
     }
 
     private void handleButtonClick(int row, int col, Button button) {
