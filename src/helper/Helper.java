@@ -117,7 +117,7 @@ public class Helper {
     }
 
     public void sendMove(String moveJson) throws IOException {
-        System.err.println(moveJson);
+        System.err.println("Sent Move"+moveJson);
         if (playerSocket.isConnected()) {
             mouth.println(moveJson);
         } else {

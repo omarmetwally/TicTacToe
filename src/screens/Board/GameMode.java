@@ -12,7 +12,9 @@ package screens.Board;
 
     
 public enum GameMode {
-    TwoPlayers, Online, AI
+    TwoPlayers, Online, AI,RECORD
+
+
 }
 
     

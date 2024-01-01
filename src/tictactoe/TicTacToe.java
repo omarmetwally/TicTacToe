@@ -71,7 +71,6 @@ public class TicTacToe extends Application {
             primaryStage.setScene(previousScene);
         }
     }
-
     /**
      * @param args the command line arguments
      */
