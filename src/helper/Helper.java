@@ -11,23 +11,20 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 import models.JsonReceiveBase;
-import screens.login_screen.ServerEventType;
+import models.ServerEventType;
 
 /**
  *
  * @author allam
  */
-
 public class Helper {
 
     Socket playerSocket;
     DataInputStream ear;
     PrintStream mouth;
     JsonReceiveBase jsonreceive;
-    
-
-
-
+    String messageSent;
+    String messageRecieved;
 
     public Helper() {
 
@@ -36,7 +33,7 @@ public class Helper {
             System.out.println(HelperIP.ipHelper);
             ear = new DataInputStream(playerSocket.getInputStream());
             mouth = new PrintStream(playerSocket.getOutputStream());
-           jsonreceive = new JsonReceiveBase();
+            jsonreceive = new JsonReceiveBase();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -47,8 +44,8 @@ public class Helper {
 
         if (playerSocket.isConnected()) {
             mouth.println(jsonObj);
-            String respo =  ear.readLine();
-             System.out.println("in the Helper i recieve from Aya  "+respo);
+            String respo = ear.readLine();
+            System.out.println("in the Helper i recieve from Aya  " + respo);
             return respo;
         } else {
             return null;
@@ -57,40 +54,20 @@ public class Helper {
 
     }
 
-
     public String loginRequest(String userCredential) throws IOException {
 
         if (playerSocket.isConnected()) {
-            mouth.println(userCredential); 
-            String respo =  ear.readLine();
-            System.out.println("in the Helper i recieve from Samuel  "+respo);
-            return respo; 
+            mouth.println(userCredential);
+            String respo = ear.readLine();
+            System.out.println("in the Helper i recieve from Samuel  " + respo);
+            return respo;
         } else {
             return null;
         }
 
     }
-    
-        public String ListRequest (String userNameJ) throws IOException{
-        if (playerSocket.isConnected()) {
-            mouth.println(userNameJ);
-           String resposne = ear.readLine();  // Store the response
-            System.out.println("in the Helper i recieve from Aya  "+resposne);
-           return resposne;
-        }else {
-            return null;
-        }
-    }
-    
-    public String InviteRequest (String userNameJ) throws IOException{
-        if (playerSocket.isConnected()) {
-            mouth.println(userNameJ);
-            return ear.readLine();  // Store the response  
-        }else{
-            return null;
-        }
-    }
-    
+
+
     public String ServerResponse() throws IOException{
         if (playerSocket.isConnected()) {
             return ear.readLine();  // Store the response  
@@ -100,7 +77,44 @@ public class Helper {
     }
   
 
-    
+
+    public String ListRequest(String userNameJ) throws IOException {
+        if (playerSocket.isConnected()) {
+            mouth.println(userNameJ);
+            String resposne = ear.readLine();  // Store the response
+            System.out.println("in the Helper i recieve from Aya  " + resposne);
+            return resposne;
+        } else {
+            return null;
+        }
+    }
+
+    public String InviteRequest(String userNameJ) throws IOException {
+        if (playerSocket.isConnected()) {
+            mouth.println(userNameJ);
+            return ear.readLine();  // Store the response  
+        } else {
+            return null;
+        }
+    }
+
+    public String readMessage() throws IOException {
+        if (playerSocket.isConnected()) {
+            return ear.readLine();  // Store the response  
+        } else {
+            return null;
+        }
+    }
+
+    public String receiveInvitation() throws IOException {
+        if (playerSocket.isConnected()) {
+            String message = ear.readLine();
+            System.out.println("in the Helper i recieve from Allam  " + message);
+            return message;
+        } else {
+            return null;
+        }
+    }
 
     public void closeConnection() throws IOException {
         if (ear != null) {
@@ -114,17 +128,27 @@ public class Helper {
         }
     }
 
+    public void sendMove(String moveJson) throws IOException {
+        System.err.println("Sent Move"+moveJson);
+        if (playerSocket.isConnected()) {
+            mouth.println(moveJson);
+        } else {
+            return;
+        }
 
-   
+    }
 
-     
-  
+    public void sendWinner(String moveJson) throws IOException {
+        System.err.println("Sent Winner"+moveJson);
+        if (playerSocket.isConnected()) {
+            mouth.println(moveJson);
+        } else {
+            return;
+        }
 
+    }
     public static void main(String[] args) {
-
         new Helper();
     }
 
 }
-
-

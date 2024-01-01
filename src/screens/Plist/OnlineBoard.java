@@ -6,7 +6,7 @@
 package screens.Plist;
 
 import models.JsonReceiveBase;
-import screens.login_screen.ServerEventType;
+import models.ServerEventType;
 
 /**
  *

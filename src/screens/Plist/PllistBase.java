@@ -34,10 +34,10 @@ import screens.Plist.AlertMessage;
 import models.JsonReceiveBase;
 import models.JsonSendBase;
 import models.JsonWrapper;
+import models.ServerEventType;
 import screens.Board.BoardFXMLBase;
 import screens.Board.GameMode;
 import screens.login_screen.LoginScreenBase;
-import screens.login_screen.ServerEventType;
 import screens.mode.ModeScreenBase;
 import tictactoe.TicTacToe;
 
@@ -310,7 +310,7 @@ private void invitePlayer(Player player) {
                 Platform.runLater(() -> {
                     if (accepted) {
                         alertmsg.closeAlert();
-                        BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.TwoPlayers,userName);
+                        BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.Online,userName);
                         Scene boardScene = new Scene(boardScreen);
                         TicTacToe.changeScene(boardScene);
                     } else {
@@ -429,7 +429,7 @@ private void invitePlayer(Player player) {
                 public void handle(ActionEvent event) {
                     System.out.println("Invitation Accepted");
                     acceptInvitation(senderUsername);
-                    BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUsername, reciverUserName, GameMode.TwoPlayers, userName);
+                    BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUsername, reciverUserName, GameMode.Online, userName);
                     Scene boardScene = new Scene(boardScreen);
                     TicTacToe.changeScene(boardScene);
                     Stage stage = (Stage) accept.getScene().getWindow();

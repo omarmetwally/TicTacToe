@@ -1,5 +1,8 @@
 package screens.Board;
 
+import helper.Helper;
+import java.io.File;
+import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -35,13 +37,17 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import models.JsonWrapper;
+import models.OnlineGameModel;
 import javafx.stage.StageStyle;
+import models.JsonReceiveBase;
+import models.ServerEventType;
+import models.WinnerSendModel;
 import screens.Record.Record;
 import screens.Record.RecordFXMLBase;
 import tictactoe.TicTacToe;
 
 public class BoardFXMLBase extends AnchorPane {
-
     protected final ImageView imageView;
     protected final ImageView imageView0;
     protected final GridPane gridPane;
@@ -93,29 +99,39 @@ public class BoardFXMLBase extends AnchorPane {
     protected final MediaView WinnerVideo;
     protected Text whosTurn;
     protected boolean aiTurn = false;
+    private Helper helper;
+    private OnlineGameModel onlineGameModel;
     protected final Record record;
-
-    protected  MediaPlayer mediaPlayer;
-
+    protected MediaPlayer mediaPlayer;
     private boolean isRecording = false;
-
-
     protected final GameMode gamemode; //'multi' ,'Single'
     protected ImageView btnImage;
-
+    static String playerUserName;
     private TicTacToeGame game;
 
-    public BoardFXMLBase(Stage stage, String Player1, String Player2, GameMode gamemode,String userName) {
+    private final String playerStartName;
 
-        record = new Record();
+    public BoardFXMLBase(Stage stage, String Player1, String Player2, GameMode gamemode, String userName) {
         this.gamemode = gamemode;
         game = new TicTacToeGame(Player1, Player2, gamemode);
-
+        if (gamemode == GameMode.Online) {
+            helper = new Helper();
+            playerUserName = userName;
+        }
+        playerStartName = Player1;
+        System.err.println("player 1 " + Player1);
+        System.err.println("player 2 " + Player2);
+        System.err.println("Curret User " + playerUserName);
+        System.err.println("Game Mode " + gamemode.name());
+        onlineGameModel = new OnlineGameModel();
+        onlineGameModel.setPlayer1UserName(Player1);
+        onlineGameModel.setPlayer2UserName(Player2);
+        onlineGameModel.setCurrentPlayerUserName(Player1);
+        record = new Record();
         imageView = new ImageView();
         imageView0 = new ImageView();
         gridPane = new GridPane();
         WinnerVideo = new MediaView();
-
         columnConstraints = new ColumnConstraints();
         columnConstraints0 = new ColumnConstraints();
         columnConstraints1 = new ColumnConstraints();
@@ -333,10 +349,9 @@ public class BoardFXMLBase extends AnchorPane {
         imageView2.setFitWidth(96.0);
         imageView2.setPickOnBounds(true);
         imageView2.setPreserveRatio(true);
-        imageView2.setImage(new Image(getClass().getResource("/assets/X.png").toExternalForm()));
+        imageView2.setImage(new Image(getClass().getResource(gamemode == GameMode.Online ? "/assets/O.png" : "/assets/X.png").toExternalForm()));
         button.setGraphic(imageView2);
         button.setFont(new Font("Comic Sans MS Bold", 39.0));
-
         txtPlayer2.setFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         txtPlayer2.setLayoutX(136.0);
         txtPlayer2.setLayoutY(209.0);
@@ -365,7 +380,8 @@ public class BoardFXMLBase extends AnchorPane {
         imageView3.setFitWidth(96.0);
         imageView3.setPickOnBounds(true);
         imageView3.setPreserveRatio(true);
-        imageView3.setImage(new Image(getClass().getResource("/assets/O.png").toExternalForm()));
+
+        imageView3.setImage(new Image(getClass().getResource(gamemode == GameMode.Online ? "/assets/X.png" : "/assets/O.png").toExternalForm()));
         button0.setGraphic(imageView3);
 
         txtPlayer1.setFill(javafx.scene.paint.Color.valueOf("#fcd015"));
@@ -375,7 +391,6 @@ public class BoardFXMLBase extends AnchorPane {
         txtPlayer1.setStrokeWidth(0.0);
         txtPlayer1.setText(Player1);
         txtPlayer1.setFont(new Font("Comic Sans MS Bold", 25.0));
-
         button1.setCacheShape(false);
         button1.setCenterShape(false);
         button1.setFocusTraversable(false);
@@ -391,7 +406,6 @@ public class BoardFXMLBase extends AnchorPane {
         button1.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         button1.setFont(new Font("Comic Sans MS Bold", 34.0));
         button1.setVisible(false);
-
         scorePlayer1.setCacheShape(false);
         scorePlayer1.setCenterShape(false);
         scorePlayer1.setFocusTraversable(false);
@@ -443,6 +457,53 @@ public class BoardFXMLBase extends AnchorPane {
         btnBack.setText("Back");
         btnBack.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         btnBack.setFont(new Font("Comic Sans MS Bold", 25.0));
+        System.err.println(gamemode);
+        System.err.println(onlineGameModel.getCurrentPlayerUserName());
+        System.out.println(playerUserName);
+        System.out.println(onlineGameModel.getCurrentPlayerUserName());
+        if (gamemode == GameMode.Online) {
+            new Thread(() -> {
+                try {
+                    while (true) {
+                        System.err.println("Waiting for message");
+                        String message = helper.readMessage();
+                        JsonReceiveBase jsonReceiveBase = JsonWrapper.fromJson(message, JsonReceiveBase.class);
+                        if (jsonReceiveBase.getType().equals(ServerEventType.OnlineGame.name())) {
+                            onlineGameModel = JsonWrapper.fromJson(message, OnlineGameModel.class);
+                            System.err.println("Message Received: " + message);
+                            if (onlineGameModel.getPlayer1UserName().equals(Player1) && onlineGameModel.getPlayer2UserName().equals(Player2)) {
+                                System.err.println("Update UI Then");
+                                Platform.runLater(() -> {
+//                                game.setCurrentPlayerMark(onlineGameModel.getCurrentPlayerMark());
+                                    System.err.print("Current Player mark" + game.getCurrentPlayerMark());
+                                    game.placeMark(onlineGameModel.getRow(), onlineGameModel.getCol());
+                                    updateBoardUI();
+                                    updateTurnDisplay();
+                                    if (game.isGameOver()) {
+                                        if (!game.isDraw()) {
+                                            game.incrementPlayerScore();
+                                            updateScoreDisplay();
+                                            WinnerSendModel winnerSendModel = new WinnerSendModel();
+                                            winnerSendModel.setWinnerUserName(onlineGameModel.getCurrentPlayerUserName().equals(Player1) ? Player2 : Player1);
+                                            winnerSendModel.setType(ServerEventType.UpdateScore.name());
+                                            try {
+                                                helper.sendWinner(JsonWrapper.toJson(winnerSendModel));
+                                            } catch (IOException ex) {
+                                                Logger.getLogger(BoardFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+                                        }
+                                        highlightWinningCombination();
+                                        endOfGameAlert();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(BoardFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }).start();
+        }
 
         btn00.setOnAction((event) -> {
             handleButtonClick(0, 0, btn00);
@@ -484,7 +545,7 @@ public class BoardFXMLBase extends AnchorPane {
         whosTurn.setLayoutY(188.0);
         whosTurn.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         whosTurn.setStrokeWidth(0.0);
-        whosTurn.setText("");
+        whosTurn.setText(Player1 + "'s Turn!");
         whosTurn.setFont(new Font("Comic Sans MS Bold", 60.0));
         getChildren().add(imageView);
         getChildren().add(imageView0);
@@ -535,6 +596,10 @@ public class BoardFXMLBase extends AnchorPane {
     }
 
     private void handleButtonClick(int row, int col, Button button) {
+        System.err.println("Current Move Player " + onlineGameModel.getCurrentPlayerUserName() + " user name" + playerUserName);
+        if (!onlineGameModel.getCurrentPlayerUserName().equals(playerUserName) && gamemode == GameMode.Online) {
+            return;
+        }
         btnRecord.setDisable(true);
         switch (gamemode) {
             case TwoPlayers:
@@ -566,7 +631,6 @@ public class BoardFXMLBase extends AnchorPane {
                 }
                 break;
             case AI:
-
                 if (!game.isGameOver() && game.placeMark(row, col)) {
                     String mark = String.valueOf(game.getCurrentPlayerMark());
                     btnImage = new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm()));
@@ -579,9 +643,7 @@ public class BoardFXMLBase extends AnchorPane {
                     disableAllButtons();
                     aiTurn = true;
                     updateTurnDisplay();
-
                     if (game.isGameOver()) {
-
                         endOfGame();
                     } else {
                         // Run AI in thread
@@ -605,7 +667,9 @@ public class BoardFXMLBase extends AnchorPane {
                         }).start();
                     }
                 }
-
+                break;
+            case Online:
+                onlinePlayers(row, col, button);
         }
     }
 
@@ -652,14 +716,14 @@ public class BoardFXMLBase extends AnchorPane {
         }
 
     }
-       private void enableAllButtons() {
+
+    private void enableAllButtons() {
         for (int i = 0; i < gridPane.getChildren().size(); i++) {
             Button button = (Button) gridPane.getChildren().get(i);
             button.setDisable(false);
         }
 
     }
-
 
     private void endOfGameAlert() {
 
@@ -686,16 +750,13 @@ public class BoardFXMLBase extends AnchorPane {
                 mediaPlayer = new MediaPlayer(media);
                 winMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
-
             } else {
                 File videoPath = new File("src/assets/videos/draw1.mp4");
                 Media media = new Media(videoPath.toURI().toString());
                 mediaPlayer = new MediaPlayer(media);
                 winMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
-
             }
-
             playAgainButton.setOnAction(e -> {
                 resetGame();
                 stopMediaPlayer();
@@ -735,7 +796,11 @@ public class BoardFXMLBase extends AnchorPane {
     private void resetGame() {
         game.resetGame();
         resetBoardUI();
-        whosTurn.setText("");
+        if (gamemode == GameMode.Online) {
+            onlineGameModel.setCurrentPlayerUserName(onlineGameModel.getPlayer1UserName());
+        }
+        updateTurnDisplay();
+
     }
 
     private void resetBoardUI() {
@@ -770,6 +835,10 @@ public class BoardFXMLBase extends AnchorPane {
             updateScoreDisplay();
         }
         highlightWinningCombination();
+        if (gamemode == GameMode.AI) {
+            aiTurn = false;
+        }
+        game.setCurrentPlayerMark('X');
         endOfGameAlert();
 
     }
@@ -786,12 +855,32 @@ public class BoardFXMLBase extends AnchorPane {
         if (!game.isGameOver() && !aiTurn) {
             char currentPlayer = game.getCurrentPlayerMark();
             String playerName = (currentPlayer == 'X') ? game.getPlayer1Name() : game.getPlayer2Name();
+            System.out.println(playerName + "Update Turn Display is Ture");
             whosTurn.setText(playerName + "'s Turn!");
 
         } else {
             String playerName = game.getPlayer2Name();
+            System.out.println(playerName + "Update Turn Display is false");
             whosTurn.setText(playerName + "'s Turn!");
         }
+    }
+
+    private void onlinePlayers(int row, int col, Button button) {
+        if (!game.isGameOver() && game.placeMark(row, col)) {
+//            disableAllButtons();
+            onlineGameModel.setCol(col);
+            onlineGameModel.setRow(row);
+            onlineGameModel.setCurrentPlayerMark(game.getCurrentPlayerMark());
+            new Thread(() -> {
+                try {
+                    helper.sendMove(JsonWrapper.toJson(onlineGameModel));
+                    onlineGameModel.setCurrentPlayerUserName(playerUserName.equals(onlineGameModel.getPlayer1UserName()) ? onlineGameModel.getPlayer2UserName() : onlineGameModel.getPlayer1UserName());
+                } catch (IOException ex) {
+                    Logger.getLogger(BoardFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }).start();
+        }
+
     }
 
     private List<String> readMovesFromFile(String fileName) {
@@ -814,7 +903,6 @@ public class BoardFXMLBase extends AnchorPane {
         initializeBoardWithPlayers();
         new Thread(() -> {
             for (String move : moves) {
-              
 
                 Platform.runLater(() -> replayMove(move));
                 try {
@@ -829,13 +917,13 @@ public class BoardFXMLBase extends AnchorPane {
     }
 
     private void replayMove(String move) {
-     
-        String[] parts = move.split("[, ]+"); 
+
+        String[] parts = move.split("[, ]+");
         int row = Integer.parseInt(parts[3]);
         int col = Integer.parseInt(parts[5]);
 
         if (!game.isGameOver() && game.placeMark(row, col)) {
-       
+
             updateBoardUI();
             if (game.isGameOver()) {
 
@@ -854,7 +942,7 @@ public class BoardFXMLBase extends AnchorPane {
         scorePlayer2.setVisible(false);
         btnRecord.setVisible(false);
 
-        resetGame(); 
+        resetGame();
     }
 
     public void selectRecordFileForReplay() {
@@ -869,7 +957,7 @@ public class BoardFXMLBase extends AnchorPane {
     }
 
     private String[] extractPlayerNamesFromFile(String fileName) {
-    
+
         String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
         return baseName.split("&");
     }

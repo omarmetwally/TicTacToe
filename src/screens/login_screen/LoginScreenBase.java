@@ -1,5 +1,6 @@
 package screens.login_screen;
 
+import models.ServerEventType;
 import com.google.gson.Gson;
 import helper.Helper;
 
@@ -143,9 +144,12 @@ public class LoginScreenBase extends AnchorPane {
                     UserCredentials userCredentials = getUserCredentials();
                     Gson gson = new Gson();
                     String jsonUserCredentials = gson.toJson(userCredentials);
-
                     String loginResponse = helper.loginRequest(jsonUserCredentials);
-                    jsonReceiveBase = JsonWrapper.fromJson(loginResponse, JsonReceiveBase.class);
+                     jsonReceiveBase = JsonWrapper.fromJson(loginResponse, JsonReceiveBase.class);
+                    /// start here 
+                    //System.out.println(loginResponse);
+
+
 
                     Platform.runLater(() -> {
                         if (jsonReceiveBase.getType().equals(ServerEventType.Login.name()) && jsonReceiveBase.getStatus() == 1 ) {

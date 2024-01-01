@@ -28,7 +28,7 @@ import models.JsonReceiveBase;
 import models.JsonWrapper;
 import screens.Plist.AlertMessage;
 import screens.login_screen.LoginScreenBase;
-import screens.login_screen.ServerEventType;
+import models.ServerEventType;
 import tictactoe.TicTacToe;
 
 public class RegisterScreenBase extends AnchorPane {

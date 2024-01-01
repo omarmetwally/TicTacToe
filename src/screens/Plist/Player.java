@@ -6,7 +6,7 @@
 
 package screens.Plist;
 import javafx.scene.image.Image;
-import screens.login_screen.ServerEventType;
+import models.ServerEventType;
 /**
  *
  * @author Aya
