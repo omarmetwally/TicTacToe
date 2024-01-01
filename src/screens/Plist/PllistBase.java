@@ -30,6 +30,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import screens.Plist.AlertMessage;
 import models.JsonReceiveBase;
 import models.JsonSendBase;
 import models.JsonWrapper;
@@ -43,13 +44,16 @@ import tictactoe.TicTacToe;
 
 public class PllistBase extends AnchorPane {
     protected final ImageView imgview;
+    protected final Image imgViewP;
     protected final Button playlist;
     protected final HBox hbox;
     protected final Label name;
     protected final Label status;
-     protected final Label profileName;
+    protected final Label profileName;
+    protected final Circle profilePic;  
     protected final Pane pane;
     protected final VBox vBox;
+    protected final VBox vBoxx;
     protected ListView<Player> playerListView;
     private ObservableList<Player> observablePlayerList;
     protected final Button Backbtn;
@@ -67,13 +71,16 @@ public class PllistBase extends AnchorPane {
         userName= username;
         jsonReceiveBase = new JsonReceiveBase();
         imgview = new ImageView();
+        imgViewP = new Image("/assets/download.png");
         playlist = new Button();
         hbox = new HBox();
         name = new Label();
         status = new Label();
         profileName= new Label();
+        profilePic = new Circle();
         pane = new Pane();
         vBox = new VBox(30);
+        vBoxx = new VBox(30);
         playerListView = new ListView<>();
         Backbtn = new Button();
         imgCover = new Image("/assets/cov.jpg");
@@ -90,7 +97,8 @@ public class PllistBase extends AnchorPane {
         imgview.setPickOnBounds(true);
         imgview.setPreserveRatio(true);
         imgview.setImage(imgCover);
-
+        
+       
         playlist.setLayoutX(850);
         playlist.setLayoutY(18.0);
         playlist.setMnemonicParsing(false);
@@ -128,13 +136,22 @@ public class PllistBase extends AnchorPane {
         
         profileName.setAlignment(javafx.geometry.Pos.CENTER);
         profileName.setLayoutX(1500);
-        profileName.setLayoutY(170.0);
+        profileName.setLayoutY(195.0);
         profileName.setPrefHeight(39.0);
         profileName.setPrefWidth(550.0);
         profileName.setText(userName);
         profileName.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         profileName.setFont(new Font("Comic Sans MS Bold", 40.0));
 
+        profilePic.setLayoutX(1788);
+        profilePic.setLayoutY(118.0);
+        profilePic.setFill(javafx.scene.paint.Color.DODGERBLUE);
+        profilePic.setRadius(87.0);
+        profilePic.setStroke(javafx.scene.paint.Color.BLACK);
+        profilePic.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
+        profilePic.setFill(new ImagePattern(imgViewP));
+
+        
         pane.setLayoutX(555.0);
         pane.setLayoutY(260.0);
         pane.setPrefHeight(490.0);
@@ -142,6 +159,9 @@ public class PllistBase extends AnchorPane {
 
         vBox.setPrefHeight(560.0);
         vBox.setPrefWidth(765.0);
+        
+        vBoxx.setPrefHeight(560.0);
+        vBoxx.setPrefWidth(350.0);
         
          // Load the CSS file
         String css = getClass().getResource("Plist.css").toExternalForm();
@@ -153,12 +173,13 @@ public class PllistBase extends AnchorPane {
         observablePlayerList = FXCollections.observableArrayList();
         playerListView.setItems(observablePlayerList);
         // playerListView.setBackground(imgList);
-    // Add the current player's UI to the map  
-        Backbtn.setLayoutX(31.0);
-        Backbtn.setLayoutY(20.0);
+    // Add the current player's UI to the map
+    
+        Backbtn.setLayoutX(580.0);
+        Backbtn.setLayoutY(840.0);
         Backbtn.setMnemonicParsing(false);
         Backbtn.setStyle("-fx-background-radius: 25; -fx-background-color: FFFF; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5);");
-        Backbtn.setText("Back");
+        Backbtn.setText("Log out");
         Backbtn.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         Backbtn.setFont(new Font("Comic Sans MS Bold", 25.0));
         Backbtn.setOnAction((event) -> {
@@ -176,7 +197,7 @@ public class PllistBase extends AnchorPane {
         getChildren().add(pane);
         getChildren().add(Backbtn);
         getChildren().add(profileName);
-
+        getChildren().add(profilePic);
         getActivePlayers();
         startListener();
        
@@ -278,51 +299,29 @@ private void invitePlayer(Player player) {
         String username = player.getName();
         //To send Username of the Player that i want to play with him
         sendInviteRequest(username); 
-            
-           try {
-                // Load the second FXML file for the invitation dialog
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("alert.fxml"));
-                Parent root = loader.load();
-                Button cancel = (Button) loader.getNamespace().get("cnacelbtn");
-                Text text = (Text) loader.getNamespace().get("waittxt");
-                cancel.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: #2AAAFD;");
-                cancel.setTextFill(javafx.scene.paint.Color.valueOf("#ffff"));
-                cancel.setFont(new Font("System Bold Italic", 25.0));
-                cancel.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        Stage stage = (Stage) cancel.getScene().getWindow();
-                        stage.close();
-                    }
-                });
-                text.setText("Waiting for Approval...");
-                text.setFont(new Font("Comic Sans MS Bold", 41.0));
-                Stage popupStage = new Stage();
-                popupStage.initModality(Modality.APPLICATION_MODAL);
-                popupStage.initStyle(StageStyle.UNDECORATED);
-                popupStage.setScene(new Scene(root, Color.TRANSPARENT));
-                new Thread(() -> {
+        
+        AlertMessage alertmsg = new AlertMessage();
+        String waitText = "Waiting for Approval...";
+        alertmsg.showAction(waitText);
+        new Thread(() -> {
                 boolean accepted = waitForInviteResponse();
 
+                
                 Platform.runLater(() -> {
                     if (accepted) {
-                        popupStage.close();
+                        alertmsg.closeAlert();
                         BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.TwoPlayers,userName);
                         Scene boardScene = new Scene(boardScreen);
                         TicTacToe.changeScene(boardScene);
                     } else {
                         // Handle rejection case
+                      //  alertmsg.popupStage.close();
+                      alertmsg.closeAlert();
+                          
                     }
                 });
             }).start();
-                popupStage.showAndWait(); 
-          
-                
-        
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        
+        alertmsg.toShowandWait();
      }
      private void sendInviteRequest(String username){
          new Thread(()-> { 
@@ -348,7 +347,7 @@ private void invitePlayer(Player player) {
             while (true) {
                 try {
                     System.out.println("Listening for server messages...");
-                    String message = helper.readMessage();
+                    String message = helper.ServerResponse();
                     if (message != null) {
                         System.out.println("Message received: " + message);
                         handleServerMessage(message);
@@ -378,7 +377,7 @@ private void invitePlayer(Player player) {
         }
          try{
              if (Message.trim().startsWith("[")) {
-                // getActivePlayers();
+                 System.out.println("This ArrayList Response");
             }
             else {
 
@@ -414,31 +413,92 @@ private void invitePlayer(Player player) {
     
      
      private void showInvitationPopup(String senderUsername) {
-         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Game Invitation");
-        alert.setHeaderText("You have received an invitation!");
-
-        ButtonType buttonAccept = new ButtonType("Accept", ButtonBar.ButtonData.OK_DONE);
-        ButtonType buttonReject = new ButtonType("Reject", ButtonBar.ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(buttonAccept, buttonReject);
-
-        Label label = new Label("Would you like to accept the game invitation from" + senderUsername + " ?");
-        alert.getDialogPane().setContent(label);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == buttonAccept) {
-            System.out.println("Invitation Accepted");
-            acceptInvitation(senderUserName);
-            BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.TwoPlayers,userName);
-            Scene boardScene = new Scene(boardScreen);
-            TicTacToe.changeScene(boardScene);
-
-        } else {
-            System.out.println("Invitation Rejected");
-            rejectInvitation(senderUserName);
+       try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("InvitepopUp.fxml"));
+            Parent root = loader.load();
+            Button accept = (Button) loader.getNamespace().get("acceptbtn");
+            Button cancel = (Button) loader.getNamespace().get("cancelbtn");
+            Text alertText = (Text) loader.getNamespace().get("textAlert");
+            Text senderText = (Text) loader.getNamespace().get("sender");
+           // String text = " has invited you to start a game";
+            accept.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: #2AAAFD;");
+            accept.setTextFill(javafx.scene.paint.Color.valueOf("#ffff"));
+            accept.setFont(new Font("System Bold Italic", 21.0));
+            accept.setText("Accept");
+            accept.setOnAction(new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent event) {
+                    System.out.println("Invitation Accepted");
+                    acceptInvitation(senderUsername);
+                    BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUsername, reciverUserName, GameMode.TwoPlayers, userName);
+                    Scene boardScene = new Scene(boardScreen);
+                    TicTacToe.changeScene(boardScene);
+                    Stage stage = (Stage) accept.getScene().getWindow();
+                    stage.close();
+                }
+            }); 
+            cancel.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: #2AAAFD;");
+            cancel.setTextFill(javafx.scene.paint.Color.valueOf("#ffff"));
+            cancel.setFont(new Font("System Bold Italic", 21.0));
+            cancel.setText("Cancel");
+            cancel.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    System.out.println("Invitation Rejected");
+                    rejectInvitation(senderUserName);
+                    Stage stage = (Stage) cancel.getScene().getWindow();
+                    stage.close();
+                }
+            });  
+           senderText.setText(senderUsername);
+            alertText.setFont(new Font("Comic Sans MS Bold", 35.0));
+            alertText.setText(" invited you to join.");
+            senderText.setFont(new Font("Comic Sans MS Bold", 35.0));
+            
+            System.out.println("Running on JavaFX Application Thread.");
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initStyle(StageStyle.UNDECORATED);
+            popupStage.setScene(new Scene(root, Color.TRANSPARENT));
+            popupStage.showAndWait();
+            System.out.println("Custom popup closed.");
+           
+        } catch (IOException ex) {
+            Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+     
+     
+    /* private void rejectPopUp () {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("alert.fxml"));
+            Parent root = loader.load();
+            Button cancel = (Button) loader.getNamespace().get("cnacelbtn");
+            Text alertText = (Text) loader.getNamespace().get("waittxt");
+            String text = "Sorry your Invitaion rejected...";
+            cancel.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: #2AAAFD;");
+            cancel.setTextFill(javafx.scene.paint.Color.valueOf("#ffff"));
+            cancel.setFont(new Font("System Bold Italic", 25.0));
+            cancel.setText("Ok");
+            cancel.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    Stage stage = (Stage) cancel.getScene().getWindow();
+                    stage.close();
+                }
+            });
+            
+            alertText.setText(text);
+            alertText.setFont(new Font("Comic Sans MS Bold", 41.0));
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initStyle(StageStyle.UNDECORATED);
+            popupStage.setScene(new Scene(root, Color.TRANSPARENT)); 
+            popupStage.showAndWait();
+        } catch (IOException ex) {
+            Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
         }
      }
-     
+     */
      private void acceptInvitation(String senderUserName) {
         // Send acceptance message to servers
         sendInviteResponse(senderUserName, true);
@@ -471,11 +531,12 @@ private void invitePlayer(Player player) {
                 if (rec.getStatus() == 1) {
                    
                      System.out.println("Done " + reciverUserName + "Acepted your request");
-                     // inviteResponseReceived = true;
+                  
                   
                 } else {
-                    System.out.println("Sorry " + reciverUserName + "Rejected your request");
-                    // inviteResponseReceived = true;
+                  String sorry = "Sorry your Invitation rejected..";  
+                  AlertMessage alertRej = new AlertMessage();
+                  alertRej.showAction(sorry);
                 }
             }
          }
@@ -496,9 +557,4 @@ private void invitePlayer(Player player) {
         }
         return inviteAccepted;
     }
- 
-    //method to handle the popup 
-    private void popUp (String alertText,String buttonText) {
-        
-    }
-}
+ }

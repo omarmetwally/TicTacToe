@@ -90,7 +90,7 @@ public class Helper {
         }
     }
     
-    public String readMessage () throws IOException{
+    public String ServerResponse() throws IOException{
         if (playerSocket.isConnected()) {
             return ear.readLine();  // Store the response  
         }else{
