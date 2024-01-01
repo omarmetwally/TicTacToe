@@ -141,7 +141,7 @@ public class PllistBase extends AnchorPane {
         profileName.setPrefWidth(550.0);
         profileName.setText(userName);
         profileName.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
-        profileName.setFont(new Font("Comic Sans MS Bold", 40.0));
+        profileName.setFont(new Font("Comic Sans MS Bold", 35.0));
 
         profilePic.setLayoutX(1788);
         profilePic.setLayoutY(118.0);
@@ -175,8 +175,8 @@ public class PllistBase extends AnchorPane {
         // playerListView.setBackground(imgList);
     // Add the current player's UI to the map
     
-        Backbtn.setLayoutX(580.0);
-        Backbtn.setLayoutY(840.0);
+        Backbtn.setLayoutX(1500.0);
+        Backbtn.setLayoutY(250.0);
         Backbtn.setMnemonicParsing(false);
         Backbtn.setStyle("-fx-background-radius: 25; -fx-background-color: FFFF; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5);");
         Backbtn.setText("Log out");

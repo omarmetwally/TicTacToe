@@ -32,7 +32,8 @@ public class Helper {
     public Helper() {
 
         try {
-            playerSocket = new Socket("127.0.0.1", 5005);
+            playerSocket = new Socket(HelperIP.ipHelper, 5005);
+            System.out.println(HelperIP.ipHelper);
             ear = new DataInputStream(playerSocket.getInputStream());
             mouth = new PrintStream(playerSocket.getOutputStream());
            jsonreceive = new JsonReceiveBase();
