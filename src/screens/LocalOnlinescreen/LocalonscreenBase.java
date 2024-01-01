@@ -1,8 +1,12 @@
 package screens.LocalOnlinescreen;
 
+import helper.Helper;
 import helper.HelperIP;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Scene;
 
 import javafx.scene.control.Button;
@@ -15,6 +19,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import screens.LocalPlayers.LocalPlayersBase;
+import screens.Plist.AlertMessage;
+import screens.Plist.alertBase;
 import screens.login_screen.LoginScreenBase;
 import tictactoe.TicTacToe;
 
@@ -74,10 +80,13 @@ public class LocalonscreenBase extends AnchorPane {
         onlinebtn.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         onlinebtn.setFont(new Font("Comic Sans MS Bold", 39.0));
         onlinebtn.setOnAction((event) -> {
-            promptForIPAddress();
-            LoginScreenBase localScreen = new LoginScreenBase(stage);
-            Scene boardScene = new Scene(localScreen);
-            TicTacToe.changeScene(boardScene);
+            boolean serverIsOn = promptForIPAddress();
+            if (serverIsOn) {
+                LoginScreenBase localScreen = new LoginScreenBase(stage);
+                Scene boardScene = new Scene(localScreen);
+                TicTacToe.changeScene(boardScene);
+            }
+
         });
 
         btnBack.setLayoutX(31.0);
@@ -96,7 +105,7 @@ public class LocalonscreenBase extends AnchorPane {
 
     }
 
-    public void promptForIPAddress() {
+    public boolean promptForIPAddress() {
         String ipAddress = "";
 
         TextInputDialog dialog = new TextInputDialog();
@@ -120,6 +129,10 @@ public class LocalonscreenBase extends AnchorPane {
         } else {
             HelperIP.setIpHelper("127.0.0.1");
         }
+        
+        Helper newHlper = new Helper();
+        return Helper.isCreated;
+
     }
 
 }
