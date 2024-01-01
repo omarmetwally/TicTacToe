@@ -12,13 +12,13 @@ import screens.login_screen.ServerEventType;
  *
  * @author Aya
  */
-public class OnlineBoard  {
+public class OnlineBoard {
+
     String senderUserName;
     String receiverUserName;
     private ServerEventType type = ServerEventType.Invite;
     String currentTurn;
     
-
 
     public OnlineBoard(String senderUN, String ReceiverUN) {
         this.senderUserName = senderUN;
@@ -33,6 +33,7 @@ public class OnlineBoard  {
 
 
     public void setReceiverUserName(String ReceiverUN) {
+
         this.receiverUserName = ReceiverUN;
     }
 
@@ -52,7 +53,5 @@ public class OnlineBoard  {
     public String getCurrentTurn() {
         return currentTurn;
     }
-    
-    
-    
+
 }
