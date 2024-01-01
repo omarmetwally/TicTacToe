@@ -197,8 +197,8 @@ public class RegisterScreenBase extends AnchorPane {
 
             return false;
 
-        } else if (editTextUsername.getText().length() < 8) {
-            showAlerDialog("Username should be more than 8 chrachters.");
+        } else if (editTextUsername.getText().length() <= 8 || editTextUsername.getText().length() >= 10) {
+            showAlerDialog("Username should be between 8 and 10.");
 
             System.out.println("invalid syntax username");
 
