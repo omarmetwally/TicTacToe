@@ -12,8 +12,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
-public abstract class alertBase extends AnchorPane {
+public   class alertBase extends AnchorPane {
 
     protected final Text waittxt;
     protected final Button cnacelbtn;
@@ -32,7 +33,7 @@ public abstract class alertBase extends AnchorPane {
         waittxt.setLayoutY(142.0);
         waittxt.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         waittxt.setStrokeWidth(0.0);
-        waittxt.setText("Waiting for Approval...");
+      //  waittxt.setText("Waiting for Approval...");
         waittxt.setFont(new Font("Comic Sans MS Bold", 41.0));
 
         cnacelbtn.setLayoutX(238.0);
@@ -40,17 +41,26 @@ public abstract class alertBase extends AnchorPane {
         cnacelbtn.setMnemonicParsing(false);
         cnacelbtn.setPrefHeight(57.0);
         cnacelbtn.setPrefWidth(116.0);
-        cnacelbtn.setText("Cancel");
+        cnacelbtn.setText("Ok");
         cnacelbtn.setStyle("-fx-background-radius: 35; -fx-effect: dropshadow(one-pass-box ,#BFBFC3,10,0.3,-5,5); -fx-background-color: FFFF;");
         cnacelbtn.setTextFill(javafx.scene.paint.Color.valueOf("#fcd015"));
         cnacelbtn.setFont(new Font("System Bold Italic", 25.0));
+        cnacelbtn.setOnAction(event -> handleCancelButtonAction());
 
         getChildren().add(waittxt);
         getChildren().add(cnacelbtn);
         
     }
     
-         
-}
+        public void handleCancelButtonAction() {
+        Stage stage = (Stage) cnacelbtn.getScene().getWindow();
+        stage.close();
+    }
 
-    
+    public void handleRejectInvitation() {
+        // Update the text and button for rejection
+        waittxt.setText("Sorry, your invitation was rejected.");
+        cnacelbtn.setText("OK");
+        cnacelbtn.setOnAction(event -> handleCancelButtonAction());
+    }
+}

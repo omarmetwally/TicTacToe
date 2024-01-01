@@ -5,6 +5,7 @@
  */
 package screens.Plist;
 
+import models.JsonReceiveBase;
 import screens.login_screen.ServerEventType;
 
 /**
@@ -12,42 +13,45 @@ import screens.login_screen.ServerEventType;
  * @author Aya
  */
 public class OnlineBoard {
-    String senderUserName;
-    String ReceiverUserName;
-    String currentTurn;
-    private ServerEventType type = ServerEventType.Invite;
 
+    String senderUserName;
+    String receiverUserName;
+    private ServerEventType type = ServerEventType.Invite;
+    String currentTurn;
+    
 
     public OnlineBoard(String senderUN, String ReceiverUN) {
         this.senderUserName = senderUN;
-        this.ReceiverUserName = ReceiverUN;
+        this.receiverUserName = ReceiverUN;
         //this.currentTurn = currentTurn;
     }
 
-    public void setSenderUN(String senderUN) {
+    public void setSenderUserName(String senderUN) {
         this.senderUserName = senderUN;
     }
 
-    public void setReceiverUN(String ReceiverUN) {
-        this.ReceiverUserName = ReceiverUN;
+
+
+    public void setReceiverUserName(String ReceiverUN) {
+
+        this.receiverUserName = ReceiverUN;
     }
 
     public void setCurrentTurn(String currentTurn) {
         this.currentTurn = currentTurn;
     }
 
-    public String getSenderUN() {
+    public String getSenderUserName() {
         return senderUserName;
     }
 
-    public String getReceiverUN() {
-        return ReceiverUserName;
+
+    public String getReceiverUserName() {
+        return receiverUserName;
     }
 
     public String getCurrentTurn() {
         return currentTurn;
     }
-    
-    
-    
+
 }
