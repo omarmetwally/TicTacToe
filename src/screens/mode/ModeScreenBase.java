@@ -50,7 +50,7 @@ public class ModeScreenBase extends AnchorPane {
         btnSingle.setFont(new Font("Comic Sans MS Bold", 45.0));
         btnSingle.setOnAction((event) -> {
 
-            BoardFXMLBase boardScreen = new BoardFXMLBase(stage, "Player 1", "  Robot", GameMode.AI);
+            BoardFXMLBase boardScreen = new BoardFXMLBase(stage, "Player 1", "  Robot", GameMode.AI,null);
             Scene boardScene = new Scene(boardScreen);
             TicTacToe.changeScene(boardScene);
 
