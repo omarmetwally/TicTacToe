@@ -60,7 +60,7 @@ public class PllistBase extends AnchorPane {
     protected final Button Backbtn;
     protected final Image imgCover;
     private JsonReceiveBase jsonReceiveBase;
-    
+
     private JsonSendBase jsonSendBase;
     private static String userName;
     private String senderUserName;
@@ -69,7 +69,7 @@ public class PllistBase extends AnchorPane {
     private volatile boolean inviteAccepted = false;
     private Stage st;
     private alertBase alert;
-   
+
     public PllistBase(Stage stage, String username) {
         userName = username;
         jsonReceiveBase = new JsonReceiveBase();
@@ -199,7 +199,6 @@ public class PllistBase extends AnchorPane {
                 }
             }).start();
 
-   
         });
 
         getChildren().add(imgview);
@@ -214,23 +213,22 @@ public class PllistBase extends AnchorPane {
         getChildren().add(profilePic);
         getActivePlayers();
         startListener();
-        
-        
-            stage.setOnCloseRequest((WindowEvent event) -> {
-            // Your code to handle the close event goes here
-                new Thread(() -> {
-                     try {
-                         Helper helper = new Helper();
-                         LogOut logOut = getUserName();
-                         Gson gson = new Gson();
 
-                         String logg = gson.toJson(logOut);
-                          helper.LogOutRequest(logg);
-                         System.out.println("Logout req =" + logg);
-                     } catch (IOException ex) {
-                         Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
-                     }
-                 }).start();
+        stage.setOnCloseRequest((WindowEvent event) -> {
+            // Your code to handle the close event goes here
+            new Thread(() -> {
+                try {
+                    Helper helper = new Helper();
+                    LogOut logOut = getUserName();
+                    Gson gson = new Gson();
+
+                    String logg = gson.toJson(logOut);
+                    helper.LogOutRequest(logg);
+                    System.out.println("Logout req =" + logg);
+                } catch (IOException ex) {
+                    Logger.getLogger(PllistBase.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }).start();
         });
 
     }
@@ -334,24 +332,24 @@ public class PllistBase extends AnchorPane {
         AlertMessage alertmsg = new AlertMessage();
         String waitText = "Waiting for Approval...";
         alertmsg.showAction(waitText);
-        alertmsg.toShowandWait();
+
         new Thread(() -> {
             boolean accepted = waitForInviteResponse();
-              
+
             Platform.runLater(() -> {
                 if (accepted) {
                     alertmsg.closeAlert();
                     BoardFXMLBase boardScreen = new BoardFXMLBase(st, senderUserName, reciverUserName, GameMode.Online, userName);
                     Scene boardScene = new Scene(boardScreen);
                     TicTacToe.changeScene(boardScene);
-                }       
-                else {
+                } else {
                     alertmsg.closeAlert();
 
                 }
             });
         }).start();
-        
+        alertmsg.toShowandWait();
+
     }
 
     private void sendInviteRequest(String username) {
@@ -427,6 +425,8 @@ public class PllistBase extends AnchorPane {
                         inviteAccepted = true;
                     }
                 } else if (receivedMessage.getType().equals(ServerEventType.Login.name())) {
+                    getActivePlayers();
+                } else if (receivedMessage.getType().equals(ServerEventType.Logout.name())) {
                     getActivePlayers();
                 }
             }
@@ -544,9 +544,9 @@ public class PllistBase extends AnchorPane {
         }
         return inviteAccepted;
     }
-    
-    public static LogOut getUserName () {
+
+    public static LogOut getUserName() {
         return new LogOut(userName);
     }
-    
+
 }

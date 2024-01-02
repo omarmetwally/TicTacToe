@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import screens.Board.BoardFXMLBase;
 import screens.Board.GameMode;
+import screens.Difficulty.DifficultyScreenBase;
 import screens.LocalOnlinescreen.LocalonscreenBase;
 import screens.Record.RecordFXMLBase;
 import tictactoe.TicTacToe;
@@ -50,9 +51,9 @@ public class ModeScreenBase extends AnchorPane {
         btnSingle.setFont(new Font("Comic Sans MS Bold", 45.0));
         btnSingle.setOnAction((event) -> {
 
-            BoardFXMLBase boardScreen = new BoardFXMLBase(stage, "Player 1", "  Robot", GameMode.AI,null);
-            Scene boardScene = new Scene(boardScreen);
-            TicTacToe.changeScene(boardScene);
+            DifficultyScreenBase difficultyScreen = new DifficultyScreenBase(stage);
+            Scene difficultyScene = new Scene(difficultyScreen);
+            TicTacToe.changeScene(difficultyScene);
 
         });
 
