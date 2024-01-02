@@ -5,15 +5,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="371.0" prefWidth="598.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171">
+<AnchorPane id="AnchorPane" prefHeight="371.0" prefWidth="598.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Text fx:id="sender" fill="#2aaafd" layoutX="36.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="127.6708984375">
+      <Text fx:id="sender" fill="#2aaafd" layoutX="129.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="368.6708984375">
          <font>
             <Font name="Comic Sans MS" size="41.0" />
          </font>
       </Text>
-      <Text fx:id="textAlert" fill="#2aaafd" layoutX="164.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="has Invite you..." wrappingWidth="358.220703125">
+      <Text fx:id="textAlert" fill="#2aaafd" layoutX="119.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="has Invite you..." wrappingWidth="358.220703125">
          <font>
             <Font name="Comic Sans MS Bold" size="41.0" />
          </font>
