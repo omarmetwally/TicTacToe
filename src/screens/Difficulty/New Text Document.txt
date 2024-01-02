@@ -1,0 +1,108 @@
+ public void hardAiMove() {
+        if (modeOfGame == GameMode.AI) {
+            currentPlayerMark = 'O';
+
+            // Check for a winning move
+            int[] winMove = findWinningMove(currentPlayerMark);
+            if (winMove != null) {
+                placeMark(winMove[0], winMove[1]);
+                currentPlayerMark = 'X';
+                return;
+            }
+
+            // Check for a blocking move
+            int[] blockMove = findWinningMove('X');
+            if (blockMove != null) {
+                placeMark(blockMove[0], blockMove[1]);
+                currentPlayerMark = 'X';
+                return;
+            }
+
+            makeRandomMove();
+            currentPlayerMark = 'X';
+        }
+    }
+
+    private int[] findWinningMove(char playerMark) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == ' ') {
+                    board[i][j] = playerMark;
+                    boolean winningMove = checkForWin();
+                    board[i][j] = ' ';
+                    if (winningMove) {
+                        return new int[]{i, j};
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public void makeRandomMove() {
+        Random rand = new Random();
+        while (!gameOver) {
+            int row = rand.nextInt(3);
+            int col = rand.nextInt(3);
+            if (board[row][col] == ' ') {
+                currentPlayerMark = 'O'; // AI uses 'O'
+                placeMark(row, col);
+                currentPlayerMark = 'X'; // Switch back to player 1
+                break;
+            }
+        }
+    }
+
+    public void mediumAiMove() {
+        if (modeOfGame == GameMode.AI) {
+            currentPlayerMark = 'O'; // AI's mark
+            int[] bestMove = minimax(0, currentPlayerMark);
+            placeMark(bestMove[1], bestMove[2]);
+            currentPlayerMark = 'X'; // Switch back to player 1
+        }
+    }
+
+    private int[] minimax(int depth, char player) {
+        // Base cases: check for end state
+        if (checkForWin()) {
+            if (currentPlayerMark == 'O') {
+                return new int[]{10 - depth, -1, -1}; // AI wins
+            } else {
+                return new int[]{-10 + depth, -1, -1}; // Player wins
+            }
+        } else if (isBoardFull()) {
+            return new int[]{0, -1, -1}; // Draw
+        }
+
+        List<int[]> moves = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == ' ') {
+                    board[i][j] = player;
+                    int[] score = minimax(depth + 1, (player == 'O') ? 'X' : 'O');
+                    moves.add(new int[]{score[0], i, j});
+                    board[i][j] = ' '; // Undo move
+                }
+            }
+        }
+
+        int[] bestMove = null;
+        if (player == 'O') { // AI's best move
+            int bestScore = Integer.MIN_VALUE;
+            for (int[] move : moves) {
+                if (move[0] > bestScore) {
+                    bestScore = move[0];
+                    bestMove = move;
+                }
+            }
+        } else { // Player's best move
+            int bestScore = Integer.MAX_VALUE;
+            for (int[] move : moves) {
+                if (move[0] < bestScore) {
+                    bestScore = move[0];
+                    bestMove = move;
+                }
+            }
+        }
+        return bestMove;
+    }

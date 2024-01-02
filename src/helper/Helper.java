@@ -132,7 +132,7 @@ public class Helper {
     public void LogOutRequest(String loggedoutUserName) throws IOException {
            if (playerSocket.isConnected()) {
             mouth.println(loggedoutUserName);
-          //  ear.readLine();  // Store the response  
+          // ear.readLine();  // Store the response  
            }
     }
 

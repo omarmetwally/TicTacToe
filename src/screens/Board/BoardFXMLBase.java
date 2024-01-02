@@ -48,6 +48,7 @@ import screens.Record.RecordFXMLBase;
 import tictactoe.TicTacToe;
 
 public class BoardFXMLBase extends AnchorPane {
+
     protected final ImageView imageView;
     protected final ImageView imageView0;
     protected final GridPane gridPane;
@@ -469,6 +470,7 @@ public class BoardFXMLBase extends AnchorPane {
                         String message = helper.readMessage();
                         JsonReceiveBase jsonReceiveBase = JsonWrapper.fromJson(message, JsonReceiveBase.class);
                         if (jsonReceiveBase.getType().equals(ServerEventType.OnlineGame.name())) {
+                            btnRecord.setDisable(true);
                             onlineGameModel = JsonWrapper.fromJson(message, OnlineGameModel.class);
                             System.err.println("Message Received: " + message);
                             if (onlineGameModel.getPlayer1UserName().equals(Player1) && onlineGameModel.getPlayer2UserName().equals(Player2)) {
@@ -534,7 +536,7 @@ public class BoardFXMLBase extends AnchorPane {
         });
         btnBack.setOnAction(event -> TicTacToe.goBack());
 
-        if (gamemode == GameMode.AI) {
+        if (gamemode == GameMode.AI_EASY || gamemode == GameMode.AI_MEDIUM || gamemode == GameMode.AI_HARD) {
             imageView2.setImage(new Image(getClass().getResource("/assets/O.png").toExternalForm()));
             imageView3.setImage(new Image(getClass().getResource("/assets/X.png").toExternalForm()));
             btnRecord.setVisible(false);
@@ -589,7 +591,7 @@ public class BoardFXMLBase extends AnchorPane {
             System.out.println("in record");
             selectRecordFileForReplay();
         }
-         if (gamemode == GameMode.AI || gamemode == GameMode.TwoPlayers) {
+        if (gamemode == GameMode.AI_EASY || gamemode == GameMode.AI_HARD || gamemode == GameMode.AI_MEDIUM || gamemode == GameMode.TwoPlayers) {
 
             whosTurn.setText(Player1 + "'s Turn!");
         }
@@ -630,7 +632,7 @@ public class BoardFXMLBase extends AnchorPane {
 
                 }
                 break;
-            case AI:
+            case AI_EASY:
                 if (!game.isGameOver() && game.placeMark(row, col)) {
                     String mark = String.valueOf(game.getCurrentPlayerMark());
                     btnImage = new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm()));
@@ -652,6 +654,82 @@ public class BoardFXMLBase extends AnchorPane {
                                 Thread.sleep(500);
                                 Platform.runLater(() -> {
                                     game.aiMove();
+                                    updateBoardUI();
+                                    aiTurn = false;
+                                    enableAllButtons();
+                                    updateTurnDisplay();
+                                    if (game.isGameOver()) {
+                                        // b3ml check
+                                        endOfGame();
+                                    }
+                                });
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }).start();
+                    }
+                }
+                break;
+            case AI_MEDIUM:
+                if (!game.isGameOver() && game.placeMark(row, col)) {
+                    String mark = String.valueOf(game.getCurrentPlayerMark());
+                    btnImage = new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm()));
+                    button.setGraphic(btnImage);
+                    btnImage.setFitHeight(118.0);
+                    btnImage.setFitWidth(96.0);
+                    btnImage.setPickOnBounds(true);
+                    btnImage.setPreserveRatio(true);
+                    button.setDisable(true);
+                    disableAllButtons();
+                    aiTurn = true;
+                    updateTurnDisplay();
+                    if (game.isGameOver()) {
+                        endOfGame();
+                    } else {
+                        // Run AI in thread
+                        new Thread(() -> {
+                            try {
+                                Thread.sleep(500);
+                                Platform.runLater(() -> {
+                                    game.mediumAiMove();
+                                    updateBoardUI();
+                                    aiTurn = false;
+                                    enableAllButtons();
+                                    updateTurnDisplay();
+                                    if (game.isGameOver()) {
+                                        // b3ml check
+                                        endOfGame();
+                                    }
+                                });
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }).start();
+                    }
+                }
+                break;
+            case AI_HARD:
+                if (!game.isGameOver() && game.placeMark(row, col)) {
+                    String mark = String.valueOf(game.getCurrentPlayerMark());
+                    btnImage = new ImageView(new Image(getClass().getResource("/assets/" + mark + ".png").toExternalForm()));
+                    button.setGraphic(btnImage);
+                    btnImage.setFitHeight(118.0);
+                    btnImage.setFitWidth(96.0);
+                    btnImage.setPickOnBounds(true);
+                    btnImage.setPreserveRatio(true);
+                    button.setDisable(true);
+                    disableAllButtons();
+                    aiTurn = true;
+                    updateTurnDisplay();
+                    if (game.isGameOver()) {
+                        endOfGame();
+                    } else {
+                        // Run AI in thread
+                        new Thread(() -> {
+                            try {
+                                Thread.sleep(500);
+                                Platform.runLater(() -> {
+                                    game.hardAiMove();
                                     updateBoardUI();
                                     aiTurn = false;
                                     enableAllButtons();
@@ -727,8 +805,10 @@ public class BoardFXMLBase extends AnchorPane {
 
     private void endOfGameAlert() {
 
+        
         try {
 
+            //Thread.sleep(1000);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("AlertVideoFXML.fxml"));
             Parent root = loader.load();
             Text headerTextView = (Text) loader.getNamespace().get("headerTextView");
@@ -835,7 +915,7 @@ public class BoardFXMLBase extends AnchorPane {
             updateScoreDisplay();
         }
         highlightWinningCombination();
-        if (gamemode == GameMode.AI) {
+        if (gamemode == GameMode.AI_EASY || gamemode == GameMode.AI_MEDIUM || gamemode == GameMode.AI_HARD) {
             aiTurn = false;
         }
         game.setCurrentPlayerMark('X');
@@ -867,12 +947,17 @@ public class BoardFXMLBase extends AnchorPane {
 
     private void onlinePlayers(int row, int col, Button button) {
         if (!game.isGameOver() && game.placeMark(row, col)) {
+            String mark = String.valueOf(game.getCurrentPlayerMark());
+            if (record.isRecording()) {
+                record.recordMove(mark, row, col);
+            }
 //            disableAllButtons();
             onlineGameModel.setCol(col);
             onlineGameModel.setRow(row);
             onlineGameModel.setCurrentPlayerMark(game.getCurrentPlayerMark());
             new Thread(() -> {
                 try {
+
                     helper.sendMove(JsonWrapper.toJson(onlineGameModel));
                     onlineGameModel.setCurrentPlayerUserName(playerUserName.equals(onlineGameModel.getPlayer1UserName()) ? onlineGameModel.getPlayer2UserName() : onlineGameModel.getPlayer1UserName());
                 } catch (IOException ex) {
