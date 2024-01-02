@@ -5,11 +5,13 @@
  */
 package tictactoe;
 
+import java.net.Socket;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import screens.SplashScreen.SplashScreenBase;
 import screens.mode.ModeScreenBase;
 
 /**
@@ -17,22 +19,56 @@ import screens.mode.ModeScreenBase;
  * @author Omar
  */
 public class TicTacToe extends Application {
-    
+    private static Stage primaryStage;
+    private static NavigationHistory navHistory = new NavigationHistory();
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = new ModeScreenBase();
-        
-        Scene scene = new Scene(root);
-        
-        stage.setScene(scene);
-        stage.show();
+        this.primaryStage = stage;
+        Socket currentSocketParameter;
+        Parent root = new SplashScreenBase();
+        // push awl Screen "Scene"
+        Scene initialScene = new Scene(root);
+        navHistory.pushScene(initialScene);
+        primaryStage.setScene(initialScene);
+        primaryStage.setMaximized(true);
+        primaryStage.show();
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+
+            Platform.runLater(() -> {
+                try {
+                    ModeScreenBase modeScreen = new ModeScreenBase(stage);
+                    Scene modeScene = new Scene(modeScreen);
+                    changeScene(modeScene);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }).start();
+
     }
 
+    public static void changeScene(Scene newScene) {
+        navHistory.pushScene(newScene);
+        primaryStage.setScene(newScene);
+    }
+
+    public static void goBack() {
+        navHistory.popScene();
+        Scene previousScene = navHistory.peekScene();
+        if (previousScene != null) {
+            primaryStage.setScene(previousScene);
+        }
+    }
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }
