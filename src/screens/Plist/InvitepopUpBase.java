@@ -24,8 +24,8 @@ public class InvitepopUpBase extends AnchorPane {
         setPrefWidth(598.0);
 
         sender.setFill(javafx.scene.paint.Color.valueOf("#2aaafd"));
-        sender.setLayoutX(36.0);
-        sender.setLayoutY(134.0);
+        sender.setLayoutX(235.0);
+        sender.setLayoutY(150.0);
         sender.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         sender.setStrokeWidth(0.0);
         //sender.setText("Text");
@@ -33,8 +33,8 @@ public class InvitepopUpBase extends AnchorPane {
         sender.setFont(new Font("Comic Sans MS", 41.0));
 
         textAlert.setFill(javafx.scene.paint.Color.valueOf("#2aaafd"));
-        textAlert.setLayoutX(164.0);
-        textAlert.setLayoutY(134.0);
+        textAlert.setLayoutX(119.0);
+        textAlert.setLayoutY(207.0);
         textAlert.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         textAlert.setStrokeWidth(0.0);
         //textAlert.setText("has Invite you...");
